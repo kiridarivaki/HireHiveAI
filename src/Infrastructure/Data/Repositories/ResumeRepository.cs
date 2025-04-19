@@ -1,13 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using AutoMapper;
+﻿using AutoMapper;
 using Domain.Entities;
 using Domain.Interfaces;
-using Infrastructure.Identity;
-using Microsoft.AspNetCore.Identity;
 
 namespace Infrastructure.Data.Repositories
 {
@@ -20,17 +13,19 @@ namespace Infrastructure.Data.Repositories
             _context = context;
             _mapper = mapper;
         }
-        public async Task<Resume?> GetResume(int resumeId)
+        public async Task<Resume?> GetResume(Guid resumeId)
         {
-            var resume = await _context.Resume.FirstOrDefaultAsync(resumeId);
-            return resume == null ? null : _mapper.Map<Resume>(resume);
+            throw new NotImplementedException();
+
+            //var resume = await _context.Resume.FirstOrDefaultAsync(resumeId);
+            //return resume == null ? null : _mapper.Map<Resume>(resume);
         }
         public Task<Resume> AddResume(Resume resume)
         {
             throw new NotImplementedException();
         }
 
-        public Task<bool> DeleteResume(int resumeId)
+        public Task<bool> DeleteResume(Guid resumeId)
         {
             throw new NotImplementedException();
         }

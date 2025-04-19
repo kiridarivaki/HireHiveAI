@@ -1,15 +1,11 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.DependencyInjection;
-using Domain.Interfaces;
+﻿using Domain.Interfaces;
 using Infrastructure.Data;
-using System;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Infrastructure.Data.Repositories;
 using Infrastructure.Identity;
-using Infrastructure.Mappings;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Hosting;
 //using AutoMapper.Extensions.Microsoft.DependencyInjection;
 
 namespace Microsoft.Extensions.DependencyInjection;
@@ -27,7 +23,7 @@ public static class DependencyInjection
 
         builder.Services.AddScoped<AppDbContextInitialiser>();
 
-        builder.Services.AddIdentity<AppUser, IdentityRole>(options =>
+        builder.Services.AddIdentity<AppUser, IdentityRole<Guid>>(options =>
         {
             options.SignIn.RequireConfirmedAccount = false;
         })

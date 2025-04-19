@@ -1,11 +1,10 @@
-﻿using Infrastructure.Identity;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
+﻿using Domain.Entities;
+using Infrastructure.Identity;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Identity;
-using Microsoft;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 
 namespace Infrastructure.Data
 {
@@ -19,7 +18,7 @@ namespace Infrastructure.Data
 
             await initialiser.InitialiseDatabaseAsync();
         }
-        
+
         public static async Task AddSeederAsync(this DbContextOptionsBuilder builder, IServiceProvider serviceProvider)
         {
             var initialiser = serviceProvider.GetRequiredService<AppDbContextInitialiser>();
@@ -33,12 +32,12 @@ namespace Infrastructure.Data
         protected readonly ILogger<AppDbContextInitialiser> _logger;
         protected readonly AppDbContext _context;
         protected readonly UserManager<AppUser> _userManager;
-        protected readonly RoleManager<IdentityRole> _roleManager;
+        protected readonly RoleManager<IdentityRole<Guid>> _roleManager;
         public AppDbContextInitialiser(
             ILogger<AppDbContextInitialiser> logger,
-            AppDbContext context, 
+            AppDbContext context,
             UserManager<AppUser> userManager,
-            RoleManager<IdentityRole> roleManager)
+            RoleManager<IdentityRole<Guid>> roleManager)
         {
             _logger = logger;
             _context = context;
@@ -81,7 +80,7 @@ namespace Infrastructure.Data
             {
                 if (!await _roleManager.RoleExistsAsync(role))
                 {
-                    await _roleManager.CreateAsync(new IdentityRole(role));
+                    await _roleManager.CreateAsync(new IdentityRole<Guid>(role));
                 }
             }
 
@@ -89,7 +88,7 @@ namespace Infrastructure.Data
             string adminEmail = "t8210030@aueb.gr";
             string adminUserName = "admin";
 
-            if (await FindUserByEmail(adminEmail) == null)
+            if (await _userManager.FindByEmailAsync(adminEmail) == null)
             {
                 AppUser admin = new()
                 {
@@ -113,7 +112,7 @@ namespace Infrastructure.Data
             string userEmail = "user123@gmail.com";
             string userUserName = "user123";
 
-            if (await FindUserByEmail(userEmail) == null)
+            if (await _userManager.FindByEmailAsync(userEmail) == null)
             {
                 AppUser user = new()
                 {
@@ -121,12 +120,20 @@ namespace Infrastructure.Data
                     NormalizedEmail = userEmail.ToUpper(),
                     UserName = userUserName,
                     NormalizedUserName = userUserName.ToUpper(),
-                    FirstName = "Vaggelis",
-                    LastName = "Daivakis"
+                    FirstName = "John",
+                    LastName = "Doe"
                 };
 
                 await _userManager.CreateAsync(user, "Hello1!@#");
                 await _userManager.AddToRoleAsync(user, "User");
+
+                Candidate candidate = new()
+                {
+                    UserId = user.Id,
+                };
+
+                _context.Candidate.Add(candidate);
+                await _context.SaveChangesAsync();
             }
             else
             {
@@ -134,10 +141,5 @@ namespace Infrastructure.Data
             }
         }
         //todo: seed resume
-
-        public async Task<AppUser?> FindUserByEmail(string email)
-        {
-            return await _userManager.FindByEmailAsync(email);
-        }
     }
 }
