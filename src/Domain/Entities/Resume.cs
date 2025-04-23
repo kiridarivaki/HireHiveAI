@@ -2,10 +2,12 @@
 {
     public class Resume : BaseEntity
     {
-        public string FileName { get; set; }
-        public string FilePath { get; set; }
-        public string ContentType { get; set; } = string.Empty;
+        // todo: add blob name migration
+        public string? FileName { get; set; }
+        public string? BlobName { get; set; }
+        public string? ContentType { get; set; }
         public long FileSize { get; set; }
-        public DateTime LastUpdated { get; set; }
+        public DateTime LastUpdated { get; set; } = DateTime.Now;
+        public Guid UserId { get; set; }
     }
 }
