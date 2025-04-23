@@ -1,13 +1,15 @@
 ﻿using Application.DTOs;
 using AutoMapper;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 using Domain.Entities;
 
-public class UserProfile : Profile
+namespace Application.Mappings
 {
-    public UserProfile()
+    public class UserProfile : Profile
     {
-        CreateMap<DomainUser, UserDto>().ReverseMap();
+        public UserProfile()
+        {
+            CreateMap<DomainUser, UserDto>().ReverseMap();
+        }
     }
 }
 

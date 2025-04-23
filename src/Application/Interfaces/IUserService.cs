@@ -1,18 +1,13 @@
-﻿using Domain.Entities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Application.DTOs;
 
 namespace Application.Interfaces
 {
     public interface IUserService
     {
-        Task<IEnumerable<DomainUser>> GetAllUsers();
-        Task<DomainUser> GetUserById(Guid id);
-        Task AddUser(Guid id);
-        Task UpdateUser(Guid id);
+        Task<IEnumerable<UserDto>> GetAllUsers();
+        Task<UserDto> GetUserById(Guid id);
+        Task AddUser(UserDto user);
+        Task UpdateUser(Guid id, UserDto user);
         Task DeleteUser(Guid id);
     }
 }
