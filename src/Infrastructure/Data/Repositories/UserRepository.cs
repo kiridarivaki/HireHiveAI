@@ -1,12 +1,9 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
-using Domain.Interfaces;
+﻿using AutoMapper;
 using Domain.Entities;
-using AutoMapper;
-using Microsoft.AspNetCore.Identity;
+using Domain.Interfaces;
 using Infrastructure.Identity;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Data.Repositories;
 
@@ -21,42 +18,43 @@ public class UserRepository : IUserRepository
         _mapper = mapper;
     }
 
-    public async Task AddUser(DomainUser user)
+    public async Task<Guid> AddUserAsync(DomainUser user)
     {
         var appUser = _mapper.Map<AppUser>(user);
         await _userManager.CreateAsync(appUser, "Hello1!@");
+
+        return user.Id;
     }
 
-    public async Task DeleteUser(Guid id)
+    public async Task DeleteUserAsync(Guid id)
     {
         var appUser = await _userManager.FindByIdAsync(id.ToString());
-        if (appUser == null) throw new Exception("User not found");
-
         await _userManager.DeleteAsync(appUser);
     }
 
     public async Task<IEnumerable<DomainUser>> GetAllUsersAsync()
     {
         var appUsers = await _userManager.Users.ToListAsync();
-        if (appUsers == null) return Enumerable.Empty<DomainUser>();
 
-        return _mapper.Map<IEnumerable<DomainUser>>(appUsers);
+        return _mapper.Map<List<DomainUser>>(appUsers);
     }
 
     public async Task<DomainUser> GetByIdAsync(Guid id)
     {
         var appUser = await _userManager.FindByIdAsync(id.ToString());
-        if (appUser == null) throw new ArgumentException();
 
         return _mapper.Map<DomainUser>(appUser);
     }
 
-    public async Task UpdateUser(DomainUser user)
+    public async Task UpdateUserAsync(DomainUser user)
     {
-        var appUser = await _userManager.FindByIdAsync(user.Id.ToString());
-        if (appUser == null) throw new Exception("User not found");
+        await _userManager.UpdateAsync(_mapper.Map<AppUser>(user));
+    }
 
-        _mapper.Map(user, appUser);
-        await _userManager.UpdateAsync(appUser);
+    public async Task<bool> UserExistsAsync(string email)
+    {
+        var user = await _userManager.FindByEmailAsync(email);
+
+        return user != null;
     }
 }

@@ -5,37 +5,35 @@ using Infrastructure.Identity;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Hosting;
-//using AutoMapper.Extensions.Microsoft.DependencyInjection;
+using System.Reflection;
 
 namespace Microsoft.Extensions.DependencyInjection;
 
 public static class DependencyInjection
 {
-    public static void AddInfrastructureServices(this IHostApplicationBuilder builder)
+    public static void AddInfrastructureServices(this IServiceCollection services, IConfiguration configuration)
     {
-        var connectionString = builder.Configuration.GetConnectionString("HireHiveDbConnectionString");
+        var connectionString = configuration.GetConnectionString("HireHiveDbConnectionString");
         Guard.Against.Null(connectionString, message: "Connection string 'HireHiveDbConnectionString' not found.");
 
-        builder.Services.AddDbContext<AppDbContext>(options =>
+        services.AddDbContext<AppDbContext>(options =>
             options.UseNpgsql(connectionString));
 
+        services.AddScoped<AppDbContextInitialiser>();
 
-        builder.Services.AddScoped<AppDbContextInitialiser>();
-
-        builder.Services.AddIdentity<AppUser, IdentityRole<Guid>>(options =>
+        services.AddIdentity<AppUser, IdentityRole<Guid>>(options =>
         {
             options.SignIn.RequireConfirmedAccount = false;
         })
-            .AddEntityFrameworkStores<AppDbContext>()
-            .AddDefaultTokenProviders();
+        .AddEntityFrameworkStores<AppDbContext>()
+        .AddDefaultTokenProviders();
 
-        builder.Services.AddAuthentication();
-        builder.Services.AddAuthorization();
+        services.AddAuthentication();
+        services.AddAuthorization();
 
-        //builder.Services.AddAutoMapper(typeof(UserProfile).Assembly);
+        services.AddAutoMapper(Assembly.GetExecutingAssembly());
 
-        builder.Services.AddScoped<IUserRepository, UserRepository>();
-        builder.Services.AddScoped<IResumeRepository, ResumeRepository>();
+        services.AddScoped<IUserRepository, UserRepository>();
+        services.AddScoped<IResumeRepository, ResumeRepository>();
     }
 }
