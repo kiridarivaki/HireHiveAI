@@ -1,13 +1,15 @@
-﻿using Domain.Interfaces;
+﻿using Application.Interfaces;
+using Domain.Interfaces;
 using Infrastructure.Data;
 using Infrastructure.Data.Repositories;
 using Infrastructure.Identity;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using System.Reflection;
 
-namespace Microsoft.Extensions.DependencyInjection;
+namespace Infrastructure;
 
 public static class DependencyInjection
 {
@@ -35,5 +37,6 @@ public static class DependencyInjection
 
         services.AddScoped<IUserRepository, UserRepository>();
         services.AddScoped<IResumeRepository, ResumeRepository>();
+        services.AddScoped<IAuthService, AuthService>();
     }
 }

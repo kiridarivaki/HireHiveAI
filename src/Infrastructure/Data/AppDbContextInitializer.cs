@@ -1,4 +1,5 @@
 ﻿using Domain.Entities;
+using Domain.Enums;
 using Infrastructure.Identity;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Identity;
@@ -74,9 +75,7 @@ namespace Infrastructure.Data
         public async Task SeedDatabaseAsync()
         {
             // seed roles
-            var roles = new[] { "Admin", "User" };
-
-            foreach (var role in roles)
+            foreach (var role in Enum.GetNames(typeof(Roles)))
             {
                 if (!await _roleManager.RoleExistsAsync(role))
                 {
@@ -101,14 +100,14 @@ namespace Infrastructure.Data
                 };
 
                 await _userManager.CreateAsync(admin, "Password1!@#");
-                await _userManager.AddToRoleAsync(admin, "Admin");
+                await _userManager.AddToRoleAsync(admin, Roles.Admin.ToString());
             }
             else
             {
                 _logger.LogWarning($"Admin {adminUserName} already exists");
             }
 
-            // seed users
+            // seed candidates
             string userEmail = "user123@gmail.com";
             string userUserName = "user123";
 
@@ -125,11 +124,12 @@ namespace Infrastructure.Data
                 };
 
                 await _userManager.CreateAsync(user, "Hello1!@#");
-                await _userManager.AddToRoleAsync(user, "User");
+                await _userManager.AddToRoleAsync(user, Roles.Candidate.ToString());
 
                 Candidate candidate = new()
                 {
                     UserId = user.Id,
+                    EmploymentStatus = EmploymentStatus.Unemployed
                 };
 
                 _context.Candidate.Add(candidate);
