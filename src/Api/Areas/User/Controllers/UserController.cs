@@ -3,25 +3,31 @@ using Application.DTOs;
 using Application.Interfaces;
 using Ardalis.GuardClauses;
 using AutoMapper;
+using FluentValidation;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Api.Controllers
+namespace Api.Areas.User.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    //[Authorize(Roles = "Admin")]
     public class UserController : ControllerBase
     {
         private readonly IUserService _userService;
         private readonly IMapper _mapper;
+        private readonly IValidator<UpdateUserBindingModel> _updateValidator;
 
-        public UserController(IUserService userService, IMapper mapper)
+        public UserController(
+            IUserService userService,
+            IMapper mapper,
+            IValidator<UpdateUserBindingModel> updateValidator)
         {
             _userService = userService;
             _mapper = mapper;
+            _updateValidator = updateValidator;
         }
 
         [HttpGet]
+        //[Authorize(Roles = "Admin")]
         public async Task<IActionResult> GetUsers()
         {
             var result = await _userService.GetAllUsers();
@@ -45,19 +51,31 @@ namespace Api.Controllers
             }
         }
 
-        [HttpPost]
-        [Route("register")]
-        public async Task<IActionResult> RegisterUser([FromBody] RegisterUserBindingModel userModel)
+        [HttpPatch]
+        [Route("update/{id}")]
+        //[Authorize(Roles = "Admin")]
+        public async Task<IActionResult> UpdateUser([FromRoute] Guid id, [FromBody] UpdateUserBindingModel userModel)
         {
-            try
+            var validationResult = await _updateValidator.ValidateAsync(userModel);
+            if (!validationResult.IsValid)
             {
-                await _userService.AddUser(_mapper.Map<UserDto>(userModel));
-                return Ok("User created successfully.");
+                var errors = validationResult.Errors.Select(e => new { field = e.PropertyName, message = e.ErrorMessage });
+                return BadRequest(new { errors });
             }
-            catch (ArgumentException ex)
-            {
-                return BadRequest(ex.Message);
-            }
+
+            await _userService.UpdateUser(id, _mapper.Map<UpdateUserDto>(userModel));
+
+            return NoContent();
+        }
+
+        [HttpDelete]
+        [Route("delete/{id}")]
+        //[Authorize(Roles = "Admin")]
+        public async Task<IActionResult> DeleteUser([FromRoute] Guid id)
+        {
+            await _userService.DeleteUser(id);
+
+            return NoContent();
         }
     }
 }

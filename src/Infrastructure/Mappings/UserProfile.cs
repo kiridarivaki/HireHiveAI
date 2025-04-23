@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Application.DTOs;
 using AutoMapper;
 using Domain.Entities;
 using Infrastructure.Identity;
@@ -13,7 +9,8 @@ namespace Infrastructure.Mappings
     {
         public UserProfile()
         {
-            CreateMap<AppUser, DomainUser>().ReverseMap();
+            CreateMap<AppUser, User>().ReverseMap();
+            CreateMap<RegisterUserDto, User>().ReverseMap();
         }
     }
 }

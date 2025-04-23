@@ -1,9 +1,7 @@
 ﻿using Application.DTOs;
 using Application.Interfaces;
 using Ardalis.GuardClauses;
-using Domain.Entities;
 using Domain.Interfaces;
-using FluentValidation;
 using Microsoft.Extensions.Logging;
 
 namespace Application.Services
@@ -12,36 +10,16 @@ namespace Application.Services
     {
         private readonly IUserRepository _userRepository;
         private readonly ILogger<UserService> _logger;
-        private readonly IValidator<UserDto> _validator;
         private readonly IMapper _mapper;
 
-        public UserService(IUserRepository userRepository,
+        public UserService(
+            IUserRepository userRepository,
             ILogger<UserService> logger,
-            IValidator<UserDto> validator,
             IMapper mapper)
         {
             _userRepository = userRepository;
             _logger = logger;
-            _validator = validator;
             _mapper = mapper;
-        }
-        public async Task AddUser(UserDto user)
-        {
-            var validationResult = _validator.Validate(user);
-            if (!validationResult.IsValid)
-            {
-                var errorDetails = new HttpValidationProblemDetails(validationResult.ToDictionary());
-                throw new BadRequestExeption(errorDetails);
-            }
-
-            bool userExists = await _userRepository.UserExistsAsync(user.Email);
-            if (userExists)
-            {
-                throw new ArgumentException("A user with email {Email} already exists.", user.Email);
-            }
-
-            var id = await _userRepository.AddUserAsync(_mapper.Map<DomainUser>(user));
-            _logger.LogInformation("User with id {id} created.", id);
         }
 
         public async Task DeleteUser(Guid id)
@@ -51,6 +29,7 @@ namespace Application.Services
             {
                 throw new NotFoundException("", $"User with ID {id} was not found.");
             }
+            _logger.LogInformation("User with id {id} deleted.", id);
 
             await _userRepository.DeleteUserAsync(id);
         }
@@ -75,7 +54,7 @@ namespace Application.Services
             }
         }
 
-        public async Task UpdateUser(Guid id, UserDto user)
+        public async Task UpdateUser(Guid id, UpdateUserDto userModel)
         {
             var userToUpdate = await _userRepository.GetByIdAsync(id);
             if (userToUpdate == null)
@@ -83,7 +62,9 @@ namespace Application.Services
                 throw new NotFoundException("", $"User with ID {id} was not found.");
             }
 
+            userToUpdate.UpdateUser(userModel.FirstName, userModel.LastName);
             await _userRepository.UpdateUserAsync(userToUpdate);
+            _logger.LogInformation("User with id {id} updated.", id);
         }
     }
 }
