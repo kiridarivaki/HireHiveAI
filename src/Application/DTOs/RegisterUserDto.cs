@@ -1,8 +1,8 @@
 ﻿using Domain.Enums;
 
-namespace Api.Areas.User.Models
+namespace Application.DTOs
 {
-    public class RegisterUserBindingModel
+    public class RegisterUserDto
     {
         public string Email { get; set; } = null!;
         public string FirstName { get; set; } = null!;

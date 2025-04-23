@@ -8,7 +8,8 @@ namespace Api.Areas.User.Mappings
     {
         public UserProfile()
         {
-            CreateMap<RegisterUserBindingModel, UserDto>().ReverseMap();
+            CreateMap<RegisterUserBindingModel, RegisterUserDto>().ReverseMap();
+            CreateMap<UpdateUserBindingModel, UpdateUserDto>().ReverseMap();
         }
     }
 }

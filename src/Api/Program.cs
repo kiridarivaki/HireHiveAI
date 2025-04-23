@@ -1,4 +1,6 @@
+using Application;
 using FluentValidation;
+using Infrastructure;
 using Infrastructure.Data;
 using Serilog;
 using System.Reflection;

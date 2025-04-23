@@ -1,8 +1,9 @@
 ﻿using Application.Interfaces;
 using Application.Services;
+using Microsoft.Extensions.DependencyInjection;
 using System.Reflection;
 
-namespace Microsoft.Extensions.DependencyInjection;
+namespace Application;
 
 public static class DependencyInjection
 {
@@ -11,7 +12,6 @@ public static class DependencyInjection
         var assembly = Assembly.GetExecutingAssembly();
 
         services.AddAutoMapper(assembly);
-        //services.AddValidatorsFromAssembly(assembly);
         services.AddScoped<IUserService, UserService>();
 
         return services;
