@@ -1,21 +1,22 @@
-﻿using Api.Areas.Resume.Models;
-using Application.Interfaces;
+﻿using Application.Interfaces;
 using FluentValidation;
+using HireHive.Api.Areas.Resume.Models;
+using HireHive.Application.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Api.Controllers
+namespace HireHive.Api.Areas.Resume.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
     public class ResumeController : ControllerBase
     {
         private readonly IFileService _fileService;
-        private readonly IValidator<UploadResumeBindingModel> _fileValidator;
+        private readonly IValidator<UploadResumeBm> _fileValidator;
         private readonly IUserService _userService;
 
         public ResumeController(
             IFileService fileService,
-            IValidator<UploadResumeBindingModel> fileValidator,
+            IValidator<UploadResumeBm> fileValidator,
             IUserService userService)
         {
             _fileService = fileService;
@@ -25,9 +26,9 @@ namespace Api.Controllers
 
         [HttpPost]
         [Route("upload")]
-        public async Task<IActionResult> UploadResume([FromForm] UploadResumeBindingModel resumeModel)
+        public async Task<IActionResult> UploadResume([FromForm] UploadResumeBm resumeModel)
         {
-            var user = await _userService.GetUserById(resumeModel.UserId);
+            var user = await _userService.GetById(resumeModel.UserId);
             if (user == null)
             {
                 return NotFound(new { error = "User not found." });

@@ -1,10 +1,10 @@
-﻿using Api.Areas.User.Models;
-using FluentValidation;
+﻿using FluentValidation;
+using HireHive.Api.Areas.User.Models;
 
 
-namespace Api.Areas.User.Validators
+namespace HireHive.Api.Areas.User.Validators
 {
-    public class UpdateUserValidator : AbstractValidator<UpdateUserBindingModel>
+    public class UpdateUserValidator : AbstractValidator<UpdateBm>
     {
         public UpdateUserValidator()
         {

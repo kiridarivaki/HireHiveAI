@@ -1,8 +1,8 @@
 ﻿using Domain.Enums;
 
-namespace Api.Areas.User.Models
+namespace HireHive.Api.Areas.User.Models
 {
-    public class UpdateUserBindingModel
+    public class UpdateBm
     {
         public string? FirstName { get; set; }
         public string? LastName { get; set; }
