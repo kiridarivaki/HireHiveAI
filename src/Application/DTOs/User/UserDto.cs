@@ -1,4 +1,4 @@
-﻿namespace Application.DTOs
+﻿namespace HireHive.Application.DTOs.User
 {
     public class UserDto
     {

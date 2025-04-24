@@ -1,6 +1,6 @@
-﻿using Domain.Entities;
+﻿using HireHive.Domain.Entities;
 
-namespace Domain.Interfaces
+namespace HireHive.Domain.Interfaces
 {
     public interface IResumeRepository
     {

@@ -1,13 +1,12 @@
-﻿using Domain.Entities;
-using Domain.Enums;
-using Infrastructure.Identity;
+﻿using Domain.Enums;
+using HireHive.Domain.Entities;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
-namespace Infrastructure.Data
+namespace HireHive.Infrastructure.Data
 {
     public static class DatabaseExtensions
     {
@@ -15,29 +14,29 @@ namespace Infrastructure.Data
         {
             using var scope = app.Services.CreateScope();
 
-            var initialiser = scope.ServiceProvider.GetRequiredService<AppDbContextInitialiser>();
+            var initialiser = scope.ServiceProvider.GetRequiredService<Initialiser>();
 
             await initialiser.InitialiseDatabaseAsync();
         }
 
         public static async Task AddSeederAsync(this DbContextOptionsBuilder builder, IServiceProvider serviceProvider)
         {
-            var initialiser = serviceProvider.GetRequiredService<AppDbContextInitialiser>();
+            var initialiser = serviceProvider.GetRequiredService<Initialiser>();
 
             await initialiser.TrySeedDatabaseAsync();
         }
     }
 
-    public class AppDbContextInitialiser
+    public class Initialiser
     {
-        protected readonly ILogger<AppDbContextInitialiser> _logger;
+        protected readonly ILogger<Initialiser> _logger;
         protected readonly AppDbContext _context;
-        protected readonly UserManager<AppUser> _userManager;
+        protected readonly UserManager<User> _userManager;
         protected readonly RoleManager<IdentityRole<Guid>> _roleManager;
-        public AppDbContextInitialiser(
-            ILogger<AppDbContextInitialiser> logger,
+        public Initialiser(
+            ILogger<Initialiser> logger,
             AppDbContext context,
-            UserManager<AppUser> userManager,
+            UserManager<User> userManager,
             RoleManager<IdentityRole<Guid>> roleManager)
         {
             _logger = logger;
@@ -89,15 +88,7 @@ namespace Infrastructure.Data
 
             if (await _userManager.FindByEmailAsync(adminEmail) == null)
             {
-                AppUser admin = new()
-                {
-                    Email = adminEmail,
-                    NormalizedEmail = adminEmail.ToUpper(),
-                    UserName = adminUserName,
-                    NormalizedUserName = adminUserName.ToUpper(),
-                    FirstName = "Kyiaki",
-                    LastName = "Darivaki"
-                };
+                User admin = new(adminEmail, "Kyiaki", "Darivaki");
 
                 await _userManager.CreateAsync(admin, "Password1!@#");
                 await _userManager.AddToRoleAsync(admin, Roles.Admin.ToString());
@@ -113,15 +104,7 @@ namespace Infrastructure.Data
 
             if (await _userManager.FindByEmailAsync(userEmail) == null)
             {
-                AppUser user = new()
-                {
-                    Email = userEmail,
-                    NormalizedEmail = userEmail.ToUpper(),
-                    UserName = userUserName,
-                    NormalizedUserName = userUserName.ToUpper(),
-                    FirstName = "John",
-                    LastName = "Doe"
-                };
+                User user = new(userEmail, "John", "Doe");
 
                 await _userManager.CreateAsync(user, "Hello1!@#");
                 await _userManager.AddToRoleAsync(user, Roles.Candidate.ToString());

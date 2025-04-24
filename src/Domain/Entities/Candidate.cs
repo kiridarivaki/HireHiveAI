@@ -1,6 +1,6 @@
 ﻿using Domain.Enums;
 
-namespace Domain.Entities
+namespace HireHive.Domain.Entities
 {
     public class Candidate
     {

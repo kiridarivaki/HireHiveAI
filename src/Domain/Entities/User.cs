@@ -1,9 +1,9 @@
-﻿namespace Domain.Entities
+﻿using Microsoft.AspNetCore.Identity;
+
+namespace HireHive.Domain.Entities
 {
-    public class User : BaseEntity
+    public class User : IdentityUser<Guid>
     {
-        public string Email { get; set; }
-        public string UserName { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
 

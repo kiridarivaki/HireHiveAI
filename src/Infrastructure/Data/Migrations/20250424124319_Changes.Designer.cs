@@ -12,23 +12,26 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20250419113009_CandidateOptionalForeignKey")]
-    partial class CandidateOptionalForeignKey
+    [Migration("20250424124319_Changes")]
+    partial class Changes
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "9.0.3")
+                .HasAnnotation("ProductVersion", "9.0.4")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
-            modelBuilder.Entity("Domain.Entities.Candidate", b =>
+            modelBuilder.Entity("HireHive.Domain.Entities.Candidate", b =>
                 {
                     b.Property<Guid>("UserId")
                         .HasColumnType("uuid");
+
+                    b.Property<int>("EmploymentStatus")
+                        .HasColumnType("integer");
 
                     b.Property<Guid?>("ResumeId")
                         .HasColumnType("uuid");
@@ -40,22 +43,22 @@ namespace Infrastructure.Migrations
                     b.ToTable("Candidate");
                 });
 
-            modelBuilder.Entity("Domain.Entities.Resume", b =>
+            modelBuilder.Entity("HireHive.Domain.Entities.Resume", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
+                    b.Property<string>("BlobName")
+                        .HasColumnType("text");
+
                     b.Property<string>("ContentType")
-                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("ExtraData")
                         .HasColumnType("text");
 
                     b.Property<string>("FileName")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("FilePath")
-                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<long>("FileSize")
@@ -64,21 +67,21 @@ namespace Infrastructure.Migrations
                     b.Property<DateTime>("LastUpdated")
                         .HasColumnType("timestamp with time zone");
 
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid");
+
                     b.HasKey("Id");
 
                     b.ToTable("Resume");
                 });
 
-            modelBuilder.Entity("Infrastructure.Identity.AppUser", b =>
+            modelBuilder.Entity("HireHive.Domain.Entities.User", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
                     b.Property<int>("AccessFailedCount")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("Age")
                         .HasColumnType("integer");
 
                     b.Property<string>("ConcurrencyStamp")
@@ -275,19 +278,44 @@ namespace Infrastructure.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
-            modelBuilder.Entity("Domain.Entities.Candidate", b =>
+            modelBuilder.Entity("HireHive.Domain.Entities.Candidate", b =>
                 {
-                    b.HasOne("Domain.Entities.Resume", "Resume")
+                    b.HasOne("HireHive.Domain.Entities.Resume", "Resume")
                         .WithMany()
                         .HasForeignKey("ResumeId");
 
-                    b.HasOne("Infrastructure.Identity.AppUser", null)
+                    b.HasOne("HireHive.Domain.Entities.User", null)
                         .WithOne()
-                        .HasForeignKey("Domain.Entities.Candidate", "UserId")
+                        .HasForeignKey("HireHive.Domain.Entities.Candidate", "UserId")
                         .OnDelete(DeleteBehavior.SetNull)
                         .IsRequired();
 
                     b.Navigation("Resume");
+                });
+
+            modelBuilder.Entity("HireHive.Domain.Entities.Resume", b =>
+                {
+                    b.OwnsOne("HireHive.Domain.Entities.ValueObjects.Audit", "Audit", b1 =>
+                        {
+                            b1.Property<Guid>("ResumeId")
+                                .HasColumnType("uuid");
+
+                            b1.Property<DateTime>("CreatedAt")
+                                .HasColumnType("timestamp with time zone");
+
+                            b1.Property<DateTime>("UpdatedAt")
+                                .HasColumnType("timestamp with time zone");
+
+                            b1.HasKey("ResumeId");
+
+                            b1.ToTable("Resume");
+
+                            b1.WithOwner()
+                                .HasForeignKey("ResumeId");
+                        });
+
+                    b.Navigation("Audit")
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<System.Guid>", b =>
@@ -301,7 +329,7 @@ namespace Infrastructure.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<System.Guid>", b =>
                 {
-                    b.HasOne("Infrastructure.Identity.AppUser", null)
+                    b.HasOne("HireHive.Domain.Entities.User", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -310,7 +338,7 @@ namespace Infrastructure.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<System.Guid>", b =>
                 {
-                    b.HasOne("Infrastructure.Identity.AppUser", null)
+                    b.HasOne("HireHive.Domain.Entities.User", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -325,7 +353,7 @@ namespace Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Infrastructure.Identity.AppUser", null)
+                    b.HasOne("HireHive.Domain.Entities.User", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -334,7 +362,7 @@ namespace Infrastructure.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<System.Guid>", b =>
                 {
-                    b.HasOne("Infrastructure.Identity.AppUser", null)
+                    b.HasOne("HireHive.Domain.Entities.User", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)

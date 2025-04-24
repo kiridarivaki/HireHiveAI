@@ -1,12 +1,11 @@
-﻿using Application.DTOs;
+﻿using HireHive.Application.DTOs.Account;
 
-namespace Application.Interfaces
+namespace HireHive.Application.Interfaces
 {
     public interface IAuthService
     {
-        Task<Guid> RegisterUser(RegisterUserDto user);
+        Task Register(RegisterDto user);
         Task<bool> ValidateUserCredentialsAsync(string email, string password);
-        Task Login(LoginUserDto user);
-        Task Logout();
+        Task Login(LoginDto user);
     }
 }

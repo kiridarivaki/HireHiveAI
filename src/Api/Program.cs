@@ -1,19 +1,15 @@
-using Application;
-using FluentValidation;
-using Infrastructure;
-using Infrastructure.Data;
-using Serilog;
+using HireHive.Infrastructure.Data;
+using HireHive.Infrastructure.Startup;
 using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
+var services = builder.Services;
+var configuration = builder.Configuration;
 
-Log.Logger = new LoggerConfiguration()
-    .MinimumLevel.Debug()
-    .WriteTo.File("logs/hirehivelogs.txt", rollingInterval: RollingInterval.Day)
-    .CreateLogger();
+builder.Logging.ConfigureLogging(configuration);
+services.ConfigureDependencyInjection(configuration);
 
-builder.Services.AddApplicationServices();
-builder.Services.AddInfrastructureServices(builder.Configuration);
+
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options =>
@@ -34,11 +30,9 @@ builder.Services.AddCors(options =>
         policyBuilder.AllowCredentials();
     });
 });
-builder.Services.AddAutoMapper(Assembly.GetExecutingAssembly());
 
 builder.Services.AddControllers();
 
-builder.Services.AddValidatorsFromAssembly(typeof(Program).Assembly, includeInternalTypes: true);
 
 var app = builder.Build();
 
@@ -51,7 +45,7 @@ if (app.Environment.IsDevelopment())
 
     using (var scope = app.Services.CreateScope())
     {
-        var initializer = scope.ServiceProvider.GetRequiredService<AppDbContextInitialiser>();
+        var initializer = scope.ServiceProvider.GetRequiredService<Initialiser>();
 
         await initializer.InitialiseDatabaseAsync();
 

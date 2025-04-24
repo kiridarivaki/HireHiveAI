@@ -1,12 +1,12 @@
-﻿using Application.DTOs;
+﻿using HireHive.Application.DTOs.User;
 
-namespace Application.Interfaces
+namespace HireHive.Application.Interfaces
 {
     public interface IUserService
     {
-        Task<IEnumerable<UserDto>> GetAllUsers();
-        Task<UserDto> GetUserById(Guid id);
-        Task UpdateUser(Guid id, UpdateUserDto user);
-        Task DeleteUser(Guid id);
+        Task<List<UserDto>> GetAll();
+        Task<UserDto> GetById(Guid id);
+        Task Update(Guid id, UpdateDto user);
+        Task Delete(Guid id);
     }
 }
