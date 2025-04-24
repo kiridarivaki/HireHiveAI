@@ -1,6 +1,6 @@
 ﻿using FluentValidation;
 
-namespace HireHive.Api.Areas.User.Validators.Shared
+namespace HireHive.Api.Areas.Account.Validators.Shared
 {
     public class PasswordRule : AbstractValidator<string>
     {

@@ -1,10 +1,10 @@
-﻿using Api.Areas.User.Models;
-using Application.Validators.Shared;
-using FluentValidation;
+﻿using FluentValidation;
+using HireHive.Api.Areas.Account.Models;
+using HireHive.Api.Areas.Account.Validators.Shared;
 
-public class RegisterUserValidator : AbstractValidator<RegisterUserBindingModel>
+public class RegisterValidator : AbstractValidator<RegisterBm>
 {
-    public RegisterUserValidator()
+    public RegisterValidator()
     {
         RuleFor(x => x.Email)
             .NotEmpty().WithMessage("Email is required.")

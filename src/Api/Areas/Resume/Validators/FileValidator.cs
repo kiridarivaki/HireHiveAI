@@ -1,10 +1,10 @@
-﻿using Api.Areas.Resume.Models;
-using FileSignatures;
+﻿using FileSignatures;
 using FluentValidation;
+using HireHive.Api.Areas.Resume.Models;
 
-namespace Api.Areas.Resume.Validators
+namespace HireHive.Api.Areas.Resume.Validators
 {
-    public class FileValidator : AbstractValidator<UploadResumeBindingModel>
+    public class FileValidator : AbstractValidator<UploadResumeBm>
     {
         public FileValidator()
         {
