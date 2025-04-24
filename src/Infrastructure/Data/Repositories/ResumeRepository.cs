@@ -1,8 +1,8 @@
 ﻿using AutoMapper;
-using Domain.Entities;
-using Domain.Interfaces;
+using HireHive.Domain.Entities;
+using HireHive.Domain.Interfaces;
 
-namespace Infrastructure.Data.Repositories
+namespace HireHive.Infrastructure.Data.Repositories
 {
     internal class ResumeRepository : IResumeRepository
     {

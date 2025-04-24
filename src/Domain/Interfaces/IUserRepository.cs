@@ -1,12 +1,12 @@
-﻿using Domain.Entities;
+﻿using HireHive.Domain.Entities;
 
-namespace Domain.Interfaces
+namespace HireHive.Domain.Interfaces
 {
     public interface IUserRepository
     {
-        Task<User> GetByIdAsync(Guid id);
+        Task<User>? GetByIdAsync(Guid id);
         Task<IEnumerable<User>> GetAllUsersAsync();
-        Task<Guid> AddUserAsync(User user, string password);
+        Task<User> AddUserAsync(User user, string password);
         Task UpdateUserAsync(User user);
         Task DeleteUserAsync(Guid id);
     }

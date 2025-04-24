@@ -1,6 +1,6 @@
-﻿namespace Domain.Entities
+﻿namespace HireHive.Domain.Entities
 {
-    public class Resume : BaseEntity
+    public class Resume : BaseEntity<Guid>
     {
         // todo: add blob name migration
         public string? FileName { get; set; }

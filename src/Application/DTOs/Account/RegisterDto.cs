@@ -1,8 +1,8 @@
 ﻿using Domain.Enums;
 
-namespace Application.DTOs
+namespace HireHive.Application.DTOs.Account
 {
-    public class RegisterUserDto
+    public class RegisterDto
     {
         public string Email { get; set; } = null!;
         public string FirstName { get; set; } = null!;

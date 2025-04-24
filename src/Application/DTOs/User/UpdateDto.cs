@@ -1,8 +1,8 @@
 ﻿using Domain.Enums;
 
-namespace Application.DTOs
+namespace HireHive.Application.DTOs.User
 {
-    public class UpdateUserDto
+    public class UpdateDto
     {
         public string? FirstName { get; set; }
         public string? LastName { get; set; }
