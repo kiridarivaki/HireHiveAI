@@ -1,5 +1,4 @@
-﻿using Application.Interfaces;
-using FluentValidation;
+﻿using FluentValidation;
 using HireHive.Api.Areas.Resume.Models;
 using HireHive.Application.Interfaces;
 using Microsoft.AspNetCore.Mvc;

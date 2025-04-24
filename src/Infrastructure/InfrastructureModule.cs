@@ -1,12 +1,13 @@
 ﻿using Application.Interfaces;
+using Azure.Storage.Blobs;
 using HireHive.Application.Interfaces;
 using HireHive.DependencyInjection;
 using HireHive.Domain.Entities;
 using HireHive.Domain.Interfaces;
 using HireHive.Infrastructure.Data;
 using HireHive.Infrastructure.Data.Repositories;
+using HireHive.Infrastructure.FileStorage;
 using HireHive.Infrastructure.Services;
-using Infrastructure.FileStorage;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -37,6 +38,12 @@ namespace HireHive.Infrastructure
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IAuthService, AuthService>();
             services.AddScoped<IFileService, FileService>();
+
+            services.AddSingleton<BlobServiceClient>(provider =>
+            {
+                var connectionString = configuration.GetConnectionString("AzureBlob");
+                return new BlobServiceClient(connectionString);
+            });
             services.AddScoped<IAzureBlobService, AzureBlobService>();
 
             services.AddScoped<IUserRepository, UserRepository>();
