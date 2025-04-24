@@ -1,20 +1,20 @@
 ﻿using Application.Interfaces;
-using Azure.Storage;
 using Azure.Storage.Blobs;
 using Microsoft.AspNetCore.Http;
 
-namespace Infrastructure.FileStorage
+namespace HireHive.Infrastructure.FileStorage
 {
     public class AzureBlobService : IAzureBlobService
     {
-        private readonly string _storageAccount = "hirehiveblob";
-        private readonly string _accessKey = "eI42LydCJsBdaT8XtpjfbPBKmz98Gx25yxGVCtbcJPbpGkNbfoNCR/22E5aERjwpfJA+1ToRG2m0+ASt5WiITA==";
+        //private readonly string _storageAccount = "hirehiveblob";
+        //private readonly string _accessKey = "eI42LydCJsBdaT8XtpjfbPBKmz98Gx25yxGVCtbcJPbpGkNbfoNCR/22E5aERjwpfJA+1ToRG2m0+ASt5WiITA==";
         private readonly BlobServiceClient _blobServiceClient;
-        public AzureBlobService()
+        public AzureBlobService(BlobServiceClient blobServiceClient)
         {
-            var credential = new StorageSharedKeyCredential(_storageAccount, _accessKey);
-            var blobUri = $"https://{_storageAccount}.blob.core.windows.net";
-            _blobServiceClient = new BlobServiceClient(new Uri(blobUri), credential);
+            _blobServiceClient = blobServiceClient;
+            //var credential = new StorageSharedKeyCredential(_storageAccount, _accessKey);
+            //var blobUri = $"https://{_storageAccount}.blob.core.windows.net";
+            //_blobServiceClient = new BlobServiceClient(new Uri(blobUri), credential);
         }
 
         public async Task<(string BlobName, string Uri)> UploadFileBlob(IFormFile file)
@@ -22,7 +22,8 @@ namespace Infrastructure.FileStorage
             var containerClient = _blobServiceClient.GetBlobContainerClient("resumefiles");
             await containerClient.CreateIfNotExistsAsync();
 
-            string blobName = $"{Guid.NewGuid()}.pdf";
+            string fileExtension = Path.GetExtension(file.FileName);
+            string blobName = Guid.NewGuid().ToString() + fileExtension;
 
             var blobClient = containerClient.GetBlobClient(blobName);
 

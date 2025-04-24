@@ -1,5 +1,4 @@
-﻿using AutoMapper;
-using HireHive.Domain.Entities;
+﻿using HireHive.Domain.Entities;
 using HireHive.Domain.Interfaces;
 
 namespace HireHive.Infrastructure.Data.Repositories
@@ -20,9 +19,9 @@ namespace HireHive.Infrastructure.Data.Repositories
             //var resume = await _context.Resume.FirstOrDefaultAsync(resumeId);
             //return resume == null ? null : _mapper.Map<Resume>(resume);
         }
-        public Task<Resume> AddResume(Resume resume)
+        public async Task AddResumeAsync(Resume resume)
         {
-            throw new NotImplementedException();
+            await _context.Resume.AddAsync(resume);
         }
 
         public Task<bool> DeleteResume(Guid resumeId)

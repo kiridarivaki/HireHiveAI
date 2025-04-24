@@ -1,5 +1,7 @@
 ﻿using Application.Interfaces;
+using HireHive.Application.Interfaces;
 using HireHive.Domain.Entities;
+using HireHive.Domain.Interfaces;
 using Microsoft.AspNetCore.Http;
 
 namespace HireHive.Infrastructure.Services
@@ -7,11 +9,13 @@ namespace HireHive.Infrastructure.Services
     public class FileService : IFileService
     {
         private readonly IAzureBlobService _azureBlobService;
-        public FileService(IAzureBlobService azureBlobService)
+        private readonly IResumeRepository _resumeRepository;
+        public FileService(IAzureBlobService azureBlobService, IResumeRepository resumeRepository)
         {
             _azureBlobService = azureBlobService;
+            _resumeRepository = resumeRepository;
         }
-        public async Task<(string BlobName, Uri Uri)> UploadFileAsync(IFormFile file, Guid userId)
+        public async Task<(string BlobName, string Uri)> UploadFileAsync(IFormFile file, Guid userId)
         {
             var (blobName, uri) = await _azureBlobService.UploadFileBlob(file);
 
@@ -24,8 +28,10 @@ namespace HireHive.Infrastructure.Services
                 FileSize = file.Length,
                 LastUpdated = DateTime.UtcNow
             };
-            throw new NotImplementedException();
-            // var resumeId = await _resumeRepository.AddResumeAsync(resume);
+
+            await _resumeRepository.AddResumeAsync(resume);
+
+            return (BlobName: blobName, Uri: uri);
         }
 
         public Task UpdateFileAsync(Guid fileId, IFormFile file, Guid userId)
