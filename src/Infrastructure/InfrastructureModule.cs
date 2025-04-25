@@ -1,5 +1,4 @@
-﻿using Application.Interfaces;
-using Azure.Storage.Blobs;
+﻿using Azure.Storage.Blobs;
 using HireHive.Application.Interfaces;
 using HireHive.DependencyInjection;
 using HireHive.Domain.Entities;
@@ -20,7 +19,8 @@ namespace HireHive.Infrastructure
     {
         public void ConfigureDependencyInjection(IServiceCollection services, IConfiguration configuration)
         {
-            var connectionString = configuration.GetConnectionString("HireHiveDbConnectionString");
+            var connectionString = configuration["HireHivePostgresConnectionString"];
+
             services.AddDbContext<AppDbContext>(options =>
                 options.UseNpgsql(connectionString));
 
@@ -37,14 +37,14 @@ namespace HireHive.Infrastructure
 
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IAuthService, AuthService>();
-            services.AddScoped<IFileService, FileService>();
+            services.AddScoped<IResumeService, ResumeService>();
+            services.AddScoped<IAzureBlobService, AzureBlobService>();
 
             services.AddSingleton<BlobServiceClient>(provider =>
             {
-                var connectionString = configuration.GetConnectionString("AzureBlob");
-                return new BlobServiceClient(connectionString);
+                var blobConnectionString = configuration["AzureBlobStorageConnection"];
+                return new BlobServiceClient(blobConnectionString);
             });
-            services.AddScoped<IAzureBlobService, AzureBlobService>();
 
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IResumeRepository, ResumeRepository>();
