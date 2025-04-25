@@ -1,3 +1,4 @@
+using Azure.Identity;
 using HireHive.Infrastructure.Data;
 using HireHive.Infrastructure.Startup;
 using System.Reflection;
@@ -5,6 +6,19 @@ using System.Reflection;
 var builder = WebApplication.CreateBuilder(args);
 var services = builder.Services;
 var configuration = builder.Configuration;
+
+if (builder.Environment.IsDevelopment())
+{
+    var keyVaultURL = configuration.GetSection("AzureKeyVault:KeyVaultURL").Value;
+    var keyVaultClientId = configuration.GetSection("AzureKeyVault:ClientId").Value;
+    var keyVaultClientSecret = configuration.GetSection("AzureKeyVault:ClientSecret").Value;
+    var keyVaultDirectoryID = configuration.GetSection("AzureKeyVault:DirectoryID").Value;
+
+    var credential = new ClientSecretCredential(keyVaultDirectoryID!.ToString(), keyVaultClientId!.ToString(), keyVaultClientSecret!.ToString());
+    builder.Configuration.AddAzureKeyVault(
+        new Uri(keyVaultURL!),
+        credential);
+}
 
 builder.Logging.ConfigureLogging(configuration);
 services.ConfigureDependencyInjection(configuration);
@@ -19,24 +33,24 @@ builder.Services.AddSwaggerGen(options =>
     options.IncludeXmlComments(xmlPath);
 });
 
-// CORS configuration
-builder.Services.AddCors(options =>
-{
-    options.AddPolicy(name: "angularApp", configurePolicy: policyBuilder =>
-    {
-        policyBuilder.WithOrigins("https://localhost:5000");
-        policyBuilder.AllowAnyHeader();
-        policyBuilder.AllowAnyMethod();
-        policyBuilder.AllowCredentials();
-    });
-});
+// CORS configuration - add later
+//builder.Services.AddCors(options =>
+//{
+//    options.AddPolicy(name: "angularApp", configurePolicy: policyBuilder =>
+//    {
+//        policyBuilder.WithOrigins("https://localhost:5000");
+//        policyBuilder.AllowAnyHeader();
+//        policyBuilder.AllowAnyMethod();
+//        policyBuilder.AllowCredentials();
+//    });
+//});
 
 builder.Services.AddControllers();
 
 
 var app = builder.Build();
 
-app.UseCors("angularApp");
+//app.UseCors("angularApp");
 
 if (app.Environment.IsDevelopment())
 {

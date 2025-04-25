@@ -1,10 +1,10 @@
 ﻿using Microsoft.AspNetCore.Http;
 
-namespace Application.Interfaces
+namespace HireHive.Application.Interfaces
 {
     public interface IAzureBlobService
     {
-        Task<(string BlobName, string Uri)> UploadFileBlob(IFormFile file);
-        void Delete(string containerName, string blobName);
+        Task<string> UploadBlob(IFormFile file);
+        Task DeleteBlob(string blobName);
     }
 }

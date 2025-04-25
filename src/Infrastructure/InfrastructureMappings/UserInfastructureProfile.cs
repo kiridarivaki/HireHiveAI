@@ -4,9 +4,9 @@ using HireHive.Domain.Entities;
 
 namespace HireHive.Infrastructure.InfrastructureMappings;
 
-public class UserApplicationProfile : Profile
+public class UserInfastructureProfile : Profile
 {
-    public UserApplicationProfile()
+    public UserInfastructureProfile()
     {
         CreateMap<User, UserDto>();
         CreateMap<RegisterDto, User>();
