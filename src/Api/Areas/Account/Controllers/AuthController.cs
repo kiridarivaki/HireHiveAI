@@ -1,6 +1,5 @@
-﻿using AutoMapper;
-using FluentValidation;
-using HireHive.Api.Areas.Account.Models;
+﻿using FluentValidation;
+using HireHive.Api.Areas.Account.Models.BindingModels;
 using HireHive.Api.Areas.Common.Controllers;
 using HireHive.Application.DTOs.Account;
 using HireHive.Application.Interfaces;
@@ -29,16 +28,16 @@ public class AuthController : ApiController
 
     [HttpPost]
     [Route("register")]
-    public async Task<IActionResult> RegisterUser([FromBody] RegisterBm userModel)
+    public async Task<IActionResult> Register([FromBody] RegisterBm registerModel)
     {
-        var validationResult = await _registerValidator.ValidateAsync(userModel);
+        var validationResult = await _registerValidator.ValidateAsync(registerModel);
         if (!validationResult.IsValid)
         {
             var errors = validationResult.Errors.Select(e => new { field = e.PropertyName, message = e.ErrorMessage });
             return BadRequest(new { errors });
         }
 
-        await _authService.Register(_mapper.Map<RegisterDto>(userModel));
+        await _authService.Register(_mapper.Map<RegisterDto>(registerModel));
 
         return Ok();
     }

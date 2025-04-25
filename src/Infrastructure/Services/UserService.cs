@@ -31,13 +31,12 @@ namespace HireHive.Infrastructure.Services
                 var user = await _userRepository.GetByIdAsync(id)
                                 ?? throw new UserNotFoundException();
 
+                await _userRepository.DeleteAsync(user);
                 _logger.LogInformation("User with id {id} deleted.", id);
-
-                await _userRepository.DeleteUserAsync(id);
             }
             catch (BaseException ex)
             {
-                //todo log
+                _logger.LogError("Error deleting user {id}.", id);
                 throw;
             }
 
@@ -45,7 +44,7 @@ namespace HireHive.Infrastructure.Services
 
         public async Task<List<UserDto>> GetAll()
         {
-            var users = await _userRepository.GetAllUsersAsync();
+            var users = await _userRepository.GetAllAsync();
 
             return _mapper.Map<List<UserDto>>(users);
         }
@@ -64,7 +63,7 @@ namespace HireHive.Infrastructure.Services
                 ?? throw new NotFoundException("", $"User with ID {id} was not found.");
 
             userToUpdate.UpdateUser(userModel.FirstName, userModel.LastName);
-            await _userRepository.UpdateUserAsync(userToUpdate);
+            await _userRepository.UpdateAsync(userToUpdate);
 
             _logger.LogInformation("User with id {id} updated.", id);
         }

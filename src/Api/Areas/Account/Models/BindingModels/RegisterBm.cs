@@ -1,6 +1,6 @@
 ﻿using Domain.Enums;
 
-namespace HireHive.Api.Areas.Account.Models;
+namespace HireHive.Api.Areas.Account.Models.BindingModels;
 
 public class RegisterBm
 {

@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using HireHive.Api.Areas.Account.Models;
+using HireHive.Api.Areas.Account.Models.BindingModels;
 using HireHive.Api.Areas.User.Models;
 using HireHive.Application.DTOs.Account;
 using HireHive.Application.DTOs.User;

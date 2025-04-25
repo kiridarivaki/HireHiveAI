@@ -1,5 +1,4 @@
 ﻿using Ardalis.GuardClauses;
-using AutoMapper;
 using FluentValidation;
 using HireHive.Api.Areas.Common.Controllers;
 using HireHive.Api.Areas.User.Models;
@@ -57,7 +56,7 @@ public class UserController : ApiController
 
     [HttpPatch]
     [Route("{id}")]
-    public async Task<IActionResult> UpdateUser([FromRoute] Guid id, [FromBody] UpdateBm updateUserBm)
+    public async Task<IActionResult> Update([FromRoute] Guid id, [FromBody] UpdateBm updateUserBm)
     {
         var validationResult = await _updateValidator.ValidateAsync(updateUserBm);
         if (!validationResult.IsValid)
@@ -73,7 +72,7 @@ public class UserController : ApiController
 
     [HttpDelete]
     [Route("delete/{id}")]
-    public async Task<IActionResult> DeleteUser([FromRoute] Guid id)
+    public async Task<IActionResult> Delete([FromRoute] Guid id)
     {
         await _userService.Delete(id);
 
