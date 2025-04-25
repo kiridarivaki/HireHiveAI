@@ -1,5 +1,4 @@
-﻿using AutoMapper;
-using Domain.Enums;
+﻿using Domain.Enums;
 using HireHive.Domain.Entities;
 using HireHive.Domain.Interfaces;
 using Microsoft.AspNetCore.Identity;
@@ -26,20 +25,25 @@ public class UserRepository : IUserRepository
         _logger = logger;
     }
 
-    public async Task<User> AddUserAsync(User user, string password)
+    public async Task<User> AddAsync(User user, string password)
     {
-        await _userManager.CreateAsync(user, password);
+        var result = await _userManager.CreateAsync(user, password);
+        if (!result.Succeeded)
+            throw new Exception("Failed to create user.");
+
         return user;
     }
 
-    public async Task DeleteUserAsync(Guid id)
+    public async Task DeleteAsync(User user)
     {
-        var user = await GetByIdAsync(id);
-        await _userManager.DeleteAsync(user);
+        var result = await _userManager.DeleteAsync(user);
+        if (!result.Succeeded)
+            throw new Exception("Failed to delete user.");
     }
 
-    public async Task<IEnumerable<User>> GetAllUsersAsync()
+    public async Task<IEnumerable<User>> GetAllAsync()
     {
+        // todo: change candidate to just expand user (?)
         var appUsers = await _context.Users.Where(u => _context.UserRoles
                 .Any(ur => ur.UserId == u.Id &&
                     _context.Roles.Any(r => r.Id == ur.RoleId && r.Name == Roles.Candidate.ToString())))
@@ -48,18 +52,15 @@ public class UserRepository : IUserRepository
         return _mapper.Map<List<User>>(appUsers);
     }
 
-    public async Task<User?> GetByIdAsync(Guid id)
+    public async Task<User> GetByIdAsync(Guid id)
     {
         return await _userManager.FindByIdAsync(id.ToString());
     }
 
-    public async Task UpdateUserAsync(User user)
+    public async Task UpdateAsync(User user)
     {
-        // todo: remove double check for user in app and infra layer 
         var result = await _userManager.UpdateAsync(user);
         if (!result.Succeeded)
-        {
             throw new Exception("Failed to update user.");
-        }
     }
 }

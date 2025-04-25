@@ -16,16 +16,8 @@ namespace HireHive.Domain.Entities
         }
         public void UpdateUser(string? firstName = null, string? lastName = null)
         {
-            if (firstName != null)
-            {
-                FirstName = firstName;
-
-            }
-
-            if (lastName != null)
-            {
-                LastName = lastName;
-            }
+            FirstName = firstName ?? FirstName;
+            LastName = lastName ?? LastName;
         }
     }
 }

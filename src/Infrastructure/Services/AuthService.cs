@@ -40,7 +40,7 @@ namespace HireHive.Infrastructure.Services
             var newUser = _mapper.Map<User>(registerDto);
             newUser.UserName = registerDto.Email;
 
-            var id = await _userRepository.AddUserAsync(newUser, registerDto.Password);
+            var id = await _userRepository.AddAsync(newUser, registerDto.Password);
         }
 
         public async Task<bool> ValidateUserCredentialsAsync(string email, string password)
