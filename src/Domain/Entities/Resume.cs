@@ -7,6 +7,9 @@
         public string? ContentType { get; set; }
         public long FileSize { get; set; }
         public Guid UserId { get; set; }
+        #region references
+        public User User { get; set; } = null!;
+        #endregion
         public Resume(string fileName, string blobName, string contentType, long fileSize, Guid userId) : base()
         {
             FileName = fileName;

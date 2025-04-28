@@ -7,11 +7,9 @@ namespace HireHive.Infrastructure.Data.Repositories
     internal class ResumeRepository : IResumeRepository
     {
         private readonly AppDbContext _context;
-        private readonly IMapper _mapper;
-        public ResumeRepository(AppDbContext context, IMapper mapper)
+        public ResumeRepository(AppDbContext context)
         {
             _context = context;
-            _mapper = mapper;
         }
         public async Task<Resume?> GetByIdAsync(Guid resumeId)
         {
@@ -19,15 +17,17 @@ namespace HireHive.Infrastructure.Data.Repositories
 
             return resume;
         }
+
+        public async Task<Resume?> GetByUserIdAsync(Guid userId)
+        {
+            var resume = await _context.Resume.FirstOrDefaultAsync(r => r.UserId == userId);
+
+            return resume;
+        }
         public async Task AddAsync(Resume resume)
         {
             await _context.Resume.AddAsync(resume);
-            var result = await _context.SaveChangesAsync();
-
-            if (result == 0)
-            {
-                throw new Exception("Failed to delete resume.");
-            }
+            await _context.SaveChangesAsync();
         }
 
         public void Delete(Resume resume)
@@ -38,12 +38,7 @@ namespace HireHive.Infrastructure.Data.Repositories
         public async Task UpdateAsync(Resume resume)
         {
             _context.Update(resume);
-            var result = await _context.SaveChangesAsync();
-
-            if (result == 0)
-            {
-                throw new Exception("Failed to update resume.");
-            }
+            await _context.SaveChangesAsync();
         }
     }
 }
