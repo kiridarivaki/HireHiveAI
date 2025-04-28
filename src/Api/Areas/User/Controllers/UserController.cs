@@ -1,9 +1,11 @@
-﻿using Ardalis.GuardClauses;
-using FluentValidation;
+﻿using FluentValidation;
 using HireHive.Api.Areas.Common.Controllers;
-using HireHive.Api.Areas.User.Models;
+using HireHive.Api.Areas.User.Models.BindingModels;
+using HireHive.Api.Areas.User.Models.ViewModels;
 using HireHive.Application.DTOs.User;
 using HireHive.Application.Interfaces;
+using HireHive.Domain.Exceptions;
+using HireHive.Domain.Exceptions.User;
 using Microsoft.AspNetCore.Mvc;
 
 namespace HireHive.Api.Areas.User.Controllers;
@@ -33,9 +35,9 @@ public class UserController : ApiController
     [Route("")]
     public async Task<IActionResult> GetUsers()
     {
-        var result = await _userService.GetAll();
+        var users = await _userService.GetAll();
 
-        return Ok(result);
+        return Ok(_mapper.Map<UserVm>(users));
     }
 
     [HttpGet]
@@ -46,11 +48,11 @@ public class UserController : ApiController
         {
             var user = await _userService.GetById(id);
 
-            return Ok(user);
+            return Ok(_mapper.Map<UserVm>(user));
         }
-        catch (NotFoundException ex)
+        catch (UserNotFoundException)
         {
-            return NotFound(new { error = ex.Message });
+            return NotFound();
         }
     }
 
@@ -62,20 +64,43 @@ public class UserController : ApiController
         if (!validationResult.IsValid)
         {
             var errors = validationResult.Errors.Select(e => new { field = e.PropertyName, message = e.ErrorMessage });
+
             return BadRequest(new { errors });
         }
 
-        await _userService.Update(id, _mapper.Map<UpdateDto>(updateUserBm));
+        try
+        {
+            await _userService.Update(id, _mapper.Map<UpdateDto>(updateUserBm));
 
-        return Ok();
+            return Ok();
+        }
+        catch (UserNotFoundException)
+        {
+            return NotFound();
+        }
+        catch (BaseException)
+        {
+            throw;
+        }
     }
 
     [HttpDelete]
     [Route("delete/{id}")]
     public async Task<IActionResult> Delete([FromRoute] Guid id)
     {
-        await _userService.Delete(id);
+        try
+        {
+            await _userService.Delete(id);
 
-        return NoContent();
+            return NoContent();
+        }
+        catch (UserNotFoundException)
+        {
+            return NotFound();
+        }
+        catch (BaseException)
+        {
+            throw;
+        }
     }
 }

@@ -3,6 +3,7 @@ using HireHive.Api.Areas.Account.Models.BindingModels;
 using HireHive.Api.Areas.Common.Controllers;
 using HireHive.Application.DTOs.Account;
 using HireHive.Application.Interfaces;
+using HireHive.Domain.Exceptions;
 using Microsoft.AspNetCore.Mvc;
 
 namespace HireHive.Api.Areas.Account.Controllers;
@@ -34,12 +35,20 @@ public class AuthController : ApiController
         if (!validationResult.IsValid)
         {
             var errors = validationResult.Errors.Select(e => new { field = e.PropertyName, message = e.ErrorMessage });
+
             return BadRequest(new { errors });
         }
 
-        await _authService.Register(_mapper.Map<RegisterDto>(registerModel));
+        try
+        {
+            await _authService.Register(_mapper.Map<RegisterDto>(registerModel));
 
-        return Ok();
+            return Ok();
+        }
+        catch (BaseException)
+        {
+            throw;
+        }
     }
 
     [HttpPost]

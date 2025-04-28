@@ -1,6 +1,6 @@
 ﻿using Domain.Enums;
 
-namespace HireHive.Api.Areas.User.Models
+namespace HireHive.Api.Areas.User.Models.BindingModels
 {
     public class UpdateBm
     {

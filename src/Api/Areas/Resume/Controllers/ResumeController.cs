@@ -4,6 +4,7 @@ using HireHive.Api.Areas.Resume.Models.BindingModels;
 using HireHive.Api.Areas.Resume.Models.ViewModels;
 using HireHive.Application.DTOs.Resume;
 using HireHive.Application.Interfaces;
+using HireHive.Domain.Exceptions;
 using HireHive.Domain.Exceptions.Resume;
 using Microsoft.AspNetCore.Mvc;
 
@@ -38,16 +39,16 @@ namespace HireHive.Api.Areas.Resume.Controllers
         }
 
         [HttpGet]
-        [Route("{resumeId}")]
-        public async Task<IActionResult> GetById([FromRoute] Guid resumeId)
+        [Route("{userId}")]
+        public async Task<IActionResult> GetByUserId([FromRoute] Guid userId)
         {
             try
             {
-                var resume = await _resumeService.GetById(resumeId);
+                var resume = await _resumeService.GetByUserId(userId);
 
                 return Ok(_mapper.Map<ResumeVm>(resume));
             }
-            catch
+            catch (ResumeNotFoundException)
             {
                 return NotFound();
             }
@@ -72,9 +73,13 @@ namespace HireHive.Api.Areas.Resume.Controllers
 
                 return Ok(_mapper.Map<UploadResumeVm>(resume));
             }
-            catch
+            catch (ResumeNotFoundException)
             {
                 return NotFound();
+            }
+            catch (BaseException)
+            {
+                throw;
             }
         }
 
@@ -85,22 +90,22 @@ namespace HireHive.Api.Areas.Resume.Controllers
             try
             {
                 await _resumeService.Delete(resumeId);
+
+                return NoContent();
             }
             catch (ResumeNotFoundException)
             {
                 return NotFound();
             }
-            catch (BlobUploadFailedException)
+            catch (BaseException)
             {
                 throw;
             }
-
-            return NoContent();
         }
 
         [HttpPut]
-        [Route("update/{resumeId}")]
-        public async Task<IActionResult> UpdateResume([FromRoute] Guid resumeId, [FromForm] UpdateResumeBm updateResumeBm)
+        [Route("update/{userId}")]
+        public async Task<IActionResult> UpdateResume([FromRoute] Guid userId, [FromForm] UpdateResumeBm updateResumeBm)
         {
             var validationResult = await _updateFileValidator.ValidateAsync(updateResumeBm);
             if (!validationResult.IsValid)
@@ -112,18 +117,18 @@ namespace HireHive.Api.Areas.Resume.Controllers
 
             try
             {
-                await _resumeService.Update(resumeId, _mapper.Map<UpdateResumeDto>(updateResumeBm));
+                await _resumeService.Update(userId, _mapper.Map<UpdateResumeDto>(updateResumeBm));
+
+                return Ok();
             }
             catch (ResumeNotFoundException)
             {
                 return NotFound();
             }
-            catch (BlobUploadFailedException)
+            catch (BaseException)
             {
-                throw new BlobUploadFailedException();
+                throw;
             }
-
-            return Ok();
         }
     }
 }
