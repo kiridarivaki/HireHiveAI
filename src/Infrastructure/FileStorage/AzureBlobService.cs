@@ -1,4 +1,5 @@
-﻿using Azure.Storage.Blobs;
+﻿using Azure;
+using Azure.Storage.Blobs;
 using HireHive.Application.Interfaces;
 using HireHive.Domain.Exceptions.Resume;
 using Microsoft.AspNetCore.Http;
@@ -34,24 +35,31 @@ namespace HireHive.Infrastructure.FileStorage
             {
                 await blobClient.UploadAsync(stream, overwrite: true);
                 _logger.LogInformation($"Blob {blobName} uploaded successfully.");
+
+                return blobName;
             }
-            catch
+            catch (RequestFailedException)
             {
-                _logger.LogError($"Error during upload of {blobName}");
+                _logger.LogError("Failed to upload blob {blobName}.", blobName);
                 throw new BlobUploadFailedException();
             }
-
-            return blobName;
         }
 
         public async Task DeleteBlob(string blobName)
         {
-            BlobContainerClient containerClient = _blobServiceClient.GetBlobContainerClient("resumefiles");
+            try
+            {
+                BlobContainerClient containerClient = _blobServiceClient.GetBlobContainerClient("resumefiles");
 
-            BlobClient blobClient = containerClient.GetBlobClient(blobName);
+                BlobClient blobClient = containerClient.GetBlobClient(blobName);
 
-            if (blobClient.Exists())
-                await blobClient.DeleteAsync();
+                if (await blobClient.ExistsAsync())
+                    await blobClient.DeleteAsync();
+            }
+            catch (RequestFailedException)
+            {
+                _logger.LogError("Failed to delete blob {blobName}.", blobName);
+            }
         }
     }
 }

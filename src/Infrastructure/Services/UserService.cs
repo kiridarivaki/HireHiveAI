@@ -1,5 +1,4 @@
-﻿using Ardalis.GuardClauses;
-using HireHive.Application.DTOs.User;
+﻿using HireHive.Application.DTOs.User;
 using HireHive.Application.Interfaces;
 using HireHive.Domain.Exceptions;
 using HireHive.Domain.Exceptions.User;
@@ -24,24 +23,6 @@ namespace HireHive.Infrastructure.Services
             _mapper = mapper;
         }
 
-        public async Task Delete(Guid id)
-        {
-            try
-            {
-                var user = await _userRepository.GetByIdAsync(id)
-                                ?? throw new UserNotFoundException();
-
-                await _userRepository.DeleteAsync(user);
-                _logger.LogInformation("User with id {id} deleted.", id);
-            }
-            catch (BaseException ex)
-            {
-                _logger.LogError("Error deleting user {id}.", id);
-                throw;
-            }
-
-        }
-
         public async Task<List<UserDto>> GetAll()
         {
             var users = await _userRepository.GetAllAsync();
@@ -51,21 +32,56 @@ namespace HireHive.Infrastructure.Services
 
         public async Task<UserDto> GetById(Guid id)
         {
-            var user = await _userRepository.GetByIdAsync(id)
-                ?? throw new NotFoundException("", $"User with ID {id} was not found.");
+            try
+            {
+                var user = await _userRepository.GetByIdAsync(id)
+                    ?? throw new UserNotFoundException();
 
-            return _mapper.Map<UserDto>(user);
+                return _mapper.Map<UserDto>(user);
+            }
+            catch (UserNotFoundException)
+            {
+                _logger.LogError("User {id} not found.", id);
+                throw;
+            }
         }
 
         public async Task Update(Guid id, UpdateDto userModel)
         {
-            var userToUpdate = await _userRepository.GetByIdAsync(id)
-                ?? throw new NotFoundException("", $"User with ID {id} was not found.");
+            try
+            {
+                var userToUpdate = await _userRepository.GetByIdAsync(id)
+                    ?? throw new UserNotFoundException();
 
-            userToUpdate.UpdateUser(userModel.FirstName, userModel.LastName);
-            await _userRepository.UpdateAsync(userToUpdate);
+                userToUpdate.UpdateUser(userModel.FirstName, userModel.LastName);
 
-            _logger.LogInformation("User with id {id} updated.", id);
+                await _userRepository.UpdateAsync(userToUpdate);
+
+                _logger.LogInformation("User {id} updated.", id);
+            }
+            catch (BaseException)
+            {
+                _logger.LogError("Error updating user {id}.", id);
+                throw;
+            }
+        }
+
+        public async Task Delete(Guid id)
+        {
+            try
+            {
+                var user = await _userRepository.GetByIdAsync(id)
+                                ?? throw new UserNotFoundException();
+
+                await _userRepository.DeleteAsync(user);
+                _logger.LogInformation("User {id} deleted.", id);
+            }
+            catch (BaseException)
+            {
+                _logger.LogError("Error deleting user {id}.", id);
+                throw;
+            }
+
         }
     }
 }

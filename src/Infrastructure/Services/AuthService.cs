@@ -4,6 +4,7 @@ using HireHive.Domain.Entities;
 using HireHive.Domain.Interfaces;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
+using System.Transactions;
 
 namespace HireHive.Infrastructure.Services
 {
@@ -30,26 +31,35 @@ namespace HireHive.Infrastructure.Services
         }
         public async Task Register(RegisterDto registerDto)
         {
-            var user = await _userManager.FindByEmailAsync(registerDto.Email);
-            if (user != null)
+            using (TransactionScope scope = new TransactionScope(TransactionScopeOption.Required,
+                                             new TransactionOptions { IsolationLevel = IsolationLevel.ReadCommitted },
+                                             TransactionScopeAsyncFlowOption.Enabled))
             {
-                throw new ArgumentException("A user with email {Email} already exists.", registerDto.Email);
+                try
+                {
+                    var user = await _userManager.FindByEmailAsync(registerDto.Email);
+                    if (user != null)
+                        throw new ArgumentException("A user with email {Email} already exists.", registerDto.Email);
+
+                    var newUser = new User(registerDto.Email, registerDto.FirstName, registerDto.LastName, registerDto.EmploymentStatus);
+
+                    await _userRepository.AddAsync(newUser, registerDto.Password);
+
+                    scope.Complete();
+                }
+                catch (Exception)
+                {
+                    _logger.LogWarning("Registration failed for email {email}.", registerDto.Email);
+                    throw;
+                }
             }
-
-            //todo use ctor of user instead
-            var newUser = _mapper.Map<User>(registerDto);
-            newUser.UserName = registerDto.Email;
-
-            var id = await _userRepository.AddAsync(newUser, registerDto.Password);
         }
 
         public async Task<bool> ValidateUserCredentialsAsync(string email, string password)
         {
             var user = await _userManager.FindByEmailAsync(email);
             if (user == null)
-            {
                 return false;
-            }
 
             return await _userManager.CheckPasswordAsync(user, password);
         }
@@ -63,8 +73,7 @@ namespace HireHive.Infrastructure.Services
                 throw new UnauthorizedAccessException("Invalid credentials.");
             }
 
-            //AppUser appUser = _mapper.Map<AppUser>(userDto);
-            //await _signInManager.SignInAsync(user, isPersistent: false);
+            await _signInManager.SignInAsync(_mapper.Map<User>(userDto), isPersistent: false);
             // todo: add jwt tokens 
         }
     }
