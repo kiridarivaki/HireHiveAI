@@ -1,5 +1,5 @@
 ﻿using FluentValidation;
-using HireHive.Api.Areas.User.Models;
+using HireHive.Api.Areas.User.Models.BindingModels;
 
 
 namespace HireHive.Api.Areas.User.Validators
