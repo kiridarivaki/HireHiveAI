@@ -88,41 +88,31 @@ namespace HireHive.Infrastructure.Data
 
             if (await _userManager.FindByEmailAsync(adminEmail) == null)
             {
-                User admin = new(adminEmail, "Kyiaki", "Darivaki");
+                var admin = new User(adminEmail, "Kyriaki", "Darivaki", EmploymentStatus.Intern);
 
                 await _userManager.CreateAsync(admin, "Password1!@#");
                 await _userManager.AddToRoleAsync(admin, Roles.Admin.ToString());
             }
             else
             {
-                _logger.LogWarning($"Admin {adminUserName} already exists");
+                _logger.LogInformation($"Admin {adminUserName} already exists");
             }
 
-            // seed candidates
+            // seed candidate
             string userEmail = "user123@gmail.com";
             string userUserName = "user123";
 
             if (await _userManager.FindByEmailAsync(userEmail) == null)
             {
-                User user = new(userEmail, "John", "Doe");
+                var user = new User(userEmail, "John", "Doe", EmploymentStatus.Student);
 
                 await _userManager.CreateAsync(user, "Hello1!@#");
                 await _userManager.AddToRoleAsync(user, Roles.Candidate.ToString());
-
-                Candidate candidate = new()
-                {
-                    UserId = user.Id,
-                    EmploymentStatus = EmploymentStatus.Unemployed
-                };
-
-                _context.Candidate.Add(candidate);
-                await _context.SaveChangesAsync();
             }
             else
             {
-                _logger.LogWarning($"User {userUserName} already exists");
+                _logger.LogInformation($"User {userUserName} already exists");
             }
         }
-        //todo: seed resume
     }
 }
