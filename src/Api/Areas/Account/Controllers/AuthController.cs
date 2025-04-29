@@ -3,7 +3,6 @@ using HireHive.Api.Areas.Account.Models.BindingModels;
 using HireHive.Api.Areas.Common.Controllers;
 using HireHive.Application.DTOs.Account;
 using HireHive.Application.Interfaces;
-using HireHive.Domain.Exceptions;
 using Microsoft.AspNetCore.Mvc;
 
 namespace HireHive.Api.Areas.Account.Controllers;
@@ -31,22 +30,23 @@ public class AuthController : ApiController
     [Route("register")]
     public async Task<IActionResult> Register([FromBody] RegisterBm registerModel)
     {
-        var validationResult = await _registerValidator.ValidateAsync(registerModel);
-        if (!validationResult.IsValid)
-        {
-            var errors = validationResult.Errors.Select(e => new { field = e.PropertyName, message = e.ErrorMessage });
-
-            return BadRequest(new { errors });
-        }
-
         try
         {
+            var validationResult = await _registerValidator.ValidateAsync(registerModel);
+            if (!validationResult.IsValid)
+            {
+                var errors = validationResult.Errors.Select(e => new { field = e.PropertyName, message = e.ErrorMessage });
+
+                return BadRequest(new { errors });
+            }
+
             await _authService.Register(_mapper.Map<RegisterDto>(registerModel));
 
             return Ok();
         }
-        catch (BaseException)
+        catch (Exception e)
         {
+            _logger.LogError("Failed to register user {email}, With exception: {message}", registerModel.Email, e.Message);
             throw;
         }
     }
@@ -56,7 +56,7 @@ public class AuthController : ApiController
     public async Task<IActionResult> Login(LoginBm loginModel)
     {
         await _authService.Login(_mapper.Map<LoginDto>(loginModel));
-        // todo: change return to unauthorized based on service output 
+
         return Ok();
     }
 }

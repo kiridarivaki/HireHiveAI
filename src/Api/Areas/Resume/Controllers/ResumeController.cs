@@ -4,7 +4,6 @@ using HireHive.Api.Areas.Resume.Models.BindingModels;
 using HireHive.Api.Areas.Resume.Models.ViewModels;
 using HireHive.Application.DTOs.Resume;
 using HireHive.Application.Interfaces;
-using HireHive.Domain.Exceptions;
 using HireHive.Domain.Exceptions.Resume;
 using Microsoft.AspNetCore.Mvc;
 
@@ -48,8 +47,9 @@ namespace HireHive.Api.Areas.Resume.Controllers
 
                 return Ok(_mapper.Map<ResumeVm>(resume));
             }
-            catch (ResumeNotFoundException)
+            catch (Exception e)
             {
+                _logger.LogError("Resume for user {userId} not found. With exception: {message}", userId, e.Message);
                 return NotFound();
             }
         }
@@ -58,27 +58,24 @@ namespace HireHive.Api.Areas.Resume.Controllers
         [Route("upload")]
         public async Task<IActionResult> UploadResume([FromForm] UploadResumeBm uploadModel)
         {
-            var validationResult = await _uploadFileValidator.ValidateAsync(uploadModel);
-            if (!validationResult.IsValid)
-            {
-                var errors = validationResult.Errors.Select(e => new { field = e.PropertyName, message = e.ErrorMessage });
-
-                return BadRequest(new { errors });
-            }
-
             try
             {
+                var validationResult = await _uploadFileValidator.ValidateAsync(uploadModel);
+                if (!validationResult.IsValid)
+                {
+                    var errors = validationResult.Errors.Select(e => new { field = e.PropertyName, message = e.ErrorMessage });
+
+                    return BadRequest(new { errors });
+                }
+
                 var user = await _userService.GetById(uploadModel.UserId);
                 var resume = await _resumeService.Upload(_mapper.Map<UploadResumeDto>(uploadModel));
 
                 return Ok(_mapper.Map<UploadResumeVm>(resume));
             }
-            catch (ResumeNotFoundException)
+            catch (Exception e)
             {
-                return NotFound();
-            }
-            catch (BaseException)
-            {
+                _logger.LogError("Failed to upload resume for user {userId}. With exception: {message}", uploadModel.UserId, e.Message);
                 throw;
             }
         }
@@ -93,12 +90,14 @@ namespace HireHive.Api.Areas.Resume.Controllers
 
                 return NoContent();
             }
-            catch (ResumeNotFoundException)
+            catch (ResumeNotFoundException e)
             {
+                _logger.LogError("Resume {resumeId} not found. With exception: {message}", resumeId, e.Message);
                 return NotFound();
             }
-            catch (BaseException)
+            catch (Exception e)
             {
+                _logger.LogError("Failed to delete {resumeId}. With exception: {message}", resumeId, e.Message);
                 throw;
             }
         }
@@ -107,26 +106,28 @@ namespace HireHive.Api.Areas.Resume.Controllers
         [Route("update/{userId}")]
         public async Task<IActionResult> UpdateResume([FromRoute] Guid userId, [FromForm] UpdateResumeBm updateResumeBm)
         {
-            var validationResult = await _updateFileValidator.ValidateAsync(updateResumeBm);
-            if (!validationResult.IsValid)
-            {
-                var errors = validationResult.Errors.Select(e => new { field = e.PropertyName, message = e.ErrorMessage });
-
-                return BadRequest(new { errors });
-            }
-
             try
             {
+                var validationResult = await _updateFileValidator.ValidateAsync(updateResumeBm);
+                if (!validationResult.IsValid)
+                {
+                    var errors = validationResult.Errors.Select(e => new { field = e.PropertyName, message = e.ErrorMessage });
+
+                    return BadRequest(new { errors });
+                }
+
                 await _resumeService.Update(userId, _mapper.Map<UpdateResumeDto>(updateResumeBm));
 
                 return Ok();
             }
-            catch (ResumeNotFoundException)
+            catch (ResumeNotFoundException e)
             {
+                _logger.LogError("Resume for user {userId} not found. With exception: {message}", userId, e.Message);
                 return NotFound();
             }
-            catch (BaseException)
+            catch (Exception e)
             {
+                _logger.LogError("Failed to update resume of user {userId}. With exception: {message}", userId, e.Message);
                 throw;
             }
         }

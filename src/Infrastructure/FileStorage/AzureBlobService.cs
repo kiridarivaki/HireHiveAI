@@ -1,9 +1,6 @@
-﻿using Azure;
-using Azure.Storage.Blobs;
+﻿using Azure.Storage.Blobs;
 using HireHive.Application.Interfaces;
-using HireHive.Domain.Exceptions.Resume;
 using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Logging;
 
 
 namespace HireHive.Infrastructure.FileStorage
@@ -11,14 +8,12 @@ namespace HireHive.Infrastructure.FileStorage
     public class AzureBlobService : IAzureBlobService
     {
         private readonly BlobServiceClient _blobServiceClient;
-        private readonly ILogger<IAzureBlobService> _logger;
-        public AzureBlobService(BlobServiceClient blobServiceClient, ILogger<IAzureBlobService> logger)
+        public AzureBlobService(BlobServiceClient blobServiceClient)
         {
             _blobServiceClient = blobServiceClient;
-            _logger = logger;
         }
 
-        public async Task<string> UploadBlob(IFormFile file)
+        public async Task<string> Upload(IFormFile file)
         {
             var containerClient = _blobServiceClient.GetBlobContainerClient("resumefiles");
             await containerClient.CreateIfNotExistsAsync();
@@ -31,35 +26,21 @@ namespace HireHive.Infrastructure.FileStorage
 
             using var stream = file.OpenReadStream();
 
-            try
-            {
-                await blobClient.UploadAsync(stream, overwrite: true);
-                _logger.LogInformation($"Blob {blobName} uploaded successfully.");
+            var response = await blobClient.UploadAsync(stream, overwrite: true);
 
-                return blobName;
-            }
-            catch (RequestFailedException)
-            {
-                _logger.LogError("Failed to upload blob {blobName}.", blobName);
-                throw new BlobUploadFailedException();
-            }
+            if (response.GetRawResponse().Status != 201)
+                throw new Exception();
+
+            return blobName;
         }
 
-        public async Task DeleteBlob(string blobName)
+        public async Task Delete(string blobName)
         {
-            try
-            {
-                BlobContainerClient containerClient = _blobServiceClient.GetBlobContainerClient("resumefiles");
+            BlobContainerClient containerClient = _blobServiceClient.GetBlobContainerClient("resumefiles");
 
-                BlobClient blobClient = containerClient.GetBlobClient(blobName);
+            BlobClient blobClient = containerClient.GetBlobClient(blobName);
 
-                if (await blobClient.ExistsAsync())
-                    await blobClient.DeleteAsync();
-            }
-            catch (RequestFailedException)
-            {
-                _logger.LogError("Failed to delete blob {blobName}.", blobName);
-            }
+            await blobClient.DeleteIfExistsAsync();
         }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using HireHive.Application.DTOs.Account;
 using HireHive.Application.Interfaces;
 using HireHive.Domain.Entities;
+using HireHive.Domain.Exceptions;
 using HireHive.Domain.Interfaces;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
@@ -47,7 +48,7 @@ namespace HireHive.Infrastructure.Services
 
                     scope.Complete();
                 }
-                catch (Exception)
+                catch (BaseException)
                 {
                     _logger.LogWarning("Registration failed for email {email}.", registerDto.Email);
                     throw;

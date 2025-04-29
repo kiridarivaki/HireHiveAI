@@ -4,7 +4,6 @@ using HireHive.Api.Areas.User.Models.BindingModels;
 using HireHive.Api.Areas.User.Models.ViewModels;
 using HireHive.Application.DTOs.User;
 using HireHive.Application.Interfaces;
-using HireHive.Domain.Exceptions;
 using HireHive.Domain.Exceptions.User;
 using Microsoft.AspNetCore.Mvc;
 
@@ -37,7 +36,7 @@ public class UserController : ApiController
     {
         var users = await _userService.GetAll();
 
-        return Ok(_mapper.Map<UserVm>(users));
+        return Ok(_mapper.Map<List<UserVm>>(users));
     }
 
     [HttpGet]
@@ -50,8 +49,9 @@ public class UserController : ApiController
 
             return Ok(_mapper.Map<UserVm>(user));
         }
-        catch (UserNotFoundException)
+        catch (UserNotFoundException e)
         {
+            _logger.LogError("User {id} not found. With exception: {message}", id, e.Message);
             return NotFound();
         }
     }
@@ -60,26 +60,28 @@ public class UserController : ApiController
     [Route("{id}")]
     public async Task<IActionResult> Update([FromRoute] Guid id, [FromBody] UpdateBm updateUserBm)
     {
-        var validationResult = await _updateValidator.ValidateAsync(updateUserBm);
-        if (!validationResult.IsValid)
-        {
-            var errors = validationResult.Errors.Select(e => new { field = e.PropertyName, message = e.ErrorMessage });
-
-            return BadRequest(new { errors });
-        }
-
         try
         {
+            var validationResult = await _updateValidator.ValidateAsync(updateUserBm);
+            if (!validationResult.IsValid)
+            {
+                var errors = validationResult.Errors.Select(e => new { field = e.PropertyName, message = e.ErrorMessage });
+
+                return BadRequest(new { errors });
+            }
+
             await _userService.Update(id, _mapper.Map<UpdateDto>(updateUserBm));
 
             return Ok();
         }
-        catch (UserNotFoundException)
+        catch (UserNotFoundException e)
         {
+            _logger.LogError("User {id} not found. With exception: {message}", id, e.Message);
             return NotFound();
         }
-        catch (BaseException)
+        catch (Exception e)
         {
+            _logger.LogError("Failed to update user {id}. With exception: {message}", id, e.Message);
             throw;
         }
     }
@@ -94,12 +96,14 @@ public class UserController : ApiController
 
             return NoContent();
         }
-        catch (UserNotFoundException)
+        catch (UserNotFoundException e)
         {
+            _logger.LogError("User {id} not found. With exception: {message}", id, e.Message);
             return NotFound();
         }
-        catch (BaseException)
+        catch (Exception e)
         {
+            _logger.LogError("Failed to delete user {id}. With exception: {message}", id, e.Message);
             throw;
         }
     }

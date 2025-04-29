@@ -5,6 +5,7 @@ using HireHive.Domain.Exceptions;
 using HireHive.Domain.Exceptions.Resume;
 using HireHive.Domain.Interfaces;
 using Microsoft.Extensions.Logging;
+using System.Transactions;
 
 namespace HireHive.Infrastructure.Services
 {
@@ -35,30 +36,37 @@ namespace HireHive.Infrastructure.Services
 
                 return _mapper.Map<ResumeDto>(resume);
             }
-            catch (ResumeNotFoundException)
+            catch (BaseException e)
             {
-                _logger.LogError("Resume {resumeId} not found.", userId);
+                _logger.LogWarning("Resume {resumeId} not found. With exception {message}", userId, e.Message);
                 throw;
             }
         }
 
         public async Task<UploadResumeDto> Upload(UploadResumeDto uploadDto)
         {
-            try
+            using (TransactionScope scope = new TransactionScope(TransactionScopeOption.Required,
+                                             new TransactionOptions { IsolationLevel = IsolationLevel.ReadCommitted },
+                                             TransactionScopeAsyncFlowOption.Enabled))
             {
-                var file = uploadDto.File;
-                var blobName = await _azureBlobService.UploadBlob(file);
+                try
+                {
+                    var file = uploadDto.File;
+                    var blobName = await _azureBlobService.Upload(file);
 
-                var resume = new Resume(file.FileName, blobName, file.ContentType, file.Length, uploadDto.UserId);
+                    var resume = new Resume(file.FileName, blobName, file.ContentType, file.Length, uploadDto.UserId);
 
-                await _resumeRepository.AddAsync(resume);
+                    await _resumeRepository.AddAsync(resume);
+                    scope.Complete();
 
-                return _mapper.Map<UploadResumeDto>(resume);
-            }
-            catch (BaseException)
-            {
-                _logger.LogError("Resume upload failed for customer {userId}", uploadDto.UserId);
-                throw;
+                    return _mapper.Map<UploadResumeDto>(resume);
+
+                }
+                catch (BaseException e)
+                {
+                    _logger.LogError("Failed to upload resume for customer {userId}. With exception: {message}", uploadDto.UserId, e.Message);
+                    throw;
+                }
             }
         }
 
@@ -69,24 +77,20 @@ namespace HireHive.Infrastructure.Services
                 var resume = await _resumeRepository.GetByUserIdAsync(userId)
                     ?? throw new ResumeNotFoundException();
 
-                await _azureBlobService.DeleteBlob(resume.BlobName!);
+                await _azureBlobService.Delete(resume.BlobName!);
 
                 var file = updateResumeDto.File;
-                var blobName = await _azureBlobService.UploadBlob(file)
-                    ?? throw new BlobUploadFailedException();
+                var blobName = await _azureBlobService.Upload(file);
+
 
                 resume.Update(file.FileName, blobName, file.ContentType, file.Length);
 
                 await _resumeRepository.UpdateAsync(resume);
                 _logger.LogInformation("Resume with id {resumeId} updated.", resume.Id);
             }
-            catch (ResumeNotFoundException)
+            catch (BaseException e)
             {
-                _logger.LogError("Resume for user {userId} not found.", userId);
-                throw;
-            }
-            catch (BlobUploadFailedException)
-            {
+                _logger.LogWarning("Failed to update resume for user {userId}. With exception: {message}", userId, e.Message);
                 throw;
             }
         }
@@ -98,18 +102,14 @@ namespace HireHive.Infrastructure.Services
                 var resume = await _resumeRepository.GetByIdAsync(resumeId)
                     ?? throw new ResumeNotFoundException();
 
-                await _azureBlobService.DeleteBlob(resume.BlobName!);
+                await _azureBlobService.Delete(resume.BlobName!);
 
                 _resumeRepository.Delete(resume);
                 _logger.LogInformation("Resume with id {resumeId} deleted.", resumeId);
             }
-            catch (ResumeNotFoundException)
+            catch (BaseException e)
             {
-                _logger.LogError("Resume {resumeId} not found.", resumeId);
-                throw;
-            }
-            catch (BlobUploadFailedException)
-            {
+                _logger.LogWarning("Failed to delete resume {resumeId}. With exception: {message}", resumeId, e.Message);
                 throw;
             }
         }
