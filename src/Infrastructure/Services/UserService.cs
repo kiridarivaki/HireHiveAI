@@ -39,9 +39,9 @@ namespace HireHive.Infrastructure.Services
 
                 return _mapper.Map<UserDto>(user);
             }
-            catch (UserNotFoundException)
+            catch (BaseException)
             {
-                _logger.LogError("User {id} not found.", id);
+                _logger.LogWarning("User {id} not found.", id);
                 throw;
             }
         }
@@ -61,7 +61,7 @@ namespace HireHive.Infrastructure.Services
             }
             catch (BaseException)
             {
-                _logger.LogError("Error updating user {id}.", id);
+                _logger.LogWarning("Error updating user {id}.", id);
                 throw;
             }
         }
@@ -78,7 +78,7 @@ namespace HireHive.Infrastructure.Services
             }
             catch (BaseException)
             {
-                _logger.LogError("Error deleting user {id}.", id);
+                _logger.LogWarning("Error deleting user {id}.", id);
                 throw;
             }
 

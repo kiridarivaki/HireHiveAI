@@ -1,13 +1,11 @@
 ﻿using Azure.Storage.Blobs;
 using HireHive.Application.Interfaces;
 using HireHive.DependencyInjection;
-using HireHive.Domain.Entities;
 using HireHive.Domain.Interfaces;
 using HireHive.Infrastructure.Data;
 using HireHive.Infrastructure.Data.Repositories;
 using HireHive.Infrastructure.FileStorage;
 using HireHive.Infrastructure.Services;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -23,15 +21,6 @@ namespace HireHive.Infrastructure
 
             services.AddDbContext<AppDbContext>(options =>
                 options.UseNpgsql(connectionString));
-
-            services.AddScoped<Initialiser>();
-
-            services.AddIdentity<User, IdentityRole<Guid>>(options =>
-            {
-                options.SignIn.RequireConfirmedAccount = false;
-            })
-            .AddEntityFrameworkStores<AppDbContext>()
-            .AddDefaultTokenProviders();
 
             services.AddAutoMapper(Assembly.GetExecutingAssembly());
 
