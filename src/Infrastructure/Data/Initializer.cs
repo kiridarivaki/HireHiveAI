@@ -1,118 +1,89 @@
 ﻿using Domain.Enums;
 using HireHive.Domain.Entities;
-using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Configuration;
+using Npgsql;
+using System.Reflection;
 
 namespace HireHive.Infrastructure.Data
 {
-    public static class DatabaseExtensions
+    public static class Initializer
     {
-        public static async Task AddInitializerAsync(this WebApplication app)
+        public static async Task Seed(AppDbContext context, UserManager<User> userManager, IConfiguration configuration)
         {
-            using var scope = app.Services.CreateScope();
+            if (await context.Roles.AnyAsync()) return;
 
-            var initialiser = scope.ServiceProvider.GetRequiredService<Initialiser>();
+            var connectionString = configuration["HireHivePostgresConnectionString"];
+            var dataSource = NpgsqlDataSource.Create(connectionString!);
+            var postgresConnection = await dataSource.OpenConnectionAsync();
 
-            await initialiser.InitialiseDatabaseAsync();
-        }
+            await using var transaction = await postgresConnection.BeginTransactionAsync();
 
-        public static async Task AddSeederAsync(this DbContextOptionsBuilder builder, IServiceProvider serviceProvider)
-        {
-            var initialiser = serviceProvider.GetRequiredService<Initialiser>();
-
-            await initialiser.TrySeedDatabaseAsync();
-        }
-    }
-
-    public class Initialiser
-    {
-        protected readonly ILogger<Initialiser> _logger;
-        protected readonly AppDbContext _context;
-        protected readonly UserManager<User> _userManager;
-        protected readonly RoleManager<IdentityRole<Guid>> _roleManager;
-        public Initialiser(
-            ILogger<Initialiser> logger,
-            AppDbContext context,
-            UserManager<User> userManager,
-            RoleManager<IdentityRole<Guid>> roleManager)
-        {
-            _logger = logger;
-            _context = context;
-            _userManager = userManager;
-            _roleManager = roleManager;
-        }
-
-        public async Task InitialiseDatabaseAsync()
-        {
             try
             {
-                await _context.Database.MigrateAsync();
+                var script = await LoadScript("InsertRoles");
+
+                await using var command = new NpgsqlCommand(script, postgresConnection, transaction);
+
+                string[] roles = Enum.GetNames(typeof(Roles));
+                command.Parameters.AddWithValue("roles", roles);
+                await command.ExecuteNonQueryAsync();
+
+                await transaction.CommitAsync();
+
+                await SeedAdmin(userManager, context);
             }
-            catch (Exception e)
+            catch (NpgsqlException)
             {
-                _logger.LogError(e, "An error occured while initialising the database");
+                await transaction.RollbackAsync();
                 throw;
             }
         }
 
-        public async Task TrySeedDatabaseAsync()
+        private static async Task<string> LoadScript(string scriptName)
         {
-            try
-            {
-                await SeedDatabaseAsync();
-            }
-            catch (Exception e)
-            {
-                _logger.LogError(e, "An error occured while seeding the database");
-                throw;
-            }
+            const string assemblyName = "HireHive.Infrastructure";
+            var assembly = Assembly.Load(assemblyName);
+            var resourceName = assemblyName + $".Data.Scripts.{scriptName}.sql";
+
+            await using var stream = assembly.GetManifestResourceStream(resourceName);
+            using var reader = new StreamReader(stream!);
+
+            return await reader.ReadToEndAsync();
         }
 
-        public async Task SeedDatabaseAsync()
+        public static async Task SeedAdmin(UserManager<User> userManager, AppDbContext context)
         {
-            // seed roles
-            foreach (var role in Enum.GetNames(typeof(Roles)))
-            {
-                if (!await _roleManager.RoleExistsAsync(role))
-                {
-                    await _roleManager.CreateAsync(new IdentityRole<Guid>(role));
-                }
-            }
-
             // seed admin
             string adminEmail = "t8210030@aueb.gr";
-            string adminUserName = "admin";
 
-            if (await _userManager.FindByEmailAsync(adminEmail) == null)
+            if (await userManager.FindByEmailAsync(adminEmail) == null)
             {
                 var admin = new User(adminEmail, "Kyriaki", "Darivaki", EmploymentStatus.Intern);
 
-                await _userManager.CreateAsync(admin, "Password1!@#");
-                await _userManager.AddToRoleAsync(admin, Roles.Admin.ToString());
+                var result = await userManager.CreateAsync(admin, "Password1!@#");
+                if (!result.Succeeded)
+                    throw new InvalidOperationException($"Failed to create default admin user: {string.Join(", ", result.Errors.Select(e => e.Description))}");
+
+                await userManager.AddToRoleAsync(admin, Roles.Admin.ToString());
             }
-            else
-            {
-                _logger.LogInformation($"Admin {adminUserName} already exists");
-            }
+            await context.SaveChangesAsync();
 
             // seed candidate
             string userEmail = "user123@gmail.com";
-            string userUserName = "user123";
 
-            if (await _userManager.FindByEmailAsync(userEmail) == null)
+            if (await userManager.FindByEmailAsync(userEmail) == null)
             {
                 var user = new User(userEmail, "John", "Doe", EmploymentStatus.Student);
 
-                await _userManager.CreateAsync(user, "Hello1!@#");
-                await _userManager.AddToRoleAsync(user, Roles.Candidate.ToString());
+                var result = await userManager.CreateAsync(user, "Hello1!@#");
+                if (!result.Succeeded)
+                    throw new InvalidOperationException($"Failed to create default user: {string.Join(", ", result.Errors.Select(e => e.Description))}");
+
+                await userManager.AddToRoleAsync(user, Roles.Candidate.ToString());
             }
-            else
-            {
-                _logger.LogInformation($"User {userUserName} already exists");
-            }
+            await context.SaveChangesAsync();
         }
     }
 }
