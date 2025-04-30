@@ -2,9 +2,12 @@
 using HireHive.Application.Interfaces;
 using HireHive.Domain.Entities;
 using HireHive.Domain.Exceptions;
+using HireHive.Domain.Exceptions.User;
 using HireHive.Domain.Interfaces;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Logging;
+using System.Text;
 using System.Transactions;
 
 namespace HireHive.Infrastructure.Services
@@ -14,6 +17,8 @@ namespace HireHive.Infrastructure.Services
         private readonly IUserRepository _userRepository;
         private readonly UserManager<User> _userManager;
         private readonly SignInManager<User> _signInManager;
+        private readonly TokenService _tokenService;
+        private readonly IEmailService _emailService;
         private readonly IMapper _mapper;
         private readonly ILogger<AuthService> _logger;
 
@@ -21,12 +26,16 @@ namespace HireHive.Infrastructure.Services
             IUserRepository userRepository,
             UserManager<User> userManager,
             SignInManager<User> signInManager,
+            TokenService tokenService,
+            IEmailService emailService,
             IMapper mapper,
             ILogger<AuthService> logger)
         {
             _userRepository = userRepository;
             _userManager = userManager;
             _signInManager = signInManager;
+            _tokenService = tokenService;
+            _emailService = emailService;
             _mapper = mapper;
             _logger = logger;
         }
@@ -46,6 +55,11 @@ namespace HireHive.Infrastructure.Services
 
                     await _userRepository.AddAsync(newUser, registerDto.Password);
 
+                    var token = await _userManager.GenerateEmailConfirmationTokenAsync(newUser);
+                    var encodedToken = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(token));
+
+                    //await _emailService.SendEmailConfirmationAsync(newUser.Email!, newUser.Id, encodedToken);
+
                     scope.Complete();
                 }
                 catch (BaseException)
@@ -56,7 +70,7 @@ namespace HireHive.Infrastructure.Services
             }
         }
 
-        public async Task<bool> ValidateUserCredentialsAsync(string email, string password)
+        public async Task<bool> ValidateUserCredentials(string email, string password)
         {
             var user = await _userManager.FindByEmailAsync(email);
             if (user == null)
@@ -65,17 +79,54 @@ namespace HireHive.Infrastructure.Services
             return await _userManager.CheckPasswordAsync(user, password);
         }
 
-        public async Task Login(LoginDto userDto)
+        public async Task ConfirmEmail(string email, string token)
         {
-            bool isValid = await ValidateUserCredentialsAsync(userDto.Email, userDto.Password);
-            if (!isValid)
+            try
             {
-                _logger.LogWarning("Login failed for user {Email}.", userDto.Email);
-                throw new UnauthorizedAccessException("Invalid credentials.");
-            }
+                var user = await _userManager.FindByEmailAsync(email)
+                    ?? throw new UserNotFoundException();
 
-            await _signInManager.SignInAsync(_mapper.Map<User>(userDto), isPersistent: false);
-            // todo: add jwt tokens 
+                var decodedToken = Uri.UnescapeDataString(token);
+                var result = await _userManager.ConfirmEmailAsync(user, decodedToken);
+
+                if (!result.Succeeded)
+                    throw new Exception("Email confirmation failed.");
+
+                _logger.LogInformation("Confirmed email for user {email}.", email);
+            }
+            catch (BaseException e)
+            {
+                _logger.LogWarning("Email confirmation failed for user {email}. With exception: {message}", email, e.Message);
+                throw;
+            }
+        }
+
+        public async Task<LoginDto> Login(LoginDto loginDto)
+        {
+            try
+            {
+                var user = await _userManager.FindByEmailAsync(loginDto.Email)
+                    ?? throw new UserNotFoundException();
+
+                if (!await _userManager.IsEmailConfirmedAsync(_mapper.Map<User>(loginDto)))
+                    throw new UnauthorizedAccessException("Email addresss is not confirmed.");
+
+                bool isValid = await ValidateUserCredentials(loginDto.Email, loginDto.Password);
+                if (!isValid)
+                    throw new UnauthorizedAccessException("Invalid credentials.");
+
+                var token = _tokenService.GenerateToken(user.Id, user.Email!);
+                _logger.LogInformation("User {email} successfully logged in.", loginDto.Email);
+
+                loginDto.Token = token;
+
+                return loginDto;
+            }
+            catch (BaseException e)
+            {
+                _logger.LogWarning("Login failed for user {email}. With exception: {message}", loginDto.Email, e.Message);
+                throw;
+            }
         }
     }
 }
