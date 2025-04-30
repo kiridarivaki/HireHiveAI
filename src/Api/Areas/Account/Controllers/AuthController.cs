@@ -1,5 +1,6 @@
 ﻿using FluentValidation;
 using HireHive.Api.Areas.Account.Models.BindingModels;
+using HireHive.Api.Areas.Account.Models.ViewModels;
 using HireHive.Api.Areas.Common.Controllers;
 using HireHive.Application.DTOs.Account;
 using HireHive.Application.Interfaces;
@@ -42,6 +43,8 @@ public class AuthController : ApiController
 
             await _authService.Register(_mapper.Map<RegisterDto>(registerModel));
 
+            _logger.LogInformation("User with email {email} registered.", registerModel.Email);
+
             return Ok();
         }
         catch (Exception e)
@@ -53,10 +56,40 @@ public class AuthController : ApiController
 
     [HttpPost]
     [Route("login")]
-    public async Task<IActionResult> Login(LoginBm loginModel)
+    public IActionResult Login(LoginBm loginModel)
     {
-        await _authService.Login(_mapper.Map<LoginDto>(loginModel));
+        try
+        {
+            var authenticatedUser = _authService.Login(_mapper.Map<LoginDto>(loginModel));
 
-        return Ok();
+            _logger.LogInformation("User with email {email} logged in.", loginModel.Email);
+
+            return Ok(_mapper.Map<LoginVm>(authenticatedUser));
+        }
+        catch (Exception e)
+        {
+            _logger.LogError("Failed to login user {email}, With exception: {message}", loginModel.Email, e.Message);
+
+            return Unauthorized();
+        }
+    }
+
+    [HttpGet]
+    [Route("/confirm-email")]
+    public async Task<IActionResult> ConfirmEmail([FromBody] ConfirmEmailBm confirmEmailModel)
+    {
+        try
+        {
+            await _authService.ConfirmEmail(confirmEmailModel.Email, confirmEmailModel.ConfirmationCode);
+
+            _logger.LogInformation("Email {email} confirmed.", confirmEmailModel.Email);
+
+            return Ok();
+        }
+        catch (Exception e)
+        {
+            _logger.LogError("Failed to confirm email {email}. With exception: {message}", confirmEmailModel.Email, e.Message);
+            throw;
+        }
     }
 }

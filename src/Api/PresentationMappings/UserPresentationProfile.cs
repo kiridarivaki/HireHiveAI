@@ -1,4 +1,5 @@
 ﻿using HireHive.Api.Areas.Account.Models.BindingModels;
+using HireHive.Api.Areas.Account.Models.ViewModels;
 using HireHive.Api.Areas.User.Models.BindingModels;
 using HireHive.Api.Areas.User.Models.ViewModels;
 using HireHive.Application.DTOs.Account;
@@ -13,6 +14,7 @@ namespace HireHive.Api.PresentationMappings
             CreateMap<RegisterBm, RegisterDto>().ReverseMap();
             CreateMap<UpdateBm, UpdateDto>().ReverseMap();
             CreateMap<LoginBm, LoginDto>().ReverseMap();
+            CreateMap<LoginVm, UserDto>().ReverseMap();
             CreateMap<UserVm, UserDto>().ReverseMap();
         }
     }

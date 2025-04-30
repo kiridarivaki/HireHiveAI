@@ -10,9 +10,12 @@ namespace HireHive.Infrastructure.Startup
     {
         public static void ConfigureIdentity(this IServiceCollection services, IConfiguration configuration)
         {
-            services.AddIdentity<User, IdentityRole<Guid>>()
-                    .AddEntityFrameworkStores<AppDbContext>()
-                    .AddDefaultTokenProviders();
+            services.AddIdentity<User, IdentityRole<Guid>>(options =>
+            {
+                options.SignIn.RequireConfirmedEmail = true;
+            })
+            .AddEntityFrameworkStores<AppDbContext>()
+            .AddDefaultTokenProviders();
 
             services.AddOptions<IdentityOptions>().Configure(x =>
             {
