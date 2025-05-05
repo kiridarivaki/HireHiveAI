@@ -1,6 +1,5 @@
 ﻿using FluentValidation;
 using HireHive.Api.Areas.Account.Models.BindingModels;
-using HireHive.Api.Areas.Account.Models.ViewModels;
 using HireHive.Api.Areas.Common.Controllers;
 using HireHive.Application.DTOs.Account;
 using HireHive.Application.Interfaces;
@@ -56,15 +55,15 @@ public class AuthController : ApiController
 
     [HttpPost]
     [Route("login")]
-    public IActionResult Login(LoginBm loginModel)
+    public async Task<IActionResult> Login(LoginBm loginModel)
     {
         try
         {
-            var authenticatedUser = _authService.Login(_mapper.Map<LoginDto>(loginModel));
+            var authenticatedUser = await _authService.Login(_mapper.Map<LoginDto>(loginModel));
 
             _logger.LogInformation("User with email {email} logged in.", loginModel.Email);
 
-            return Ok(_mapper.Map<LoginVm>(authenticatedUser));
+            return Ok();
         }
         catch (Exception e)
         {
@@ -74,13 +73,13 @@ public class AuthController : ApiController
         }
     }
 
-    [HttpGet]
+    [HttpPost]
     [Route("/confirm-email")]
     public async Task<IActionResult> ConfirmEmail([FromBody] ConfirmEmailBm confirmEmailModel)
     {
         try
         {
-            await _authService.ConfirmEmail(confirmEmailModel.Email, confirmEmailModel.ConfirmationCode);
+            await _authService.ConfirmEmail(confirmEmailModel.Email, confirmEmailModel.ConfirmationToken);
 
             _logger.LogInformation("Email {email} confirmed.", confirmEmailModel.Email);
 

@@ -7,30 +7,26 @@ namespace HireHive.Infrastructure.Services
 {
     public class EmailService : IEmailService
     {
-        private readonly string _apiKey;
-        private readonly string _fromEmail;
-        private readonly string _name;
+        private readonly EmailSettings _emailSettings;
         private readonly ILogger<EmailService> _logger;
-        public EmailService(string apiKey, string fromEmail, string name, ILogger<EmailService> logger)
+        public EmailService(EmailSettings emailSettings, ILogger<EmailService> logger)
         {
-            _apiKey = apiKey;
-            _fromEmail = fromEmail;
-            _name = name;
+            _emailSettings = emailSettings;
             _logger = logger;
         }
 
-        public async Task SendEmailAsync(string toEmail, string subject, string message)
+        public async Task SendEmailAsync(string toEmail, string subject, string plainTextMessage, string htmlMessage)
         {
             try
             {
-                var client = new SendGridClient(_apiKey);
+                var client = new SendGridClient(_emailSettings.ApiKey);
 
                 var msg = new SendGridMessage()
                 {
-                    From = new EmailAddress(_fromEmail, _name),
+                    From = new EmailAddress(_emailSettings.FromEmail, _emailSettings.Name),
                     Subject = subject,
-                    PlainTextContent = message,
-                    HtmlContent = message
+                    PlainTextContent = plainTextMessage,
+                    HtmlContent = htmlMessage
                 };
 
                 msg.AddTo(new EmailAddress(toEmail));
@@ -52,12 +48,14 @@ namespace HireHive.Infrastructure.Services
 
         public async Task SendEmailConfirmationAsync(string toEmail, Guid userId, string token)
         {
+            //todo: update confirmation url with correct fe route
             var confirmationUrl = $"https://localhost:4700/confirm-email?userId={Uri.EscapeDataString(userId.ToString())}&token={Uri.EscapeDataString(token)}";
 
             var subject = "HireHive: Email address confirmation";
-            var message = $"Click the link below to confirm your email address:<br /><a href=\"{confirmationUrl}\">Confirm Email</a>";
+            var plainTextMessage = "Click the link below to confirm your email address:";
+            var htmlMessage = $"<br /><a href=\"{confirmationUrl}\">Confirm Email</a>";
 
-            await SendEmailAsync(toEmail, subject, message);
+            await SendEmailAsync(toEmail, subject, plainTextMessage, htmlMessage);
         }
 
         public Task SendPasswordResetEmailAsync(string toEmail, string subject, string message)

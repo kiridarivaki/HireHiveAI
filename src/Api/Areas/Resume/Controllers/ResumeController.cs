@@ -9,8 +9,6 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace HireHive.Api.Areas.Resume.Controllers
 {
-    [ApiController]
-    [Route("api/[controller]")]
     public class ResumeController : ApiController
     {
         private readonly IResumeService _resumeService;
