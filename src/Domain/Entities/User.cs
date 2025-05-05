@@ -5,8 +5,8 @@ namespace HireHive.Domain.Entities
 {
     public class User : IdentityUser<Guid>
     {
-        public string FirstName { get; set; }
-        public string LastName { get; set; }
+        public string FirstName { get; set; } = null!;
+        public string LastName { get; set; } = null!;
         public EmploymentStatus EmploymentStatus { get; set; }
 
         #region references
@@ -21,6 +21,7 @@ namespace HireHive.Domain.Entities
             LastName = lastName;
             EmploymentStatus = employmentStatus;
         }
+
         public void UpdateUser(string? firstName, string? lastName)
         {
             FirstName = firstName ?? FirstName;

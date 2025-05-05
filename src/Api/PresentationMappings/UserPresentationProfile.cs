@@ -11,11 +11,11 @@ namespace HireHive.Api.PresentationMappings
     {
         public UserPresentationProfile()
         {
+            CreateMap<UserVm, UserDto>().ReverseMap();
             CreateMap<RegisterBm, RegisterDto>().ReverseMap();
             CreateMap<UpdateBm, UpdateDto>().ReverseMap();
             CreateMap<LoginBm, LoginDto>().ReverseMap();
-            CreateMap<LoginVm, UserDto>().ReverseMap();
-            CreateMap<UserVm, UserDto>().ReverseMap();
+            CreateMap<LoginVm, LoginDto>().ReverseMap();
         }
     }
 }

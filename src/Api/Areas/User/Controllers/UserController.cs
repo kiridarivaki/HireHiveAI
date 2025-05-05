@@ -9,7 +9,6 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace HireHive.Api.Areas.User.Controllers;
 
-
 public class UserController : ApiController
 {
     private readonly IUserService _userService;

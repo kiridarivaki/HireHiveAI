@@ -17,7 +17,6 @@ namespace HireHive.Infrastructure.Services
         private readonly IUserRepository _userRepository;
         private readonly UserManager<User> _userManager;
         private readonly SignInManager<User> _signInManager;
-        private readonly TokenService _tokenService;
         private readonly IEmailService _emailService;
         private readonly IMapper _mapper;
         private readonly ILogger<AuthService> _logger;
@@ -26,7 +25,6 @@ namespace HireHive.Infrastructure.Services
             IUserRepository userRepository,
             UserManager<User> userManager,
             SignInManager<User> signInManager,
-            TokenService tokenService,
             IEmailService emailService,
             IMapper mapper,
             ILogger<AuthService> logger)
@@ -34,7 +32,6 @@ namespace HireHive.Infrastructure.Services
             _userRepository = userRepository;
             _userManager = userManager;
             _signInManager = signInManager;
-            _tokenService = tokenService;
             _emailService = emailService;
             _mapper = mapper;
             _logger = logger;
@@ -58,7 +55,7 @@ namespace HireHive.Infrastructure.Services
                     var token = await _userManager.GenerateEmailConfirmationTokenAsync(newUser);
                     var encodedToken = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(token));
 
-                    //await _emailService.SendEmailConfirmationAsync(newUser.Email!, newUser.Id, encodedToken);
+                    await _emailService.SendEmailConfirmationAsync(newUser.Email!, newUser.Id, encodedToken);
 
                     scope.Complete();
                 }
@@ -68,15 +65,6 @@ namespace HireHive.Infrastructure.Services
                     throw;
                 }
             }
-        }
-
-        public async Task<bool> ValidateUserCredentials(string email, string password)
-        {
-            var user = await _userManager.FindByEmailAsync(email);
-            if (user == null)
-                return false;
-
-            return await _userManager.CheckPasswordAsync(user, password);
         }
 
         public async Task ConfirmEmail(string email, string token)
@@ -108,17 +96,15 @@ namespace HireHive.Infrastructure.Services
                 var user = await _userManager.FindByEmailAsync(loginDto.Email)
                     ?? throw new UserNotFoundException();
 
-                if (!await _userManager.IsEmailConfirmedAsync(_mapper.Map<User>(loginDto)))
+                var emailConfirmed = await _userManager.IsEmailConfirmedAsync(user);
+                if (!emailConfirmed)
                     throw new UnauthorizedAccessException("Email addresss is not confirmed.");
 
-                bool isValid = await ValidateUserCredentials(loginDto.Email, loginDto.Password);
-                if (!isValid)
+                var result = await _signInManager.PasswordSignInAsync(user, loginDto.Password, false, false);
+                if (!result.Succeeded)
                     throw new UnauthorizedAccessException("Invalid credentials.");
 
-                var token = _tokenService.GenerateToken(user.Id, user.Email!);
                 _logger.LogInformation("User {email} successfully logged in.", loginDto.Email);
-
-                loginDto.Token = token;
 
                 return loginDto;
             }
