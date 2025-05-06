@@ -1,16 +1,22 @@
-﻿using Microsoft.IdentityModel.Tokens;
+﻿using HireHive.Application.Interfaces;
+using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 
 namespace HireHive.Infrastructure.Services
 {
-    public class TokenService
+    public class TokenService : ITokenService
     {
+        private readonly string _jwtKey;
+        public TokenService(string jwtKey)
+        {
+            _jwtKey = jwtKey;
+        }
         public string GenerateToken(Guid userId, string email)
         {
             var tokenHandler = new JwtSecurityTokenHandler();
-            var key = Encoding.ASCII.GetBytes("key");
+            var key = Encoding.ASCII.GetBytes(_jwtKey);
 
             var claims = new List<Claim>
             {

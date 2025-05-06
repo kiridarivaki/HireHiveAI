@@ -3,14 +3,18 @@ using HireHive.Application.Interfaces;
 using Microsoft.AspNetCore.Http;
 
 
-namespace HireHive.Infrastructure.FileStorage
+namespace HireHive.Infrastructure.Services
 {
     public class AzureBlobService : IAzureBlobService
     {
         private readonly BlobServiceClient _blobServiceClient;
-        public AzureBlobService(BlobServiceClient blobServiceClient)
+        private readonly DocumentIntelligenceService _docService;
+        private readonly string _blobSasToken;
+        public AzureBlobService(BlobServiceClient blobServiceClient, DocumentIntelligenceService docService, string blobSasToken)
         {
             _blobServiceClient = blobServiceClient;
+            _blobSasToken = blobSasToken;
+            _docService = docService;
         }
 
         public async Task<string> Upload(IFormFile file)
@@ -30,6 +34,9 @@ namespace HireHive.Infrastructure.FileStorage
 
             if (response.GetRawResponse().Status != 201)
                 throw new Exception();
+
+            string blobUri = blobClient.Uri.ToString() + "?" + _blobSasToken;
+            await _docService.ExtractKeywordsAsync(blobUri);
 
             return blobName;
         }
