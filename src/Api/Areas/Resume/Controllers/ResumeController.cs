@@ -14,7 +14,9 @@ namespace HireHive.Api.Areas.Resume.Controllers
         private readonly IResumeService _resumeService;
         private readonly IValidator<UploadResumeBm> _uploadFileValidator;
         private readonly IValidator<UpdateResumeBm> _updateFileValidator;
+        private readonly IAzureBlobService _azureBlobService;
         private readonly IUserService _userService;
+        private readonly IPiiRedactionService _piiRedactionService;
         private readonly IMapper _mapper;
         private readonly ILogger<ApiController> _logger;
 
@@ -22,6 +24,8 @@ namespace HireHive.Api.Areas.Resume.Controllers
             IResumeService resumeService,
             IValidator<UploadResumeBm> uploadFileValidator,
             IValidator<UpdateResumeBm> updateFileValidator,
+            IAzureBlobService azureBlobService,
+            IPiiRedactionService piiRedactionService,
             IUserService userService,
             IMapper mapper,
             ILogger<ApiController> logger)
@@ -30,6 +34,8 @@ namespace HireHive.Api.Areas.Resume.Controllers
             _resumeService = resumeService;
             _uploadFileValidator = uploadFileValidator;
             _updateFileValidator = updateFileValidator;
+            _azureBlobService = azureBlobService;
+            _piiRedactionService = piiRedactionService;
             _userService = userService;
             _mapper = mapper;
             _logger = logger;
@@ -127,6 +133,25 @@ namespace HireHive.Api.Areas.Resume.Controllers
             {
                 _logger.LogError("Failed to update resume of user {userId}. With exception: {message}", userId, e.Message);
                 throw;
+            }
+        }
+
+        [HttpGet]
+        [Route("process/{userId}")]
+        public async Task<IActionResult> Process([FromRoute] Guid userId)
+        {
+            try
+            {
+                var resume = await _resumeService.GetByUserId(userId);
+
+                await _piiRedactionService.RedactPii(resume.BlobName!);
+
+                return Ok();
+            }
+            catch (Exception e)
+            {
+                _logger.LogError("Resume for user {userId} not found. With exception: {message}", userId, e.Message);
+                return NotFound();
             }
         }
     }

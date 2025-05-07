@@ -8,13 +8,11 @@ namespace HireHive.Infrastructure.Services
     public class AzureBlobService : IAzureBlobService
     {
         private readonly BlobServiceClient _blobServiceClient;
-        private readonly DocumentIntelligenceService _docService;
         private readonly string _blobSasToken;
-        public AzureBlobService(BlobServiceClient blobServiceClient, DocumentIntelligenceService docService, string blobSasToken)
+        public AzureBlobService(BlobServiceClient blobServiceClient, string blobSasToken)
         {
             _blobServiceClient = blobServiceClient;
             _blobSasToken = blobSasToken;
-            _docService = docService;
         }
 
         public async Task<string> Upload(IFormFile file)
@@ -36,7 +34,6 @@ namespace HireHive.Infrastructure.Services
                 throw new Exception();
 
             string blobUri = blobClient.Uri.ToString() + "?" + _blobSasToken;
-            await _docService.ExtractKeywordsAsync(blobUri);
 
             return blobName;
         }
@@ -49,5 +46,18 @@ namespace HireHive.Infrastructure.Services
 
             await blobClient.DeleteIfExistsAsync();
         }
+
+        public async Task<MemoryStream> GetBlobStream(string blobName)
+        {
+            var containerClient = _blobServiceClient.GetBlobContainerClient("resumefiles");
+            var blobClient = containerClient.GetBlobClient(blobName);
+            MemoryStream documentStream = new MemoryStream();
+
+            await blobClient.DownloadToAsync(documentStream);
+            documentStream.Position = 0;
+
+            return documentStream;
+        }
+
     }
 }
