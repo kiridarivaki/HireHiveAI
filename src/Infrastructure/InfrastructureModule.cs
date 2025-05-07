@@ -1,5 +1,7 @@
 ﻿using Azure;
 using Azure.AI.FormRecognizer.DocumentAnalysis;
+using Azure.AI.Inference;
+using Azure.AI.TextAnalytics;
 using Azure.Storage.Blobs;
 using HireHive.Application.Interfaces;
 using HireHive.DependencyInjection;
@@ -47,12 +49,25 @@ namespace HireHive.Infrastructure
             services.AddSingleton(emailSettings);
             services.AddTransient<IEmailService, EmailService>();
 
-            var apiKey = configuration["DocumentIntelligenceApiKey"];
-            var endpoint = configuration["DocIntelligenceSettings:Endpoint"];
-            var docIntelligenceClient = new DocumentAnalysisClient(new Uri(endpoint!), new AzureKeyCredential(apiKey!));
+            var diApiKey = configuration["DocumentIntelligenceApiKey"];
+            var diEndpoint = configuration["DocIntelligenceSettings:Endpoint"];
+            var diClient = new DocumentAnalysisClient(new Uri(diEndpoint!), new AzureKeyCredential(diApiKey!));
 
-            services.AddSingleton(docIntelligenceClient);
-            services.AddScoped<DocumentIntelligenceService>();
+            var piiApiKey = configuration["PIIDetectionApiKey"];
+            var piiEndpoint = configuration["PIIDetectionSettings:Endpoint"];
+            var piiClient = new TextAnalyticsClient(new Uri(piiEndpoint!), new AzureKeyCredential(piiApiKey!));
+
+            services.AddSingleton(piiClient);
+            services.AddSingleton(diClient);
+
+            services.AddScoped<IPiiRedactionService, PiiRedactionService>();
+
+            var githubEndpoint = new Uri("https://models.github.ai/inference");
+            var credential = new AzureKeyCredential(configuration["GitHubToken"]!);
+
+            var client = new ChatCompletionsClient(githubEndpoint, credential, new AzureAIInferenceClientOptions());
+            services.AddSingleton(client);
+            services.AddScoped<AiAssessmentService>();
 
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IResumeRepository, ResumeRepository>();

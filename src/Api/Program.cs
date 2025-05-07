@@ -12,7 +12,7 @@ services.ConfigureIdentity(configuration);
 services.ConfigureSwagger();
 services.AddAuthorization();
 services.ConfigureAuthentication(configuration);
-builder.Services.AddHttpClient();
+services.AddHttpClient();
 builder.Services.AddEndpointsApiExplorer();
 
 builder.Services.AddControllers();
