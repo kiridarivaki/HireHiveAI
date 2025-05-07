@@ -1,0 +1,29 @@
+.drag-drop-area {
+    width: 100%;
+    max-width: 400px;
+    height: 200px;
+    border: 2px dashed #ccc;
+    border-radius: 8px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    padding: 10px;
+    text-align: center;
+    cursor: pointer;
+  }
+  
+  input[type="file"] {
+    display: none; /* Hide the default file input */
+  }
+  
+  .file-upload-label {
+    cursor: pointer;
+    color: #007bff;
+    text-decoration: underline;
+  }
+  
+  .file-upload-label:hover {
+    color: #0056b3;
+  }
+  

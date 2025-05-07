@@ -1,0 +1,38 @@
+<form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
+  <app-input
+    type="email"
+    placeholder="Email"
+    inputId="email"
+    label="Email Address"
+  ></app-input>
+  <app-input
+    placeholder="First Name"
+    inputId="firstName"
+    label="First Name"
+  ></app-input>
+  <app-input
+    placeholder="Last Name"
+    inputId="lastName"
+    label="Last Name"
+  ></app-input>
+  <app-password-input
+    type="password"
+    placeholder="Password"
+    inputId="password"
+    label="Password"
+  ></app-password-input>
+  <app-password-input
+    type="password"
+    placeholder="Confirm Password"
+    inputId="confirmPassword"
+    label="Confirm Password"
+  ></app-password-input>
+  <app-select
+    selectId="selectEmploymentOptions"
+    [options]="employmentOptions"
+    value="selectedCountry"
+    class="form-control"
+    label="Employment Status"
+  ></app-select>
+  <button type="submit" [disabled]="registerForm.invalid">Register</button>
+</form>
