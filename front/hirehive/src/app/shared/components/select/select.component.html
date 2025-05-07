@@ -1,0 +1,15 @@
+<div class="form-group">
+    <label [for]="selectId">{{label}}</label>
+    <select
+      [id]="selectId"
+      [class]="class"
+      [disabled]="disabled"
+      [value]="value"
+      (change)="onValueChange($event)"
+    >
+    @for (option of options; track option.value){
+      <option [value]="option.value">{{option.label}}</option>
+    }    
+    </select>
+</div>
+  

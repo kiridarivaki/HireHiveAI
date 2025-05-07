@@ -1,0 +1,10 @@
+<div class="form-group">
+    <label [for]="inputId">{{ label }}</label>
+    <input
+      [id]="inputId"
+      [type]="type"
+      [placeholder]="placeholder"
+      [disabled]="disabled"
+      (input)="onInputChange($event)"
+    />
+  </div>
