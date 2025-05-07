@@ -1,14 +1,13 @@
-﻿using Ardalis.GuardClauses;
-using AutoMapper;
-using FluentValidation;
+﻿using FluentValidation;
 using HireHive.Api.Areas.Common.Controllers;
-using HireHive.Api.Areas.User.Models;
+using HireHive.Api.Areas.User.Models.BindingModels;
+using HireHive.Api.Areas.User.Models.ViewModels;
 using HireHive.Application.DTOs.User;
 using HireHive.Application.Interfaces;
+using HireHive.Domain.Exceptions.User;
 using Microsoft.AspNetCore.Mvc;
 
 namespace HireHive.Api.Areas.User.Controllers;
-
 
 public class UserController : ApiController
 {
@@ -34,9 +33,9 @@ public class UserController : ApiController
     [Route("")]
     public async Task<IActionResult> GetUsers()
     {
-        var result = await _userService.GetAll();
+        var users = await _userService.GetAll();
 
-        return Ok(result);
+        return Ok(_mapper.Map<List<UserVm>>(users));
     }
 
     [HttpGet]
@@ -47,36 +46,64 @@ public class UserController : ApiController
         {
             var user = await _userService.GetById(id);
 
-            return Ok(user);
+            return Ok(_mapper.Map<UserVm>(user));
         }
-        catch (NotFoundException ex)
+        catch (UserNotFoundException e)
         {
-            return NotFound(new { error = ex.Message });
+            _logger.LogError("User {id} not found. With exception: {message}", id, e.Message);
+            return NotFound();
         }
     }
 
     [HttpPatch]
     [Route("{id}")]
-    public async Task<IActionResult> UpdateUser([FromRoute] Guid id, [FromBody] UpdateBm updateUserBm)
+    public async Task<IActionResult> Update([FromRoute] Guid id, [FromBody] UpdateBm updateUserBm)
     {
-        var validationResult = await _updateValidator.ValidateAsync(updateUserBm);
-        if (!validationResult.IsValid)
+        try
         {
-            var errors = validationResult.Errors.Select(e => new { field = e.PropertyName, message = e.ErrorMessage });
-            return BadRequest(new { errors });
+            var validationResult = await _updateValidator.ValidateAsync(updateUserBm);
+            if (!validationResult.IsValid)
+            {
+                var errors = validationResult.Errors.Select(e => new { field = e.PropertyName, message = e.ErrorMessage });
+
+                return BadRequest(new { errors });
+            }
+
+            await _userService.Update(id, _mapper.Map<UpdateDto>(updateUserBm));
+
+            return Ok();
         }
-
-        await _userService.Update(id, _mapper.Map<UpdateDto>(updateUserBm));
-
-        return Ok();
+        catch (UserNotFoundException e)
+        {
+            _logger.LogError("User {id} not found. With exception: {message}", id, e.Message);
+            return NotFound();
+        }
+        catch (Exception e)
+        {
+            _logger.LogError("Failed to update user {id}. With exception: {message}", id, e.Message);
+            throw;
+        }
     }
 
     [HttpDelete]
     [Route("delete/{id}")]
-    public async Task<IActionResult> DeleteUser([FromRoute] Guid id)
+    public async Task<IActionResult> Delete([FromRoute] Guid id)
     {
-        await _userService.Delete(id);
+        try
+        {
+            await _userService.Delete(id);
 
-        return NoContent();
+            return NoContent();
+        }
+        catch (UserNotFoundException e)
+        {
+            _logger.LogError("User {id} not found. With exception: {message}", id, e.Message);
+            return NotFound();
+        }
+        catch (Exception e)
+        {
+            _logger.LogError("Failed to delete user {id}. With exception: {message}", id, e.Message);
+            throw;
+        }
     }
 }

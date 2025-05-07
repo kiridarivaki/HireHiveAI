@@ -58,3 +58,4 @@ artifacts/
 publish/
 front/
 
+/src/logs

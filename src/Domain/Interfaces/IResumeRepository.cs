@@ -4,9 +4,10 @@ namespace HireHive.Domain.Interfaces
 {
     public interface IResumeRepository
     {
-        Task<Resume?> GetResume(Guid resumeId);
-        Task AddResumeAsync(Resume resume);
-        Task<Resume> UpdateResume(Resume resume);
-        Task<bool> DeleteResume(Guid resumeId);
+        Task<Resume?> GetByIdAsync(Guid resumeId);
+        Task<Resume?> GetByUserIdAsync(Guid userId);
+        Task AddAsync(Resume resume);
+        Task UpdateAsync(Resume resume);
+        void Delete(Resume resume);
     }
 }

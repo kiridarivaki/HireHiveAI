@@ -1,6 +1,5 @@
-﻿using AutoMapper;
-using FluentValidation;
-using HireHive.Api.Areas.Account.Models;
+﻿using FluentValidation;
+using HireHive.Api.Areas.Account.Models.BindingModels;
 using HireHive.Api.Areas.Common.Controllers;
 using HireHive.Application.DTOs.Account;
 using HireHive.Application.Interfaces;
@@ -29,26 +28,67 @@ public class AuthController : ApiController
 
     [HttpPost]
     [Route("register")]
-    public async Task<IActionResult> RegisterUser([FromBody] RegisterBm userModel)
+    public async Task<IActionResult> Register([FromBody] RegisterBm registerModel)
     {
-        var validationResult = await _registerValidator.ValidateAsync(userModel);
-        if (!validationResult.IsValid)
+        try
         {
-            var errors = validationResult.Errors.Select(e => new { field = e.PropertyName, message = e.ErrorMessage });
-            return BadRequest(new { errors });
+            var validationResult = await _registerValidator.ValidateAsync(registerModel);
+            if (!validationResult.IsValid)
+            {
+                var errors = validationResult.Errors.Select(e => new { field = e.PropertyName, message = e.ErrorMessage });
+
+                return BadRequest(new { errors });
+            }
+
+            await _authService.Register(_mapper.Map<RegisterDto>(registerModel));
+
+            _logger.LogInformation("User with email {email} registered.", registerModel.Email);
+
+            return Ok();
         }
-
-        await _authService.Register(_mapper.Map<RegisterDto>(userModel));
-
-        return Ok();
+        catch (Exception e)
+        {
+            _logger.LogError("Failed to register user {email}, With exception: {message}", registerModel.Email, e.Message);
+            throw;
+        }
     }
 
     [HttpPost]
     [Route("login")]
     public async Task<IActionResult> Login(LoginBm loginModel)
     {
-        await _authService.Login(_mapper.Map<LoginDto>(loginModel));
-        // todo: change return to unauthorized based on service output 
-        return Ok();
+        try
+        {
+            var authenticatedUser = await _authService.Login(_mapper.Map<LoginDto>(loginModel));
+
+            _logger.LogInformation("User with email {email} logged in.", loginModel.Email);
+
+            return Ok();
+        }
+        catch (Exception e)
+        {
+            _logger.LogError("Failed to login user {email}, With exception: {message}", loginModel.Email, e.Message);
+
+            return Unauthorized();
+        }
+    }
+
+    [HttpPost]
+    [Route("/confirm-email")]
+    public async Task<IActionResult> ConfirmEmail([FromBody] ConfirmEmailBm confirmEmailModel)
+    {
+        try
+        {
+            await _authService.ConfirmEmail(confirmEmailModel.Email, confirmEmailModel.ConfirmationToken);
+
+            _logger.LogInformation("Email {email} confirmed.", confirmEmailModel.Email);
+
+            return Ok();
+        }
+        catch (Exception e)
+        {
+            _logger.LogError("Failed to confirm email {email}. With exception: {message}", confirmEmailModel.Email, e.Message);
+            throw;
+        }
     }
 }
