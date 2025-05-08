@@ -83,5 +83,10 @@ namespace HireHive.Infrastructure.Services
             }
 
         }
+
+        public Task GetAllPaginated()
+        {
+            throw new NotImplementedException();
+        }
     }
 }
