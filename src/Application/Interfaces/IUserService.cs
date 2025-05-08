@@ -8,5 +8,6 @@ namespace HireHive.Application.Interfaces
         Task<UserDto> GetById(Guid id);
         Task Update(Guid id, UpdateDto user);
         Task Delete(Guid id);
+        Task GetAllPaginated();
     }
 }

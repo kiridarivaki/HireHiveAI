@@ -36,6 +36,7 @@ namespace HireHive.Infrastructure.Services
 
             var categoriesToRedact = new List<PiiEntityCategory>()
             {
+                PiiEntityCategory.Person,
                 PiiEntityCategory.Email,
                 PiiEntityCategory.Address,
                 PiiEntityCategory.PhoneNumber,

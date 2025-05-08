@@ -54,7 +54,7 @@ namespace HireHive.Infrastructure.Services
                     var file = uploadDto.File;
                     var blobName = await _azureBlobService.Upload(file);
 
-                    var resume = new Resume(file.FileName, blobName, file.ContentType, file.Length, uploadDto.UserId);
+                    var resume = new Resume(file.FileName, blobName, file.ContentType, file.Length, uploadDto.UserId, null);
 
                     await _resumeRepository.AddAsync(resume);
                     scope.Complete();
@@ -64,7 +64,7 @@ namespace HireHive.Infrastructure.Services
                 }
                 catch (BaseException e)
                 {
-                    _logger.LogError("Failed to upload resume for customer {userId}. With exception: {message}", uploadDto.UserId, e.Message);
+                    _logger.LogWarning("Failed to upload resume for customer {userId}. With exception: {message}", uploadDto.UserId, e.Message);
                     throw;
                 }
             }
@@ -81,7 +81,6 @@ namespace HireHive.Infrastructure.Services
 
                 var file = updateResumeDto.File;
                 var blobName = await _azureBlobService.Upload(file);
-
 
                 resume.Update(file.FileName, blobName, file.ContentType, file.Length, null);
 
