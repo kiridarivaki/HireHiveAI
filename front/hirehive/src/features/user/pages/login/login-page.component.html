@@ -1,17 +1,12 @@
 <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
-  <app-input
-    type="email"
-    placeholder="Email"
-    inputId="email"
-    label="Email">
-  </app-input>
-  <app-password-input
-    type="password"
-    placeholder="Password"
-    inputId="password"
-    label="Password"
-    >
-  </app-password-input>
+  <mat-form-field appearance="outline" class="form-field">
+    <mat-label>Email Address</mat-label>
+    <input matInput type="email" placeholder="Email" formControlName="email" id="email">
+  </mat-form-field>
+  
+  <mat-form-field>
+    <input matInput placeholder="Password" formControlName="password"/>
+  </mat-form-field>
   <app-button
     type="submit"
     text="Login"

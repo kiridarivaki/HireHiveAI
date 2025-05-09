@@ -1,39 +1,39 @@
+<div class="login-page-container">
+<div class="form-container">
 <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
-  <app-input
-    type="email"
-    placeholder="Email"
-    inputId="email"
-    label="Email Address">
-  </app-input>
-  <app-input
-    placeholder="First Name"
-    inputId="firstName"
-    label="First Name">
-  </app-input>
-  <app-input
-    placeholder="Last Name"
-    inputId="lastName"
-    label="Last Name">
-  </app-input>
-  <app-password-input
-    type="password"
-    placeholder="Password"
-    inputId="password"
-    label="Password">
-  </app-password-input>
-  <app-password-input
-    type="password"
-    placeholder="Confirm Password"
-    inputId="confirmPassword"
-    label="Confirm Password">
-  </app-password-input>
-  <app-select
-    selectId="selectEmploymentOptions"
-    [options]="employmentOptions"
-    value="selectedCountry"
-    class="form-control"
-    label="Employment Status">
-  </app-select>
+  <mat-form-field appearance="outline" class="form-field">
+    <mat-label>Email Address</mat-label>
+    <input matInput type="email" placeholder="Email" formControlName="email" id="email">
+  </mat-form-field>
+
+  <mat-form-field appearance="outline" class="form-field">
+    <mat-label>First Name</mat-label>
+    <input matInput placeholder="First Name" formControlName="firstName" id="firstName">
+  </mat-form-field>
+
+  <mat-form-field appearance="outline" class="form-field">
+    <mat-label>Last Name</mat-label>
+    <input matInput placeholder="Last Name" formControlName="lastName" id="lastName">
+  </mat-form-field>
+
+  <mat-form-field>
+    <input matInput placeholder="Password" formControlName="password"/>
+  </mat-form-field>
+
+  <mat-form-field>
+    <input matInput placeholder="Confirm Password" formControlName="password"/>
+  </mat-form-field>
+
+
+  <mat-form-field appearance="outline" class="full-width">
+    <mat-label>Employment Status</mat-label>
+    <mat-select formControlName="employmentStatus" id="selectEmploymentOptions">
+      @for (option of employmentOptions; track option) {
+        <mat-option [value]="option.value">{{ option.label }}</mat-option>
+      }
+    </mat-select>
+  </mat-form-field>
+
   <app-button
     type="submit"
     text="Register"
@@ -41,3 +41,5 @@
     (onClick)="onSubmit()">
   </app-button>
 </form>
+</div>
+</div>
