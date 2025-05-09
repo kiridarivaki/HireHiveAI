@@ -177,7 +177,7 @@ namespace HireHive.Api.Areas.Resume.Controllers
             try
             {
                 //todo : add to hangfire job 
-                var result = await _aiService.Chat(userId);
+                await _aiService.Chat(userId);
 
                 _logger.LogInformation("Resume assessment started for user {userId}.", userId);
 
