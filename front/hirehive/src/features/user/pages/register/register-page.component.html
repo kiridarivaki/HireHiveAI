@@ -3,36 +3,41 @@
     type="email"
     placeholder="Email"
     inputId="email"
-    label="Email Address"
-  ></app-input>
+    label="Email Address">
+  </app-input>
   <app-input
     placeholder="First Name"
     inputId="firstName"
-    label="First Name"
-  ></app-input>
+    label="First Name">
+  </app-input>
   <app-input
     placeholder="Last Name"
     inputId="lastName"
-    label="Last Name"
-  ></app-input>
+    label="Last Name">
+  </app-input>
   <app-password-input
     type="password"
     placeholder="Password"
     inputId="password"
-    label="Password"
-  ></app-password-input>
+    label="Password">
+  </app-password-input>
   <app-password-input
     type="password"
     placeholder="Confirm Password"
     inputId="confirmPassword"
-    label="Confirm Password"
-  ></app-password-input>
+    label="Confirm Password">
+  </app-password-input>
   <app-select
     selectId="selectEmploymentOptions"
     [options]="employmentOptions"
     value="selectedCountry"
     class="form-control"
-    label="Employment Status"
-  ></app-select>
-  <button type="submit" [disabled]="registerForm.invalid">Register</button>
+    label="Employment Status">
+  </app-select>
+  <app-button
+    type="submit"
+    text="Register"
+    [disabled]="!registerForm.valid"
+    (onClick)="onSubmit()">
+  </app-button>
 </form>
