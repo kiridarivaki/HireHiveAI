@@ -1,5 +1,6 @@
 ﻿using Azure;
 using Azure.AI.Inference;
+using HireHive.Domain.Entities;
 using HireHive.Domain.Exceptions.Resume;
 using HireHive.Domain.Interfaces;
 using Microsoft.Extensions.Logging;
@@ -18,7 +19,7 @@ namespace HireHive.Infrastructure.Services.AI
             _logger = logger;
         }
 
-        public async Task<string> Chat(Guid userId)
+        public async Task Chat(Guid userId)
         {
             var resume = await _resumeRepository.GetByUserIdAsync(userId)
                 ?? throw new ResumeNotFoundException();
@@ -27,6 +28,8 @@ namespace HireHive.Infrastructure.Services.AI
                 ?? throw new ResumeNotFoundException();
             _logger.LogInformation("AI assessment: ");
 
+            var resumes = new List<Resume> { resume, resume2 };
+
             string prompt = @"
                 You are an HR specialist responsible for evaluating how well candidate resumes match a given job description.
 
@@ -34,16 +37,8 @@ namespace HireHive.Infrastructure.Services.AI
                 - A single job description
                 - Multiple resumes in plain text format
 
-                Your task is to assess each resume and return a JSON object. Each key should be a candidate number (e.g., ""candidate_1"", ""candidate_2"", etc.), and each value should be a numeric percentage (0 to 100) indicating how closely the resume matches the job description.
-
-                Respond only with a valid JSON object in the following format:
-
-                {
-                  ""candidate_1"": 85,
-                  ""candidate_2"": 67,
-                  ""candidate_3"": 92
-                }
-
+                Your task is to assess each resume providing a numeric percentage (0 to 100) indicating how closely the resume matches the job description. 
+                You refer to the candidate with their user id. 
                 Do not include any explanation or text outside the JSON response.
                 ";
 
@@ -52,22 +47,23 @@ namespace HireHive.Infrastructure.Services.AI
             var chatHistory = new List<ChatRequestMessage>(){
                 new ChatRequestSystemMessage(prompt),
                 new ChatRequestUserMessage(description),
-                new ChatRequestUserMessage(resume2.Text),
-                new ChatRequestUserMessage(resume.Text)
             };
 
-            var requestOptions = new ChatCompletionsOptions(chatHistory) { Model = "gpt-3.5-turbo" };
+            foreach (var r in resumes)
+            {
+                chatHistory.Add(new ChatRequestUserMessage(r.UserId + r.Text));
+            }
+
+            var requestOptions = new ChatCompletionsOptions(chatHistory)
+            {
+                Model = "openai/gpt-4.1",
+                ResponseFormat = new ChatCompletionsResponseFormatJsonObject(),
+            };
             ChatCompletionsToolDefinition evaluateCandidateTool = new ChatCompletionsToolDefinition(EvaluateCandidateTool.GetToolDefinition());
 
-            requestOptions.Tools.Add(evaluateCandidateTool);
-            requestOptions.ToolChoice = ChatCompletionsToolChoice.Auto;
-
             Response<ChatCompletions> response = _client.Complete(requestOptions);
-            var assessment = response.Value.Content;
-
-            _logger.LogInformation("AI assessment: {assessment}", assessment);
-
-            return assessment;
+            _logger.LogInformation("", response);
+            //return assessment;
         }
     }
 }
