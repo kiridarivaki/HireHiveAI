@@ -5,6 +5,8 @@ import { UserModule } from '../features/user/user.module';
 import { AppComponent } from './app.component'; 
 import { HeaderComponent } from './shared/components/header/header.component';
 import { HomeComponent } from "../features/home/home.component";
+import { HTTP_INTERCEPTORS } from '@angular/common/http';
+import { TokenInterceptor } from './client/interceptors/token.interceptor.interceptor';
 
 @NgModule({
   declarations: [
@@ -17,7 +19,9 @@ import { HomeComponent } from "../features/home/home.component";
     AppRoutingModule,
     UserModule
 ],
-  providers: [],
+  providers: [
+    {provide: HTTP_INTERCEPTORS, useClass: TokenInterceptor , multi: true}
+  ],
   bootstrap: [AppComponent],
 })
 export class AppModule {}

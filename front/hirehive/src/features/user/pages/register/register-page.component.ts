@@ -1,11 +1,13 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { fieldsMatchValidator } from '@validators/fields-match.validator';
+import {MatFormFieldModule} from '@angular/material/form-field';
 
 @Component({
   selector: 'app-register-page',
   standalone: false,
   templateUrl: './register-page.component.html',
+  styleUrl: './register-page.component.scss'
 })
 export class RegisterPageComponent implements OnInit {
   employmentOptions: { value: string, label: string }[] = [];
