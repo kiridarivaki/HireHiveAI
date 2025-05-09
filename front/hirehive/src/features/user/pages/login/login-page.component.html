@@ -2,15 +2,20 @@
   <app-input
     type="email"
     placeholder="Email"
-    formControlName="email"
-    class="form-control"
-  ></app-input>
-
-  <app-input-password
+    inputId="email"
+    label="Email">
+  </app-input>
+  <app-password-input
+    type="password"
     placeholder="Password"
-    formControlName="password"
-    class="form-control"
-  ></app-input-password>
-
-  <button type="submit" [disabled]="loginForm.invalid">Login</button>
+    inputId="password"
+    label="Password"
+    >
+  </app-password-input>
+  <app-button
+    type="submit"
+    text="Login"
+    [disabled]="!loginForm.valid"
+    (onClick)="onSubmit()">
+  </app-button>
 </form>
