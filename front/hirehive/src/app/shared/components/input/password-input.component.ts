@@ -1,6 +1,7 @@
 import { Component, forwardRef } from '@angular/core';
 import { NG_VALUE_ACCESSOR, ControlValueAccessor } from '@angular/forms';
 import { AppInputComponent } from './input.component';
+import { SharedModule } from '@shared/shared.module';
 
 @Component({
   selector: 'app-password-input',
@@ -13,7 +14,7 @@ import { AppInputComponent } from './input.component';
       multi: true,
     },
   ],
-  imports: [AppInputComponent]
+  imports: [SharedModule]
 })
 export class AppPasswordInputComponent implements ControlValueAccessor {
   inputId = 'password';

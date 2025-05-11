@@ -1,5 +1,6 @@
 import { Component, Input, forwardRef } from '@angular/core';
 import { ControlValueAccessor, FormControl, NG_VALUE_ACCESSOR } from '@angular/forms';
+import { SharedModule } from '@shared/shared.module';
 
 @Component({
   selector: 'app-input',
@@ -11,7 +12,8 @@ import { ControlValueAccessor, FormControl, NG_VALUE_ACCESSOR } from '@angular/f
       useExisting: forwardRef(() => AppInputComponent),
       multi: true
     }
-  ]
+  ],
+  imports: [SharedModule]
 })
 export class AppInputComponent implements ControlValueAccessor {
   @Input() inputId = '';

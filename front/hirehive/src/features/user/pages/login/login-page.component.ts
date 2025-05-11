@@ -5,7 +5,7 @@ import { FormGroup, FormControl,  Validators } from '@angular/forms';
   selector: 'app-login-page',
   standalone: false,
   templateUrl: './login-page.component.html',
-  styleUrl: './login-page.component.scss'
+  //styleUrl: './login-page.component.scss'
 })
 export class LoginPageComponent {
   loginForm = new FormGroup ({
