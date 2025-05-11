@@ -20,7 +20,7 @@ import { TokenInterceptor } from './client/interceptors/token.interceptor.interc
     UserModule
 ],
   providers: [
-    {provide: HTTP_INTERCEPTORS, useClass: TokenInterceptor , multi: true}
+    // {provide: HTTP_INTERCEPTORS, useClass: TokenInterceptor , multi: true}
   ],
   bootstrap: [AppComponent],
 })

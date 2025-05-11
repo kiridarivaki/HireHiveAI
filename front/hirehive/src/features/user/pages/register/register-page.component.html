@@ -1,29 +1,43 @@
-<div class="login-page-container">
 <div class="form-container">
 <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
-  <mat-form-field appearance="outline" class="form-field">
-    <mat-label>Email Address</mat-label>
-    <input matInput type="email" placeholder="Email" formControlName="email" id="email">
-  </mat-form-field>
+  <app-input
+    type="email"
+    placeholder="Email"
+    inputId="email"
+    label="Email Address"
+    formControlName="email"
+  ></app-input>
 
-  <mat-form-field appearance="outline" class="form-field">
-    <mat-label>First Name</mat-label>
-    <input matInput placeholder="First Name" formControlName="firstName" id="firstName">
-  </mat-form-field>
+  <app-input
+    type="firstName"
+    placeholder="First Name"
+    inputId="email"
+    label="First Name"
+    formControlName="firstName"
+  ></app-input>
 
-  <mat-form-field appearance="outline" class="form-field">
-    <mat-label>Last Name</mat-label>
-    <input matInput placeholder="Last Name" formControlName="lastName" id="lastName">
-  </mat-form-field>
+  <app-input
+    type="lastName"
+    placeholder="Last Name"
+    inputId="lastName"
+    label="Last Name"
+    formControlName="lastName"
+  ></app-input>
 
-  <mat-form-field>
-    <input matInput placeholder="Password" formControlName="password"/>
-  </mat-form-field>
+  <app-input
+    type="password"
+    placeholder="Password"
+    inputId="password"
+    label="Password"
+  ></app-input>
 
-  <mat-form-field>
-    <input matInput placeholder="Confirm Password" formControlName="password"/>
-  </mat-form-field>
-
+  <app-input
+    type="confirmPassword"
+    placeholder="Confirm Password"
+    inputId="confirmPassword"
+    label="Confirm Password"
+    formControlName="confirmPassword"
+  ></app-input>
 
   <mat-form-field appearance="outline" class="full-width">
     <mat-label>Employment Status</mat-label>
@@ -41,5 +55,4 @@
     (onClick)="onSubmit()">
   </app-button>
 </form>
-</div>
 </div>
