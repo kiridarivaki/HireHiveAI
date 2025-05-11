@@ -1,0 +1,68 @@
+@use '@angular/material' as mat;
+
+@include mat.core();
+
+$hirehive-primary: mat.define-palette((
+  50: #e4eaf3,
+  100: #bccadf,
+  200: #91a7c9,
+  300: #6583b2,
+  400: #4569a2,
+  500: #264f91, 
+  600: #224887,
+  700: #1c3e7c,
+  800: #163471,
+  900: #0a1a2f,
+  contrast: (
+    50: black,
+    100: black,
+    200: black,
+    300: white,
+    400: white,
+    500: white,
+    600: white,
+    700: white,
+    800: white,
+    900: white,
+  )
+));
+
+$hirehive-accent: mat.define-palette((
+  50: #fff8e1,
+  100: #ffecb3,
+  200: #ffe082,
+  300: #ffd54f,
+  400: #ffca28,
+  500: #f9b000,
+  600: #f1a000,
+  700: #e68d00,
+  800: #db7b00,
+  900: #c46100,
+  contrast: (
+    50: black,
+    100: black,
+    200: black,
+    300: black,
+    400: black,
+    500: black,
+    600: black,
+    700: black,
+    800: black,
+    900: black,
+  )
+), 500, 300, 700); 
+
+$hirehive-typography: mat.define-typography-config((
+  font-family: 'Inter, sans-serif',
+));
+
+$hirehive-theme: mat.define-light-theme((
+  color: (
+    primary: $hirehive-primary,
+    accent: $hirehive-accent,
+    warn: mat.$red-palette,
+  ),
+  typography: $hirehive-typography,
+));
+
+@include mat.all-component-themes($hirehive-theme);
