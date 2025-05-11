@@ -1,8 +1,10 @@
 @use '@angular/material' as mat;
+@use './font.scss' as hirehiveTypography;
+@use "sass:map";
 
 @include mat.core();
 
-$hirehive-primary: mat.define-palette((
+$hirehive-primary: mat.m2-define-palette((
   50: #e4eaf3,
   100: #bccadf,
   200: #91a7c9,
@@ -27,7 +29,7 @@ $hirehive-primary: mat.define-palette((
   )
 ));
 
-$hirehive-accent: mat.define-palette((
+$hirehive-accent: mat.m2-define-palette((
   50: #fff8e1,
   100: #ffecb3,
   200: #ffe082,
@@ -47,22 +49,20 @@ $hirehive-accent: mat.define-palette((
     500: black,
     600: black,
     700: black,
-    800: black,
-    900: black,
+    800: white,
+    900: white,
   )
-), 500, 300, 700); 
-
-$hirehive-typography: mat.define-typography-config((
-  font-family: 'Inter, sans-serif',
 ));
 
-$hirehive-theme: mat.define-light-theme((
+$hirehive-warn: mat.$m2-red-palette;
+
+$hirehive-theme: mat.m2-define-light-theme((
   color: (
-    primary: $hirehive-primary,
-    accent: $hirehive-accent,
-    warn: mat.$red-palette,
+    primary: mat.m2-define-palette($hirehive-primary, 500),
+    accent: mat.m2-define-palette($hirehive-accent, 500),
+    warn: mat.m2-define-palette($hirehive-warn, 500)
   ),
-  typography: $hirehive-typography,
+  typography: hirehiveTypography.$custom-typography-config,
 ));
 
 @include mat.all-component-themes($hirehive-theme);
