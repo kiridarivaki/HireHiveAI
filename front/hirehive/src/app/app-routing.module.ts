@@ -1,10 +1,10 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { HomeComponent } from '../features/home/home.component';
 
 const routes: Routes = [
-  { path: '', component: HomeComponent },
+  { path: 'home', loadChildren: () => import('../features/home/home.module').then(m => m.HomeModule)},
   { path: 'user', loadChildren: () => import('../features/user/user.module').then(m => m.UserModule) },
+  { path: '', redirectTo: 'home', pathMatch: 'full' },
 ];
 
 @NgModule({

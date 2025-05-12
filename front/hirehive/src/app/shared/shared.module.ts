@@ -9,6 +9,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatFormField } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
+import { AppNavBarComponent } from './components/navbar/navbar.component';
 
 @NgModule({
     imports: [
@@ -16,6 +17,7 @@ import { MatSelectModule } from '@angular/material/select';
         AppPasswordInputComponent,
         AppSelectComponent,
         AppButtonComponent,
+        AppNavBarComponent,
         MatIconModule,
         MatFormField,
         MatInputModule,
@@ -28,6 +30,7 @@ import { MatSelectModule } from '@angular/material/select';
         AppPasswordInputComponent,
         AppSelectComponent,
         AppButtonComponent,
+        AppNavBarComponent,
         MatIconModule,
         MatFormField,
         MatInputModule,
