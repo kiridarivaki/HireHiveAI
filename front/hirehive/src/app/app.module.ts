@@ -3,24 +3,21 @@ import { BrowserModule } from '@angular/platform-browser';
 import { AppRoutingModule } from './app-routing.module'; 
 import { UserModule } from '../features/user/user.module'; 
 import { AppComponent } from './app.component'; 
-import { HeaderComponent } from './shared/components/header/header.component';
-import { HomeComponent } from "../features/home/home.component";
-import { HTTP_INTERCEPTORS } from '@angular/common/http';
-import { TokenInterceptor } from './client/interceptors/token.interceptor.interceptor';
+import { HomeModule } from 'src/features/home/home.module';
+import { HomeRoutingModule } from 'src/features/home/home-routing.module';
 
 @NgModule({
   declarations: [
-    AppComponent, 
-    HeaderComponent,
-    HomeComponent
+    AppComponent
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
-    UserModule
+    UserModule,
+    HomeModule,
+    HomeRoutingModule
 ],
   providers: [
-    // {provide: HTTP_INTERCEPTORS, useClass: TokenInterceptor , multi: true}
   ],
   bootstrap: [AppComponent],
 })
