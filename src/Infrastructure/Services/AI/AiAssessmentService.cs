@@ -59,7 +59,7 @@ namespace HireHive.Infrastructure.Services.AI
                 Model = "openai/gpt-4.1",
                 ResponseFormat = new ChatCompletionsResponseFormatJsonObject(),
             };
-            ChatCompletionsToolDefinition evaluateCandidateTool = new ChatCompletionsToolDefinition(EvaluateCandidateTool.GetToolDefinition());
+            //ChatCompletionsToolDefinition evaluateCandidateTool = new ChatCompletionsToolDefinition(EvaluateCandidateTool.GetToolDefinition());
 
             Response<ChatCompletions> response = _client.Complete(requestOptions);
             _logger.LogInformation("", response);
