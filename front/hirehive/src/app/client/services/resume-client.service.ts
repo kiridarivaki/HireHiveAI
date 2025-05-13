@@ -1,9 +1,8 @@
 import { HttpClient, HttpResponse } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { Observable } from "rxjs";
-import { Resume } from "../models/resume.model";
-import { environment } from "src/environments/environment";
 import { UrlService } from "../helpers/url-service.service";
+import { GetAllResumesResponse, GetResumeInfoPayload, UpdateFormParameters, UploadFormParameters } from "../models/resume-client.model";
 
 @Injectable({
     providedIn : 'root'
@@ -14,28 +13,28 @@ export class ResumeClientService{
         private urlService : UrlService
     ){}
 
-    getAll() : Observable<Array<Resume>>{
-        const getAllUrl = this.urlService.urlFor('Resume', undefined, undefined)
-        return this.http.get<Array<Resume>>(getAllUrl);
+    getAll() : Observable<Array<GetAllResumesResponse>>{
+        const getAllUrl = this.urlService.urlFor('resume', undefined, undefined)
+        return this.http.get<Array<GetAllResumesResponse>>(getAllUrl);
     }
 
-    getById(resumeId: string) : Observable<Resume>{
+    getById(resumeId: string) : Observable<GetResumeInfoPayload>{
         const getResumeUrl = this.urlService.urlFor('resume', undefined, { id: resumeId });
-        return this.http.get<Resume>(getResumeUrl);
+        return this.http.get<GetResumeInfoPayload>(getResumeUrl);
     }
 
-    upload(userId: string, uploadData: FormData) : void{
+    upload(userId: string, uploadData: UploadFormParameters) : void{
         const uploadResumeUrl = this.urlService.urlFor('resume', 'upload/{id}', { id: userId });
-        this.http.patch<Resume>(uploadResumeUrl, uploadData);
+        this.http.post<void>(uploadResumeUrl, uploadData);
     }
 
-    update(userId: string, updateData: FormData) : void{
+    update(userId: string, updateData: UpdateFormParameters) : void{
         const updateResumeUrl = this.urlService.urlFor('resume', 'update/{id}', { id: userId });
-        this.http.patch<Resume>(updateResumeUrl, updateData);
+        this.http.patch<void>(updateResumeUrl, updateData);
     }
 
     delete(resumeId: string) : void{
         const deleteResumeUrl = this.urlService.urlFor('resume', 'delete/{id}', { id: resumeId });
-        this.http.request(deleteResumeUrl, resumeId);
+        this.http.delete<void>(deleteResumeUrl);
     }
 }
