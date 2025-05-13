@@ -1,6 +1,7 @@
 import { Component, Input, forwardRef } from '@angular/core';
 import { ControlValueAccessor, FormControl, NG_VALUE_ACCESSOR } from '@angular/forms';
-import { SharedModule } from '@shared/shared.module';
+import { MatInputModule } from '@angular/material/input';
+import { MatFormFieldModule } from '@angular/material/form-field';
 
 @Component({
   selector: 'app-input',
@@ -13,7 +14,10 @@ import { SharedModule } from '@shared/shared.module';
       multi: true
     }
   ],
-  imports: [SharedModule]
+  imports: [
+    MatInputModule,
+    MatFormFieldModule
+  ]
 })
 export class AppInputComponent implements ControlValueAccessor {
   @Input() inputId = '';

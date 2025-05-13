@@ -1,8 +1,10 @@
-<button 
-    class = "btn" 
-    [type]= "type"
-    [ngClass]= "btnClass"
-    [disabled]="disabled" 
-    (click)="emitEvent()">
-    {{text}}
+<button
+  mat-stroked-button
+  class="btn"
+  [type]="type"
+  [ngClass]="btnClass"
+  [disabled]="disabled"
+  (click)="emitEvent()">
+  <mat-icon *ngIf="icon">{{ icon }}</mat-icon>
+  <span *ngIf="text">{{ text }}</span>
 </button>

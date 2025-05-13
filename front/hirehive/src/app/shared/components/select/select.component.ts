@@ -1,13 +1,17 @@
 import { Component, Input } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
-import { SharedModule } from '@shared/shared.module';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatSelectModule } from '@angular/material/select';
 
 @Component({
   selector: 'app-select',
   standalone: true,
   templateUrl: './select.component.html',
   providers: [{ provide: NG_VALUE_ACCESSOR, useExisting: AppSelectComponent, multi: true }],
-  imports: [SharedModule]
+  imports: [
+    MatSelectModule, 
+    MatFormFieldModule
+  ]
 })
 export class AppSelectComponent implements ControlValueAccessor {
   @Input() selectId = '';
