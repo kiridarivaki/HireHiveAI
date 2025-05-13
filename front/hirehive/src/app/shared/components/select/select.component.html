@@ -1,16 +1,11 @@
 <div class="form-group">
-    <mat-form-field appearance="outline" class="form-group">
-    <mat-label>{{ label }}</mat-label>
-    <mat-select
-      [id]="selectId"
-      [disabled]="disabled"
-      [(value)]="value"
-      (selectionChange)="onValueChange($event.value)"
-    >
-    <mat-option *ngFor="let option of options" [value]="option.value">
-      {{ option.label }}
-    </mat-option>
-  </mat-select>
-</mat-form-field>
+<mat-form-field appearance="outline" class="full-width">
+    <mat-label>Employment Status</mat-label>
+    <mat-select formControlName="employmentStatus" id="selectEmploymentOptions">
+      @for (option of options; track option) {
+        <mat-option [value]="option.value">{{ option.label }}</mat-option>
+      }
+    </mat-select>
+  </mat-form-field>
 </div>
   
