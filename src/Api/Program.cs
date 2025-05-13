@@ -13,6 +13,7 @@ services.ConfigureSwagger();
 services.AddAuthorization();
 services.ConfigureAuthentication(configuration);
 services.ConfigureHangfire(configuration);
+services.ConfigureCors();
 
 builder.Services.AddEndpointsApiExplorer();
 
@@ -24,6 +25,7 @@ if (app.Environment.IsDevelopment())
 {
     app.EnableSwagger();
     app.EnableHangfire();
+    app.EnableCors();
     app.UseDeveloperExceptionPage();
 }
 
