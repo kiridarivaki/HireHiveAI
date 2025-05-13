@@ -1,4 +1,4 @@
-<form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+<form [formGroup]="loginForm" (ngSubmit)="onLogin()">
   <div class="form-row">
     <app-input
       type="email"
@@ -7,15 +7,25 @@
       label="Email Address"
       formControlName="email"
     ></app-input>
+    <mat-error *ngIf="loginForm.controls.email.invalid && (loginForm.controls.email.dirty || loginForm.controls.email.touched)">
+      {{ loginForm.controls.email.errors | validationError }}
+    </mat-error>
   </div>
 
   <div class="form-row">
-    <app-input
+    <app-password-input
       type="password"
       placeholder="Password"
       inputId="password"
       label="Password"
-    ></app-input>
+      hint="Min 8 characters"
+      [withToggle]="true"
+      [formControl]="loginForm.controls.password"
+    >
+    </app-password-input>
+    <mat-error *ngIf="loginForm.controls.password.invalid && (loginForm.controls.password.dirty || loginForm.controls.password.touched)">
+      {{ loginForm.controls.password.errors | validationError }}
+    </mat-error>
   </div>
 
   <div class="form-row">
@@ -23,7 +33,7 @@
     type="submit"
     text="Login"
     [disabled]="!loginForm.valid"
-    (onClick)="onSubmit()">
+    (onClick)="onLogin()">
   </app-button>
   </div>
 </form>
