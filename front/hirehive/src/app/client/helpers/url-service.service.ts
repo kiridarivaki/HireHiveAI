@@ -3,7 +3,7 @@ import { environment } from "src/environments/environment";
 
 @Injectable({ providedIn: 'root' })
 export class UrlService {
-  private readonly base = '${environment.apiBaseUrl}';
+  private readonly base = environment.apiBaseUrl;
 
   urlFor(controller: string, action?: string, pathParams?: Record<string, string | number>, queryParams?: Record<string, string | number>) {
     let fullPath = `${this.base}/${controller}/`;

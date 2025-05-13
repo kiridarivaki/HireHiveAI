@@ -5,7 +5,7 @@ import { UserModule } from '../features/user/user.module';
 import { AppComponent } from './app.component'; 
 import { HomeModule } from 'src/features/home/home.module';
 import { HomeRoutingModule } from 'src/features/home/home-routing.module';
-import { HTTP_INTERCEPTORS } from '@angular/common/http';
+import { HTTP_INTERCEPTORS, provideHttpClient } from '@angular/common/http';
 import { ErrorInterceptor } from './client/interceptors/error.interceptor';
 
 @NgModule({
@@ -20,6 +20,7 @@ import { ErrorInterceptor } from './client/interceptors/error.interceptor';
     HomeRoutingModule
 ],
   providers: [
+    provideHttpClient(),
     { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor , multi: true }
   ],
   bootstrap: [AppComponent],
