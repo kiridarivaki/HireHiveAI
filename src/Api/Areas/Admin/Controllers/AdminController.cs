@@ -1,30 +1,30 @@
 ﻿using FluentValidation;
 using HireHive.Api.Areas.Admin.Models.BindingModels;
 using HireHive.Api.Areas.Common.Controllers;
-using HireHive.Domain.Interfaces;
+using HireHive.Application.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
 namespace HireHive.Api.Areas.Admin.Controllers
 {
     public class AdminController : ApiController
     {
-        private readonly IUserRepository _userRepository;
+        private readonly IUserService _userService;
         private readonly IValidator<string> _filterValidator;
         private readonly ILogger<AdminController> _logger;
         protected AdminController(IMapper mapper,
             ILogger<AdminController> logger,
-            IUserRepository userRepository,
+            IUserService userService,
             IValidator<string> filterValidator)
             : base(mapper, logger)
         {
-            _userRepository = userRepository;
+            _userService = userService;
             _filterValidator = filterValidator;
             _logger = logger;
         }
 
         [HttpGet]
-        [Route("list-candidates")]
-        public async Task<IActionResult> ListUsers([FromQuery] ListUsersBm listUsersModel)
+        [Route("list-users")]
+        public async Task<IActionResult> ListUsersPaginated([FromQuery] ListUsersBm listUsersModel)
         {
             try
             {
@@ -35,6 +35,8 @@ namespace HireHive.Api.Areas.Admin.Controllers
 
                     return BadRequest(new { errors });
                 }
+
+                var paginatedUsers = await _userService.GetAllPaginated();
 
                 return Ok();
             }
