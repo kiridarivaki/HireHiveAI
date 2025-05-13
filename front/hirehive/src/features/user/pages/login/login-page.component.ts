@@ -1,5 +1,7 @@
 import { Component } from '@angular/core';
 import { FormGroup, FormControl,  Validators } from '@angular/forms';
+import { passwordValidator } from '@shared/validators/password.validator';
+import { LoginService } from '../../services/login-service.service';
 
 @Component({
   selector: 'app-login-page',
@@ -8,14 +10,18 @@ import { FormGroup, FormControl,  Validators } from '@angular/forms';
   //styleUrl: './login-page.component.scss'
 })
 export class LoginPageComponent {
+    constructor(
+      private loginService: LoginService
+    ) {}
   loginForm = new FormGroup ({
     email: new FormControl('', [Validators.required, Validators.email]),
-    password: new FormControl('', [Validators.required, Validators.minLength(6)]),
+    password: new FormControl('', [Validators.required, passwordValidator]),
   });
 
-  onSubmit() { //todo: post to api
+  onLogin() { 
     if (this.loginForm.valid) {
       console.log(this.loginForm.value);
+      
     }
   }
 }

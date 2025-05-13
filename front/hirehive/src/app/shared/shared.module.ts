@@ -5,10 +5,6 @@ import {AppInputComponent} from '@shared/components/input/input.component';
 import {AppPasswordInputComponent} from '@shared/components/input/password-input.component';
 import {AppSelectComponent} from './components/select/select.component';
 import { AppButtonComponent } from './components/button/button.component';
-import { MatIconModule } from '@angular/material/icon';
-import { MatFormField } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
-import { MatSelectModule } from '@angular/material/select';
 import { AppNavBarComponent } from './components/navbar/navbar.component';
 
 @NgModule({
@@ -18,12 +14,8 @@ import { AppNavBarComponent } from './components/navbar/navbar.component';
         AppSelectComponent,
         AppButtonComponent,
         AppNavBarComponent,
-        MatIconModule,
-        MatFormField,
-        MatInputModule,
-        MatSelectModule,
         CommonModule,
-        ReactiveFormsModule
+        ReactiveFormsModule,
     ],
     exports: [
         AppInputComponent,
@@ -31,10 +23,6 @@ import { AppNavBarComponent } from './components/navbar/navbar.component';
         AppSelectComponent,
         AppButtonComponent,
         AppNavBarComponent,
-        MatIconModule,
-        MatFormField,
-        MatInputModule,
-        MatSelectModule,
         ReactiveFormsModule
     ]
 })
