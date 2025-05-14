@@ -13,7 +13,13 @@ export interface LoginFormParameters{
 }
 
 export interface LoginResponse{
-    jwtToken: string,
+    accessToken: string,
+    refreshToken: string,
+    expiresIn: Date
+}
+
+export interface RefreshTokenResponse{
+    acessToken: string,
     refreshToken: string,
     expiresIn: Date
 }
