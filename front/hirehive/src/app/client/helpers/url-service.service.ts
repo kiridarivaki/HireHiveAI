@@ -9,7 +9,7 @@ export class UrlService {
     let fullPath = `${this.base}/${controller}/`;
     
     if (action) {
-      fullPath += `/${action}`;
+      fullPath += `${action}`;
     }
 
     if (pathParams) {

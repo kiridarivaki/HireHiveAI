@@ -3,11 +3,18 @@ import { RouterModule, Routes } from '@angular/router';
 import { LoginPageComponent } from './pages/login/login-page.component';
 import { RegisterPageComponent } from './pages/register/register-page.component';
 import { ProfilePageComponent } from './pages/profile/profile-page.component';
+import { MainLayoutComponent } from '@shared/layouts/main-layout.component.ts/main-layout.component';
 
 const routes: Routes = [
-  { path: 'login', component: LoginPageComponent },
-  { path: 'register', component: RegisterPageComponent },
-  { path: 'profile', component: ProfilePageComponent }
+  {
+    path: '',
+    component: MainLayoutComponent,
+    children: [
+      { path: 'profile', component: ProfilePageComponent },
+      { path: 'login', component: LoginPageComponent },
+      { path: 'register', component: RegisterPageComponent }
+    ]
+  }
 ];
 
 @NgModule({

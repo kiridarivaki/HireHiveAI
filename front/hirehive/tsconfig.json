@@ -21,7 +21,7 @@
     "paths": {
       "@shared/*": ["src/app/shared/*"],
       "@validators/*": ["src/app/shared/validators/*"],
-      "@modules/*": ["src/app/modules/*"]
+      "@styles/*": ["src/scss/*"]
     }
   },
   "angularCompilerOptions": {

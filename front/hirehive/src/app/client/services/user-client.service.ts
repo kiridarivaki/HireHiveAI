@@ -19,7 +19,7 @@ export class UserClientService{
     }
 
     getById(userId: string) : Observable<GetUserInfoPayload>{
-        const getUserUrl = this.urlService.urlFor('user', undefined, { id: userId });
+        const getUserUrl = this.urlService.urlFor('user', '{id}', { id: userId });
         return this.http.get<GetUserInfoPayload>(getUserUrl);
     }
 

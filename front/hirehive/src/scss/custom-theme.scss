@@ -10,11 +10,11 @@ $hirehive-primary: mat.m2-define-palette((
   200: #91a7c9,
   300: #6583b2,
   400: #4569a2,
-  500: #264f91, 
-  600: #224887,
-  700: #1c3e7c,
-  800: #163471,
-  900: #0a1a2f,
+  500: #02152e,
+  600: #011227,
+  700: #010f20,
+  800: #010b1a,
+  900: #00070f,
   contrast: (
     50: black,
     100: black,
@@ -28,6 +28,7 @@ $hirehive-primary: mat.m2-define-palette((
     900: white,
   )
 ));
+
 
 $hirehive-accent: mat.m2-define-palette((
   50: #fff8e1,
