@@ -2,43 +2,43 @@ import { HttpErrorResponse, HttpEvent, HttpHandler, HttpInterceptor, HttpInterce
 import { Injectable, Injector } from '@angular/core';
 import { Router } from '@angular/router';
 import { catchError, Observable, throwError } from 'rxjs';
-import { MatSnackBar } from '@angular/material/snack-bar';
+import { ErrorService } from '@shared/services/error.service';
 
 
 @Injectable()
 export class ErrorInterceptor implements HttpInterceptor{
   constructor(
     private router: Router, 
-    private injector: Injector
+    private errorService: ErrorService
   ) {}
 
   intercept(request: HttpRequest<undefined>, next: HttpHandler): Observable<HttpEvent<undefined>> {
     return next.handle(request).pipe(
       catchError((err: HttpErrorResponse) => {
-        const snackBar = this.injector.get(MatSnackBar);
-        const router = this.injector.get(Router);
-
+        let message = 'Something went wrong. Please try again.'
         switch (err.status) {
           case 400:
-            snackBar.open('Bad request. Please check your input.', 'Close', { duration: 3000 });
+            message = 'Bad request. Please check your input.';
             break;
           case 401:
-            snackBar.open('Unauthorized. Please log in again.', 'Close', { duration: 3000 });
-            router.navigate(['/login']);
+            message = 'Unauthorized. Please log in again.';
+            this.router.navigate(['/login']);
             break;
           case 403:
-            snackBar.open('Forbidden. You don’t have permission.', 'Close', { duration: 3000 });
+            message = 'Forbidden. You don’t have permission.';
             break;
           case 404:
-            snackBar.open('Resource not found.', 'Close', { duration: 3000 });
+            message = 'Resource not found.';
             break;
           case 500:
-            snackBar.open('Server error. Try again later.', 'Close', { duration: 3000 });
+            message = 'Server error. Try again later.';
             break;
           default:
-            snackBar.open('An unexpected error occurred.', 'Close', { duration: 3000 });
+            message = 'An unexpected error occurred.';
             break;
         }
+        this.errorService.showError(message);
+
         return throwError(() => err);
       })
     );
