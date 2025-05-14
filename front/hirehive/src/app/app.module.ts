@@ -5,8 +5,9 @@ import { UserModule } from '../features/user/user.module';
 import { AppComponent } from './app.component'; 
 import { HomeModule } from 'src/features/home/home.module';
 import { HomeRoutingModule } from 'src/features/home/home-routing.module';
-import { HTTP_INTERCEPTORS, provideHttpClient } from '@angular/common/http';
+import { HTTP_INTERCEPTORS, provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { ErrorInterceptor } from './client/interceptors/error.interceptor';
+import { TokenInterceptor } from './client/interceptors/token.interceptor';
 
 @NgModule({
   declarations: [
@@ -20,8 +21,17 @@ import { ErrorInterceptor } from './client/interceptors/error.interceptor';
     HomeRoutingModule
 ],
   providers: [
-    provideHttpClient(),
-    { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor , multi: true }
+    provideHttpClient(withInterceptorsFromDi()),
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: TokenInterceptor,
+      multi: true,
+    },
+    { 
+      provide: HTTP_INTERCEPTORS, 
+      useClass: ErrorInterceptor , 
+      multi: true 
+    }
   ],
   bootstrap: [AppComponent],
 })
