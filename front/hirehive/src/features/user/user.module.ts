@@ -8,9 +8,10 @@ import { RegisterPageComponent } from './pages/register/register-page.component'
 import { ResumeUploadModule } from '../resume-upload/resume-upload.module';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { ValidationErrorPipe } from "@shared/pipes/validation-error-pipe.pipe";
+import { MainLayoutComponent } from '@shared/layouts/main-layout.component.ts/main-layout.component';
 
 @NgModule({
   declarations: [LoginPageComponent, RegisterPageComponent], 
-  imports: [CommonModule, UserRoutingModule, SharedModule, ResumeUploadModule, MatFormFieldModule, ValidationErrorPipe] 
+  imports: [CommonModule, UserRoutingModule, SharedModule, ResumeUploadModule, MatFormFieldModule, ValidationErrorPipe, MainLayoutComponent] 
 })
 export class UserModule {}

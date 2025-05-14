@@ -1,5 +1,6 @@
+<div class="login-container">
 <form [formGroup]="loginForm" (ngSubmit)="onLogin()">
-  <div class="form-row">
+  <div class="form-field">
     <app-input
       type="email"
       placeholder="Email"
@@ -12,7 +13,7 @@
     </mat-error>
   </div>
 
-  <div class="form-row">
+  <div class="form-field">
     <app-password-input
       type="password"
       placeholder="Password"
@@ -20,7 +21,7 @@
       label="Password"
       hint="Min 8 characters"
       [withToggle]="true"
-      [formControl]="loginForm.controls.password"
+      formControlName="password"
     >
     </app-password-input>
     <mat-error *ngIf="loginForm.controls.password.invalid && (loginForm.controls.password.dirty || loginForm.controls.password.touched)">
@@ -28,7 +29,7 @@
     </mat-error>
   </div>
 
-  <div class="form-row">
+  <div class="form-field">
   <app-button
     type="submit"
     text="Login"
@@ -37,3 +38,4 @@
   </app-button>
   </div>
 </form>
+</div>

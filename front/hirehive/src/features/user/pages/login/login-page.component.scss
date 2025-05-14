@@ -1,14 +1,16 @@
-.form-container{
-    width: 200 px; 
-    margin: 0 px auto; 
-    margin-top: 200 px
-  }
-  
-  .form-field{
-    display: block;
-    width: 200px
-  }
-  
-  .login-page-container{
-    text-align: center
-  }
+.login-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  max-width: 400px;
+  margin: 0 auto;
+  padding: 20px;
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.form-element {
+  width: 100%;
+}

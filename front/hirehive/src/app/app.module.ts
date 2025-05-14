@@ -4,7 +4,6 @@ import { AppRoutingModule } from './app-routing.module';
 import { UserModule } from '../features/user/user.module'; 
 import { AppComponent } from './app.component'; 
 import { HomeModule } from 'src/features/home/home.module';
-import { HomeRoutingModule } from 'src/features/home/home-routing.module';
 import { HTTP_INTERCEPTORS, provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { ErrorInterceptor } from './client/interceptors/error.interceptor';
 import { TokenInterceptor } from './client/interceptors/token.interceptor';
@@ -17,8 +16,7 @@ import { TokenInterceptor } from './client/interceptors/token.interceptor';
     BrowserModule,
     AppRoutingModule,
     UserModule,
-    HomeModule,
-    HomeRoutingModule
+    HomeModule
 ],
   providers: [
     provideHttpClient(withInterceptorsFromDi()),

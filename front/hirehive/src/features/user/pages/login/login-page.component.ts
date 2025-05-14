@@ -9,7 +9,7 @@ import { AuthClientService } from 'src/app/client/services/auth-client.service';
   selector: 'app-login-page',
   standalone: false,
   templateUrl: './login-page.component.html',
-  //styleUrl: './login-page.component.scss'
+  styleUrl: './login-page.component.scss'
 })
 export class LoginPageComponent {
     constructor(

@@ -1,6 +1,6 @@
-<div class="form-container">
+<div class="register-container">
 <form [formGroup]="registerForm" (ngSubmit)="onRegister()">
-  <div class="form-row">
+  <div class="form-field">
   <app-input
     type="email"
     placeholder="Email"
@@ -8,9 +8,12 @@
     label="Email Address"
     formControlName="email"
   ></app-input>
+    <mat-error *ngIf="registerForm.controls.email.invalid && (registerForm.controls.email.dirty || registerForm.controls.email.touched)">
+      {{ registerForm.controls.email.errors | validationError }}
+    </mat-error>
   </div>
 
-  <div class="form-row">
+  <div class="form-field">
   <app-input
     type="firstName"
     placeholder="First Name"
@@ -18,9 +21,12 @@
     label="First Name"
     formControlName="firstName"
   ></app-input>
+    <mat-error *ngIf="registerForm.controls.firstName.invalid && (registerForm.controls.firstName.dirty || registerForm.controls.firstName.touched)">
+      {{ registerForm.controls.firstName.errors | validationError }}
+    </mat-error>
   </div>
 
-  <div class="form-row">
+  <div class="form-field">
   <app-input
     type="lastName"
     placeholder="Last Name"
@@ -28,9 +34,12 @@
     label="Last Name"
     formControlName="lastName"
   ></app-input>
+    <mat-error *ngIf="registerForm.controls.lastName.invalid && (registerForm.controls.lastName.dirty || registerForm.controls.lastName.touched)">
+      {{ registerForm.controls.lastName.errors | validationError }}
+    </mat-error>
   </div>
 
-  <div class="form-row">
+  <div class="form-field">
   <app-password-input
     type="password"
     placeholder="Password"
@@ -40,9 +49,12 @@
     [withToggle]="true"
     formControlName="password"
   ></app-password-input>
+    <mat-error *ngIf="registerForm.controls.password.invalid && (registerForm.controls.password.dirty || registerForm.controls.password.touched)">
+      {{ registerForm.controls.password.errors | validationError }}
+    </mat-error>
   </div>
 
-  <div class="form-row">
+  <div class="form-field">
   <app-password-input
     type="password"
     placeholder="Confirm Password"
@@ -50,9 +62,12 @@
     label="Confirm Password"
     formControlName="confirmPassword"
   ></app-password-input>
+    <mat-error *ngIf="registerForm.controls.confirmPassword.invalid && (registerForm.controls.confirmPassword.dirty || registerForm.controls.confirmPassword.touched)">
+      {{ registerForm.controls.confirmPassword.errors | validationError }}
+    </mat-error>
   </div>
 
-  <div class="form-row">
+  <div class="form-field">
     <app-select
       label="Employment status"
       selectId="statusSelect"
@@ -61,8 +76,9 @@
     </app-select>
   </div>
 
-  <div class="form-row">
+  <div >
   <app-button
+    class="form-field"
     type="submit"
     text="Register"
     [disabled]="!registerForm.valid"
