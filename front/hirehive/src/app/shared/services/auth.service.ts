@@ -1,6 +1,6 @@
 import { Injectable } from "@angular/core";
 import { Observable } from "rxjs";
-import { LoginFormParameters, LoginResponse, RefreshTokenResponse, RegisterFormParameters } from "src/app/client/models/auth-client.model";
+import { LoginPayload, LoginResponse, RefreshTokenResponse, RegisterPayload } from "src/app/client/models/auth-client.model";
 import { AuthClientService } from "src/app/client/services/auth-client.service";
 import { StorageService } from "./storage.service";
 import { Router } from "@angular/router";
@@ -15,11 +15,11 @@ export class AuthService {
         private router : Router 
     ){}
 
-    login(loginData: LoginFormParameters): Observable<LoginResponse>{
+    login(loginData: LoginPayload): Observable<LoginResponse>{
         return this.authClientService.login(loginData);
     }
 
-    register(registerData: RegisterFormParameters): void{
+    register(registerData: RegisterPayload): void{
         this.authClientService.login(registerData);
     }
 

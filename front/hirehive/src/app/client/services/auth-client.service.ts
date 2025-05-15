@@ -1,7 +1,7 @@
 import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { UrlService } from "../helpers/url-service.service";
-import { LoginFormParameters, LoginResponse, RefreshTokenResponse, RegisterFormParameters } from "../models/auth-client.model";
+import { LoginPayload, LoginResponse, RefreshTokenResponse, RegisterPayload } from "../models/auth-client.model";
 import { Observable } from "rxjs";
 
 @Injectable({
@@ -10,12 +10,12 @@ import { Observable } from "rxjs";
 export class AuthClientService{
     constructor(private http: HttpClient, private urlService: UrlService){ }
 
-    register(registerData: RegisterFormParameters){
+    register(registerData: RegisterPayload){
         const registerUrl = this.urlService.urlFor("auth", "register", undefined);
         return this.http.post<void>(registerUrl, registerData)
     }
 
-    login(loginData: LoginFormParameters): Observable<LoginResponse>{
+    login(loginData: LoginPayload): Observable<LoginResponse>{
         const loginUrl = this.urlService.urlFor("auth", "login", undefined)
         return this.http.post<LoginResponse>(loginUrl, loginData)
     }
