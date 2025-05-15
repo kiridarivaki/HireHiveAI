@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { FormGroup, FormControl,  Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { passwordValidator } from '@shared/validators/password.validator';
-import { LoginFormParameters } from 'src/app/client/models/auth-client.model';
+import { LoginPayload } from 'src/app/client/models/auth-client.model';
 import { AuthClientService } from 'src/app/client/services/auth-client.service';
 
 @Component({
@@ -25,15 +25,17 @@ export class LoginPageComponent {
     if (this.loginForm.valid) {
         const loginForm = this.loginForm.value;
 
-        const loginData: LoginFormParameters = {
+        const loginData: LoginPayload = {
           email: loginForm.email!,
           password: loginForm.password!
         };
 
         this.authService.login(loginData).subscribe({
             next: (response) => {
-              // this.authService.storeToken(response.jwtToken);
               this.router.navigate(['/profile']);
+            },
+            error: (err)=>{
+              this.router.navigate(['/']);
             }
           }
         )

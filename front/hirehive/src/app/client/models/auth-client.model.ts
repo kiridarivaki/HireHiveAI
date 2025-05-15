@@ -1,4 +1,4 @@
-export interface RegisterFormParameters{
+export interface RegisterPayload{
     email: string,
     firstName: string,
     lastName: string,
@@ -7,7 +7,13 @@ export interface RegisterFormParameters{
     confirmPassword: string;
 }
 
-export interface LoginFormParameters{
+export interface EmailConfirmationResponse{
+    accessToken: string,
+    refreshToken: string,
+    expiresIn: Date
+}
+
+export interface LoginPayload{
     email: string,
     password: string;
 }

@@ -1,8 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { EmploymentStatus } from '@shared/constants/employment-options';
 import { fieldsMatchValidator } from '@shared/validators/fields-match.validator';
 import { passwordValidator } from '@shared/validators/password.validator';
-import { RegisterFormParameters } from 'src/app/client/models/auth-client.model';
+import { RegisterPayload } from 'src/app/client/models/auth-client.model';
 import { AuthClientService } from 'src/app/client/services/auth-client.service';
 
 @Component({
@@ -31,20 +32,18 @@ export class RegisterPageComponent implements OnInit {
     { validators: fieldsMatchValidator('password', 'confirmPassword') }
   );
 
-  // constants file ?
   ngOnInit(): void {
-    this.employmentOptions = [
-      { value: 'Employed', label: 'Employed' },
-      { value: 'Unemployed', label: 'Unemployed' },
-      { value: 'Student', label: 'Student' }
-    ];
+    this.employmentOptions = Object.values(EmploymentStatus).map(status => ({
+      value: status,
+      label: status
+    }));
   }
 
   onRegister(){
     if (this.registerForm.valid) {
       const registerForm = this.registerForm.value;
       
-      const registerData: RegisterFormParameters = {
+      const registerData: RegisterPayload = {
         email: registerForm.email!,
         firstName: registerForm.firstName!,
         lastName: registerForm.lastName!,
