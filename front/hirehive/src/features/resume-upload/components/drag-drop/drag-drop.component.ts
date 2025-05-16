@@ -1,6 +1,4 @@
 import { Component, Output, EventEmitter } from '@angular/core';
-import { serialize } from 'object-to-formdata';
-
 
 @Component({
   selector: 'app-drag-drop',
@@ -9,6 +7,7 @@ import { serialize } from 'object-to-formdata';
   styleUrls: ['./drag-drop.component.css']
 })
 export class DragDropComponent {
+  @Output() fileAdded = new EventEmitter<File>();
   file: File | null = null;
   acceptTypes: string = '.pdf';
   maxSize: number = 2 * 1024 * 1024;
@@ -38,39 +37,19 @@ export class DragDropComponent {
       return;
     }
   
-    this.handleFile(files[0]);
-  }
-  
+    this.fileAdded.emit(files[0]);
+  } 
 
   onFileSelected(event: Event): void {
     const input = event.target as HTMLInputElement;
     const file = input?.files?.[0];
   
     if (file) {
-      this.handleFile(file);
-    }
-  }
-
-  private handleFile(file: File): void {
-    const validTypes = ['application/pdf'];
-    const isValidType = validTypes.includes(file.type);
-    const isValidSize = file.size <= this.maxSize;
-  
-    if (isValidType && isValidSize) {
-      this.file = file;
-      console.log('File accepted:', file);
-    } else {
-      alert('Invalid file type or file size exceeded!');
+      this.fileAdded.emit(file);
     }
   }
 
   removeFile(): void {
     this.file = null;
-  }
-  
-  handleUploadFile(){
-    const formData = serialize({
-      document: this.file
-    });
   }
 }

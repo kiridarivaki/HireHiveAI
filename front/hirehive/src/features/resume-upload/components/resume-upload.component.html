@@ -1,0 +1,10 @@
+<form [formGroup]="uploadForm" (ngSubmit)="onSubmit">
+    <app-drag-drop></app-drag-drop>
+    <app-file-info></app-file-info>
+    <app-button
+        type="submit"
+        text="Upload"
+        (onClick)="onSubmit"    
+    >
+    </app-button>
+</form>
