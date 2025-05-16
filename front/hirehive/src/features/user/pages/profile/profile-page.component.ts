@@ -61,6 +61,6 @@ import { GetUserInfoPayload, UpdateUserPayload } from "src/app/client/models/use
         employmentStatus: updateForm.employmentStatus,
       };
       if (this.userId)
-        this.userService.update(this.userId, updateData)
+        this.userService.update(this.userId, updateData).subscribe();
     }
 }
