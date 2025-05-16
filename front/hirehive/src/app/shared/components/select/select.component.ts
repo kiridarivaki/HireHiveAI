@@ -19,15 +19,13 @@ export class AppSelectComponent implements ControlValueAccessor {
   @Input() class: string = '';
   @Input() disabled = false;
   @Input() label = '';
+  value: any = '';
 
-  value = '';
   onChange = (_: any) => {};
   onTouched = () => {};
 
   writeValue(value: any): void {
-    if (value !== undefined) {
       this.value = value;
-    }
   }
 
   registerOnChange(fn: any): void {
@@ -38,12 +36,7 @@ export class AppSelectComponent implements ControlValueAccessor {
     this.onTouched = fn;
   }
 
-  setDisabledState(isDisabled: boolean): void {
-    this.disabled = isDisabled;
-  }
-
-  onValueChange(event: Event): void {
-    const value = (event.target as HTMLSelectElement).value;
+  onValueChange(value: any): void {
     this.value = value;
     this.onChange(value);
     this.onTouched();
