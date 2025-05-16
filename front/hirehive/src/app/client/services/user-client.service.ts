@@ -2,7 +2,7 @@ import { HttpClient, HttpResponse } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { Observable } from "rxjs";
 import { UrlService } from "../helpers/url-service.service";
-import { GetAllUsersResponse, GetUserInfoPayload, UpdateFormParameters } from "../models/user-client.model";
+import { GetAllUsersResponse, GetUserInfoPayload, UpdateUserPayload } from "../models/user-client.model";
 
 @Injectable({
     providedIn : 'root'
@@ -23,7 +23,7 @@ export class UserClientService{
         return this.http.get<GetUserInfoPayload>(getUserUrl);
     }
 
-    update(userId: string, updateData: UpdateFormParameters) : void{
+    update(userId: string, updateData: UpdateUserPayload) : void{
         const updateUserUrl = this.urlService.urlFor('user', 'update/{id}', { id: userId });
         this.http.patch<void>(updateUserUrl, updateData);
     }
