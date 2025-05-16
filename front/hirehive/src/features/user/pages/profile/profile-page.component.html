@@ -1,0 +1,70 @@
+  <div class="profile-container">
+  <h1>User Profile</h1>
+  <div class="form-field">
+    <app-input
+        type="email"
+        placeholder="Email"
+        inputId="email"
+        [label]="userData?.email ?? 'Email Address'"
+        [disabled]="true"
+    ></app-input>
+    </div>  
+    
+  <form [formGroup]="profileForm">
+  <div class="form-field">
+    <app-input
+        type="text"
+        placeholder="First Name"
+        inputId="firstName"
+        [label]="userData?.firstName ?? 'First Name'"
+        formControlName="firstName"
+        [disabled]="!isEditMode"
+    ></app-input>
+    <mat-error *ngIf="profileForm.controls.firstName.invalid && (profileForm.controls.firstName.dirty || profileForm.controls.firstName.touched)">
+      {{ profileForm.controls.firstName.errors | validationError }}
+    </mat-error>
+</div>
+  <div class="form-field">
+    <app-input
+        type="text"
+        placeholder="Last Name"
+        inputId="lastName"
+        [label]="userData?.lastName ?? 'Last Name'"
+        formControlName="lastName"
+        [disabled]="!isEditMode"
+    ></app-input>
+    <mat-error *ngIf="profileForm.controls.lastName.invalid && (profileForm.controls.lastName.dirty || profileForm.controls.lastName.touched)">
+      {{ profileForm.controls.lastName.errors | validationError }}
+    </mat-error>
+</div>
+  <div class="form-field">
+    <app-select
+      selectId="statusSelect"
+      [label]="userData?.employmentStatus ?? 'Employment Status'"
+      [options]="employmentOptions"
+      [disabled]="!isEditMode"
+      formControlName="employmentStatus">
+    </app-select>
+    </div>
+    <div *ngIf="isEditMode">
+    <app-button
+        class="form-field"
+        text="Save Changes"
+        type="submit"
+        (onClick)="onSubmit()"
+        [disabled]="!isEditMode">
+    </app-button>
+    <app-button
+        class="form-field"
+        text="Cancel"
+        (onClick)="toggleEdit()"
+        [disabled]="!isEditMode">
+    </app-button>
+    </div>
+  </form>
+    <app-button *ngIf="!isEditMode"
+        class="form-field"
+        text="Edit Profile"
+        (onClick)="toggleEdit()">
+    </app-button>
+  </div>
