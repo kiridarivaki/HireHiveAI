@@ -5,13 +5,11 @@
   (drop)="onDrop($event)"
   (click)="!file && fileInput.click()"
 >
-  <!-- Display instructions if no file is selected -->
   <p *ngIf="!file">Drag and drop a PDF file here, or click to select.</p>
 
-  <!-- Display file info and remove button if a file is selected -->
   <div *ngIf="file">
     <app-file-info [file]="file"></app-file-info>
-    <button type="button" class="remove-button" (click)="removeFile(); $event.stopPropagation()">Remove</button>
+    <app-button type="button" class="remove-button" text="Remove" (click)="removeFile(); $event.stopPropagation()">Remove</app-button>
   </div>
 
   <input

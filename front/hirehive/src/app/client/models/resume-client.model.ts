@@ -1,4 +1,4 @@
-import { Resume } from "@shared/models/resume";
+import { Resume } from "@shared/models/resume.model";
 
 export interface GetAllResumesResponse extends Array<Resume> {}
 
@@ -9,11 +9,10 @@ export interface GetResumeInfoPayload {
     updatedAt: Date, 
 }
 
-export interface UploadFormParameters {
+export interface UploadResumePayload {
     file: File
-    userId: string 
 }
 
-export interface UpdateFormParameters {
+export interface UpdateResumePayload {
     file?: File | null;
 }

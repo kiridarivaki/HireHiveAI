@@ -23,13 +23,13 @@ export class UserClientService{
         return this.http.get<GetUserInfoPayload>(getUserUrl);
     }
 
-    update(userId: string, updateData: UpdateUserPayload) : void{
+    update(userId: string, updateData: UpdateUserPayload) : Observable<any>{
         const updateUserUrl = this.urlService.urlFor('user', 'update/{id}', { id: userId });
-        this.http.patch<void>(updateUserUrl, updateData);
+        return this.http.patch<void>(updateUserUrl, updateData);
     }
 
-    delete(userId: string) : void{
+    delete(userId: string) : Observable<any>{
         const deleteUserUrl = this.urlService.urlFor('user', 'delete/{id}', { id: userId });
-        this.http.delete<void>(deleteUserUrl);
+        return this.http.delete<void>(deleteUserUrl);
     }
 }

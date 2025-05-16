@@ -2,7 +2,7 @@ import { HttpClient, HttpResponse } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { Observable } from "rxjs";
 import { UrlService } from "../helpers/url-service.service";
-import { GetAllResumesResponse, GetResumeInfoPayload, UpdateFormParameters, UploadFormParameters } from "../models/resume-client.model";
+import { GetAllResumesResponse, GetResumeInfoPayload, UpdateResumePayload, UploadResumePayload } from "../models/resume-client.model";
 
 @Injectable({
     providedIn : 'root'
@@ -23,18 +23,18 @@ export class ResumeClientService{
         return this.http.get<GetResumeInfoPayload>(getResumeUrl);
     }
 
-    upload(userId: string, uploadData: UploadFormParameters) : void{
-        const uploadResumeUrl = this.urlService.urlFor('resume', 'upload/{id}', { id: userId });
-        this.http.post<void>(uploadResumeUrl, uploadData);
+    upload(userId: string, uploadData: UploadResumePayload) : Observable<any>{
+        const uploadResumeUrl = this.urlService.urlFor('resume', 'upload/{userId}', { userId });
+        return this.http.post<void>(uploadResumeUrl, uploadData);
     }
 
-    update(userId: string, updateData: UpdateFormParameters) : void{
-        const updateResumeUrl = this.urlService.urlFor('resume', 'update/{id}', { id: userId });
-        this.http.patch<void>(updateResumeUrl, updateData);
+    update(userId: string, updateData: UpdateResumePayload) : Observable<any>{
+        const updateResumeUrl = this.urlService.urlFor('resume', 'update/{userId}', { userId });
+        return this.http.patch<void>(updateResumeUrl, updateData);
     }
 
-    delete(resumeId: string) : void{
-        const deleteResumeUrl = this.urlService.urlFor('resume', 'delete/{id}', { id: resumeId });
-        this.http.delete<void>(deleteResumeUrl);
+    delete(resumeId: string) : Observable<any>{
+        const deleteResumeUrl = this.urlService.urlFor('resume', 'delete/{resumeId}', { resumeId });
+        return this.http.delete<void>(deleteResumeUrl);
     }
 }
