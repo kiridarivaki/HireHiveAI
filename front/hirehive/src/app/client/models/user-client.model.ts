@@ -1,4 +1,4 @@
-import { User } from '@shared/models/user'
+import { User } from "@shared/models/user.model";
 
 export interface GetAllUsersResponse extends Array<User> {}
 
@@ -10,7 +10,7 @@ export interface GetUserInfoPayload {
     resumeId?: string | null;
 }
 
-export interface UpdateFormParameters {
+export interface UpdateUserPayload {
     firstName?: string | null,
     lastName?: string | null,
     employmentStatus?: string | null,
