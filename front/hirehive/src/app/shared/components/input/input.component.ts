@@ -25,15 +25,14 @@ export class AppInputComponent implements ControlValueAccessor {
   @Input() placeholder: string = '';
   @Input() disabled = false;
   @Input() label: string = '';
-  @Input() value: any = '';
+  value: any = '';
 
-  onChange: (value: any) => void = () => {};
+  onChange = (_: any) => {};
+
   onTouched: () => void = () => {};
 
   writeValue(value: any): void {
-    if (value !== undefined) {
       this.value = value; 
-    }
   }
 
   registerOnChange(fn: (value: any) => void): void {
