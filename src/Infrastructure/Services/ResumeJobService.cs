@@ -1,31 +1,55 @@
-﻿using HireHive.Application.Interfaces;
+﻿using HireHive.Application.DTOs.Resume;
+using HireHive.Application.Interfaces;
+using HireHive.Domain.Entities;
+using HireHive.Domain.Exceptions;
 using HireHive.Domain.Exceptions.Resume;
-using HireHive.Domain.Interfaces;
+using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Logging;
 
 namespace HireHive.Infrastructure.Services
 {
     public class ResumeJobService : IResumeJobService
     {
         private readonly IPiiRedactionService _piiRedactionService;
-        private readonly IResumeRepository _resumeRepository;
-        public ResumeJobService(IPiiRedactionService piiRedactionService, IResumeRepository resumeRepository)
+        private readonly IResumeService _resumeService;
+        private readonly IMapper _mapper;
+        private readonly ILogger<ResumeJobService> _logger;
+        public ResumeJobService(IPiiRedactionService piiRedactionService, IResumeService resumeService, IMapper mapper, ILogger<ResumeJobService> logger)
         {
             _piiRedactionService = piiRedactionService;
-            _resumeRepository = resumeRepository;
+            _resumeService = resumeService;
+            _mapper = mapper;
+            _logger = logger;
         }
-        public async Task ProcessResume(byte[] fileBytes, Guid userId)
+        public async Task ProcessResume(IFormFile file, Guid userId)
         {
-            var resume = await _resumeRepository.GetByUserIdAsync(userId)
-                ?? throw new ResumeNotFoundException();
+            try
+            {
+                var resume = _mapper.Map<Resume>(await _resumeService.GetByUserId(userId));
 
-            using var fileStream = new MemoryStream(fileBytes);
+                using var ms = new MemoryStream();
+                file.CopyTo(ms);
+                var fileBytes = ms.ToArray();
 
-            var documentText = await _piiRedactionService.ExtractText(fileStream);
+                using var fileStream = new MemoryStream(fileBytes);
 
-            var processedDocumentText = await _piiRedactionService.RedactPii(documentText);
+                var documentText = await _piiRedactionService.ExtractText(fileStream);
 
-            resume.Update(text: processedDocumentText);
-            await _resumeRepository.UpdateAsync(resume);
+                var processedDocumentText = await _piiRedactionService.RedactPii(documentText);
+
+                resume.Update(text: processedDocumentText);
+                await _resumeService.Update(resume.Id, _mapper.Map<UpdateResumeDto>(resume));
+            }
+            catch (ResumeNotFoundException e)
+            {
+                _logger.LogWarning("Resume of {userId} not found. With exception {message}", userId, e.Message);
+                throw;
+            }
+            catch (BaseException e)
+            {
+                _logger.LogWarning("Failed to process resume of {userId}. With exception {message}", userId, e.Message);
+                throw;
+            }
         }
     }
 }

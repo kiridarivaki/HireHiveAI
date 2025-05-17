@@ -9,6 +9,7 @@ using HireHive.Domain.Interfaces;
 using HireHive.Infrastructure.Data;
 using HireHive.Infrastructure.Data.Repositories;
 using HireHive.Infrastructure.Services;
+using HireHive.Infrastructure.Services.AI;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -66,9 +67,17 @@ namespace HireHive.Infrastructure
             var githubEndpoint = new Uri("https://models.github.ai/inference");
             var credential = new AzureKeyCredential(configuration["GitHubToken"]!);
 
-            var client = new ChatCompletionsClient(githubEndpoint, credential, new AzureAIInferenceClientOptions());
-            services.AddSingleton(client);
-            //services.AddScoped<AiAssessmentService>();
+            var aiClient = new ChatCompletionsClient(githubEndpoint, credential, new AzureAIInferenceClientOptions());
+
+            //var openAIEndpoint = new Uri("https://hirehive.openai.azure.com/");
+            //var apiKey = configuration["OpenAIApiKey"]!;
+
+            //var credential = new AzureKeyCredential(apiKey);
+
+            //var aiClient = new ChatCompletionsClient(openAIEndpoint, credential, new AzureAIInferenceClientOptions());
+
+            services.AddSingleton(aiClient);
+            services.AddScoped<AiAssessmentService>();
 
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IResumeRepository, ResumeRepository>();

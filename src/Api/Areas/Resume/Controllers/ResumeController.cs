@@ -6,6 +6,7 @@ using HireHive.Api.Areas.Resume.Models.ViewModels;
 using HireHive.Application.DTOs.Resume;
 using HireHive.Application.Interfaces;
 using HireHive.Domain.Exceptions.Resume;
+using HireHive.Infrastructure.Services.AI;
 using Microsoft.AspNetCore.Mvc;
 
 namespace HireHive.Api.Areas.Resume.Controllers
@@ -15,31 +16,31 @@ namespace HireHive.Api.Areas.Resume.Controllers
         private readonly IResumeService _resumeService;
         private readonly IValidator<UploadResumeBm> _uploadFileValidator;
         private readonly IValidator<UpdateResumeBm> _updateFileValidator;
-        private readonly IAzureBlobService _azureBlobService;
         private readonly IUserService _userService;
         private readonly IResumeJobService _resumeJobService;
         private readonly IBackgroundJobClient _backgroundJobClient;
+        private readonly AiAssessmentService _aiService;
         private readonly IMapper _mapper;
-        private readonly ILogger<ApiController> _logger;
+        private readonly ILogger<ResumeController> _logger;
 
         public ResumeController(
             IResumeService resumeService,
             IValidator<UploadResumeBm> uploadFileValidator,
             IValidator<UpdateResumeBm> updateFileValidator,
-            IAzureBlobService azureBlobService,
             IResumeJobService resumeJobService,
             IBackgroundJobClient backgroundJobClient,
+            AiAssessmentService aiService,
             IUserService userService,
             IMapper mapper,
-            ILogger<ApiController> logger)
+            ILogger<ResumeController> logger)
             : base(mapper, logger)
         {
             _resumeService = resumeService;
             _uploadFileValidator = uploadFileValidator;
             _updateFileValidator = updateFileValidator;
-            _azureBlobService = azureBlobService;
             _resumeJobService = resumeJobService;
             _backgroundJobClient = backgroundJobClient;
+            _aiService = aiService;
             _userService = userService;
             _mapper = mapper;
             _logger = logger;
@@ -100,6 +101,11 @@ namespace HireHive.Api.Areas.Resume.Controllers
 
                 var user = await _userService.GetById(uploadModel.UserId);
                 var resume = await _resumeService.Upload(_mapper.Map<UploadResumeDto>(uploadModel));
+
+
+                var fileProcessingJob = _backgroundJobClient.Enqueue(() => _resumeJobService.ProcessResume(uploadModel.File, uploadModel.UserId));
+
+                _logger.LogInformation("Resume processing started for user {userId}.", uploadModel.UserId);
 
                 return Ok(_mapper.Map<UploadResumeVm>(resume));
             }
@@ -163,24 +169,46 @@ namespace HireHive.Api.Areas.Resume.Controllers
         }
 
         [HttpPost]
-        [Route("process/{userId}")]
-        public IActionResult Process([FromForm] IFormFile file, [FromRoute] Guid userId)
+        [Route("process")]
+        public IActionResult Process([FromForm] ProcessResumeBm resumeModel)
         {
             try
             {
-                using var ms = new MemoryStream();
-                file.CopyTo(ms);
-                var fileBytes = ms.ToArray();
+                var fileProcessingJob = _backgroundJobClient.Enqueue(() => _resumeJobService.ProcessResume(resumeModel.File, resumeModel.UserId));
 
-                var fileProcessingJob = _backgroundJobClient.Enqueue(() => _resumeJobService.ProcessResume(fileBytes, userId));
+                _logger.LogInformation("Resume processing started for user {userId}.", resumeModel.UserId);
 
-                _logger.LogInformation("Resume processing started for user {userId}.", userId);
+                return Ok();
+            }
+            catch (ResumeNotFoundException e)
+            {
+                _logger.LogError("Resume for user {userId} not found. With exception: {message}", resumeModel.UserId, e.Message);
+                return NotFound();
+            }
+            catch (Exception e)
+            {
+                _logger.LogError("Failed to process resume for user {userId}. With exception: {message}", resumeModel.UserId, e.Message);
+                throw;
+            }
+        }
+
+        [HttpGet]
+        [Route("assess/{userId}")]
+        public async Task<IActionResult> Assess([FromRoute] Guid userId)
+        {
+            try
+            {
+                //todo : add to hangfire job 
+                await _aiService.Chat(userId);
+
+                _logger.LogInformation("Resume assessment started for user {userId}.", userId);
 
                 return Ok();
             }
             catch (Exception e)
             {
                 _logger.LogError("Resume for user {userId} not found. With exception: {message}", userId, e.Message);
+
                 return NotFound();
             }
         }
