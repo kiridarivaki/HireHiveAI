@@ -62,9 +62,31 @@ namespace HireHive.Api.Areas.Resume.Controllers
             }
         }
 
+        [HttpGet("url/{userId}")]
+        public async Task<IActionResult> GetResumeUrl(Guid userId)
+        {
+            try
+            {
+                var resume = await _resumeService.GetByUserId(userId);
+
+                if (string.IsNullOrWhiteSpace(resume.BlobName))
+                    return NotFound();
+
+                string sasUrl = _azureBlobService.GetSasUrl(resume.BlobName);
+
+                return Ok(sasUrl);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError("Failed to get resume url for user {userId}. With exception: {message}", userId, e.Message);
+                throw;
+            }
+        }
+
+
         [HttpPost]
         [Route("upload")]
-        public async Task<IActionResult> UploadResume([FromForm] UploadResumeBm uploadModel)
+        public async Task<IActionResult> Upload([FromForm] UploadResumeBm uploadModel)
         {
             try
             {
@@ -90,7 +112,7 @@ namespace HireHive.Api.Areas.Resume.Controllers
 
         [HttpDelete]
         [Route("delete/{resumeId}")]
-        public async Task<IActionResult> DeleteResume([FromRoute] Guid resumeId)
+        public async Task<IActionResult> Delete([FromRoute] Guid resumeId)
         {
             try
             {
@@ -112,7 +134,7 @@ namespace HireHive.Api.Areas.Resume.Controllers
 
         [HttpPut]
         [Route("update/{userId}")]
-        public async Task<IActionResult> UpdateResume([FromRoute] Guid userId, [FromForm] UpdateResumeBm updateResumeBm)
+        public async Task<IActionResult> Update([FromRoute] Guid userId, [FromForm] UpdateResumeBm updateResumeBm)
         {
             try
             {

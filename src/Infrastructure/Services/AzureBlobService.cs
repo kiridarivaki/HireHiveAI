@@ -46,5 +46,14 @@ namespace HireHive.Infrastructure.Services
 
             await blobClient.DeleteIfExistsAsync();
         }
+
+        public string GetSasUrl(string blobName)
+        {
+            var containerClient = _blobServiceClient.GetBlobContainerClient("resumefiles");
+            var blobClient = containerClient.GetBlobClient(blobName);
+
+            return $"{blobClient.Uri}?{_blobSasToken}";
+        }
+
     }
 }
