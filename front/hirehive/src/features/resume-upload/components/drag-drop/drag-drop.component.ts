@@ -1,4 +1,5 @@
 import { Component, Output, EventEmitter, Input, ElementRef, ViewChild } from '@angular/core';
+import { FileService } from '@shared/services/file.service';
 import { GetResumeInfoPayload, GetResumeUrlPayload } from 'src/app/client/models/resume-client.model';
 
 @Component({
@@ -9,10 +10,14 @@ import { GetResumeInfoPayload, GetResumeUrlPayload } from 'src/app/client/models
 })
 export class DragDropComponent {
   @Input() file: File | null = null;
-  @Input() fileUrl: GetResumeUrlPayload | null = null;
+  @Input() fileUrlPayload: GetResumeUrlPayload | null = null;
   @Input() fileMetadata: GetResumeInfoPayload | null = null;
   @Output() fileAdded = new EventEmitter<File>();
   @ViewChild('fileInput') fileInputRef!: ElementRef<HTMLInputElement>;
+
+  constructor(
+    private fileService: FileService
+  ){}
 
   onDragOver(event: DragEvent): void {
     event.preventDefault();
@@ -66,11 +71,8 @@ export class DragDropComponent {
       a.click();
       URL.revokeObjectURL(url);
     }
-    else if (this.fileUrl){
-      const a = document.createElement('a');
-      a.href = this.fileUrl.sasUrl ?? '';
-      a.download = this.fileUrl.fileName ?? '';
-      a.click();
+    else if (this.fileUrlPayload){
+      this.fileService.downloadFile(this.fileUrlPayload);
     }
   }
 }
