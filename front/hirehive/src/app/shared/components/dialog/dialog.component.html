@@ -1,0 +1,9 @@
+<h2 *ngIf="data.title">{{ data.title }}</h2>
+
+<mat-dialog-content>
+  <ng-container *ngComponentOutlet="data.component"></ng-container>
+</mat-dialog-content>
+
+<mat-dialog-actions>
+  <button mat-button (click)="dialogRef.close()">Close</button>
+</mat-dialog-actions>

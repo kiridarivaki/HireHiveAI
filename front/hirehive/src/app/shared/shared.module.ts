@@ -6,6 +6,7 @@ import {AppPasswordInputComponent} from '@shared/components/input/password-input
 import {AppSelectComponent} from './components/select/select.component';
 import { AppButtonComponent } from './components/button/button.component';
 import { AppNavBarComponent } from './components/navbar/navbar.component';
+import { AppDialogComponent } from './components/dialog/dialog.component';
 
 @NgModule({
     imports: [
@@ -14,6 +15,7 @@ import { AppNavBarComponent } from './components/navbar/navbar.component';
         AppSelectComponent,
         AppButtonComponent,
         AppNavBarComponent,
+        AppDialogComponent,
         CommonModule,
         ReactiveFormsModule,
     ],
@@ -23,6 +25,7 @@ import { AppNavBarComponent } from './components/navbar/navbar.component';
         AppSelectComponent,
         AppButtonComponent,
         AppNavBarComponent,
+        AppDialogComponent,
         ReactiveFormsModule
     ]
 })
