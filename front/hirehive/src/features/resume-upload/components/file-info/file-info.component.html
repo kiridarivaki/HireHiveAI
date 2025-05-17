@@ -1,3 +1,4 @@
 <div class="file-details">
-    <span>{{ file.name }} ({{ file.size / 1024}} KB)</span>
+    <span *ngIf="file">{{ file.name }} <br>({{ file.size / 1024}} KB)</span>
+    <span *ngIf="fileMetadata">{{ fileMetadata!.fileName}} <br>({{ fileMetadata!.fileSize}} KB)</span>
 </div>  
