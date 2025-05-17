@@ -4,7 +4,7 @@ using Azure.AI.TextAnalytics;
 using HireHive.Application.Interfaces;
 using System.Text;
 
-namespace HireHive.Infrastructure.Services
+namespace HireHive.Infrastructure.Services.AI
 {
     public class PiiRedactionService : IPiiRedactionService
     {
@@ -36,6 +36,7 @@ namespace HireHive.Infrastructure.Services
 
             var categoriesToRedact = new List<PiiEntityCategory>()
             {
+                PiiEntityCategory.Person,
                 PiiEntityCategory.Email,
                 PiiEntityCategory.Address,
                 PiiEntityCategory.PhoneNumber,

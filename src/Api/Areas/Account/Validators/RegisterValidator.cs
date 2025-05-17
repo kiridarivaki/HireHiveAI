@@ -14,7 +14,12 @@ public class RegisterValidator : AbstractValidator<RegisterBm>
             .NotEmpty().WithMessage("First Name is required.");
 
         RuleFor(x => x.LastName)
-            .NotEmpty().WithMessage("Last Name is required.");
+            .NotEmpty();
+
+        RuleFor(x => x.EmploymentStatus)
+            .NotEmpty()
+            .IsInEnum()
+            .WithMessage("Invalid employment status.");
 
         RuleFor(x => x.Password)
             .SetValidator(new PasswordRule());

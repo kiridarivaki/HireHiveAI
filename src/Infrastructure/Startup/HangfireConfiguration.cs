@@ -1,5 +1,6 @@
 ﻿using Hangfire;
 using Hangfire.PostgreSql;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -13,6 +14,10 @@ namespace HireHive.Infrastructure.Startup
                 config.UsePostgreSqlStorage(c =>
                 c.UseNpgsqlConnection(configuration["HireHivePostgresConnectionString"])))
             .AddHangfireServer();
+        }
+        public static void EnableHangfire(this WebApplication app)
+        {
+            app.UseHangfireDashboard("/hangfire");
         }
     }
 }

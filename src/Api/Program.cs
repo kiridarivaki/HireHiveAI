@@ -1,4 +1,3 @@
-using Hangfire;
 using HireHive.Infrastructure.Startup;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -14,6 +13,7 @@ services.ConfigureSwagger();
 services.AddAuthorization();
 services.ConfigureAuthentication(configuration);
 services.ConfigureHangfire(configuration);
+services.ConfigureCors();
 
 builder.Services.AddEndpointsApiExplorer();
 
@@ -24,6 +24,8 @@ var app = builder.Build();
 if (app.Environment.IsDevelopment())
 {
     app.EnableSwagger();
+    app.EnableHangfire();
+    app.EnableCors();
     app.UseDeveloperExceptionPage();
 }
 
@@ -31,7 +33,6 @@ app.Services.Seed(configuration);
 app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
-app.UseHangfireDashboard();
 app.MapControllers();
 
 app.Run();

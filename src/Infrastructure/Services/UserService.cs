@@ -3,6 +3,7 @@ using HireHive.Application.Interfaces;
 using HireHive.Domain.Exceptions;
 using HireHive.Domain.Exceptions.User;
 using HireHive.Domain.Interfaces;
+using HireHive.Infrastructure.Services.AI;
 using Microsoft.Extensions.Logging;
 
 namespace HireHive.Infrastructure.Services
@@ -12,15 +13,18 @@ namespace HireHive.Infrastructure.Services
         private readonly IUserRepository _userRepository;
         private readonly ILogger<UserService> _logger;
         private readonly IMapper _mapper;
+        private readonly AiAssessmentService _aiService;
 
         public UserService(
             IUserRepository userRepository,
             ILogger<UserService> logger,
-            IMapper mapper)
+            IMapper mapper,
+            AiAssessmentService aiService)
         {
             _userRepository = userRepository;
             _logger = logger;
             _mapper = mapper;
+            _aiService = aiService;
         }
 
         public async Task<List<UserDto>> GetAll()
@@ -82,6 +86,12 @@ namespace HireHive.Infrastructure.Services
                 throw;
             }
 
+        }
+
+        public async Task GetAllPaginated(PaginateUsersDto listDto)
+        {
+            var users = await _userRepository.GetAllAsync();
+            _aiService.Chat();
         }
     }
 }
