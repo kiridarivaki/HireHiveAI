@@ -3,7 +3,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { AppRoutingModule } from './app-routing.module'; 
 import { UserModule } from '../features/user/user.module'; 
 import { AppComponent } from './app.component'; 
-import { HomeModule } from 'src/features/home/home.module';
+import { HomeModule } from 'src/features/common/home/home.module';
 import { HTTP_INTERCEPTORS, provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { ErrorInterceptor } from './client/interceptors/error.interceptor';
 import { TokenInterceptor } from './client/interceptors/token.interceptor';
