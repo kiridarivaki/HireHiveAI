@@ -3,7 +3,7 @@
 <form [formGroup]="uploadForm" (ngSubmit)="onSubmit()">
   <app-drag-drop
     [file]="selectedFile"
-    [fileUrl]="fileUrl"
+    [fileUrlPayload]="fileUrl"
     [fileMetadata]="fileMetadata"
     (fileAdded)="onFileReceived($event)"
     (fileRemoved)="onFileRemoved()"

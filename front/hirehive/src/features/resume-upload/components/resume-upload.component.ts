@@ -4,12 +4,12 @@ import { fileValidator } from "@shared/validators/file.validator";
 import { GetResumeInfoPayload, GetResumeUrlPayload, UploadResumePayload } from "src/app/client/models/resume-client.model";
 import { ResumeClientService } from "src/app/client/services/resume-client.service";
 import { DragDropComponent } from "./drag-drop/drag-drop.component";
+import { FileService } from "@shared/services/file.service";
 
 @Component({
     selector: 'app-resume-upload',
     standalone: false,
-    templateUrl: './resume-upload.component.html',
-    styleUrl: './resume-upload.css'
+    templateUrl: './resume-upload.component.html'
   })
   
 export class ResumeUploadComponent implements OnInit{
@@ -19,7 +19,8 @@ export class ResumeUploadComponent implements OnInit{
   @ViewChild(DragDropComponent) dragDropComponent!: DragDropComponent;
 
   constructor(
-    private resumeService: ResumeClientService
+    private resumeService: ResumeClientService,
+    private fileService: FileService
   ){}
 
   ngOnInit(): void {
@@ -40,7 +41,7 @@ export class ResumeUploadComponent implements OnInit{
   }
 
   fetchFileUrl(){
-    this.resumeService.getFileUrl(this.userId).subscribe({
+    this.fileService.getUrl(this.userId).subscribe({
       next: (fileUrl: GetResumeUrlPayload) => {
         console.log('File fetched successfully.');
         this.fileUrl = fileUrl;
