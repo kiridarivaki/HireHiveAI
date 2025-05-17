@@ -2,7 +2,7 @@ import { HttpClient, HttpResponse } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { Observable } from "rxjs";
 import { UrlService } from "../helpers/url-service.service";
-import { GetAllResumesResponse, GetResumeInfoPayload, UpdateResumePayload, UploadResumePayload } from "../models/resume-client.model";
+import { GetAllResumesResponse, GetResumeInfoPayload, GetResumeUrlPayload, UpdateResumePayload, UploadResumePayload } from "../models/resume-client.model";
 
 @Injectable({
     providedIn : 'root'
@@ -18,9 +18,14 @@ export class ResumeClientService{
         return this.http.get<Array<GetAllResumesResponse>>(getAllUrl);
     }
 
-    getById(resumeId: string) : Observable<GetResumeInfoPayload>{
-        const getResumeUrl = this.urlService.urlFor('resume', undefined, { id: resumeId });
+    getById(userId: string) : Observable<GetResumeInfoPayload>{
+        const getResumeUrl = this.urlService.urlFor('resume', undefined, { userId });
         return this.http.get<GetResumeInfoPayload>(getResumeUrl);
+    }
+
+    getFileUrl(userId: string) : Observable<GetResumeUrlPayload>{
+        const getFileUrlUrl = this.urlService.urlFor('resume', 'getUrl', { userId });
+        return this.http.get<GetResumeUrlPayload>(getFileUrlUrl);
     }
 
     upload(userId: string, uploadData: UploadResumePayload) : Observable<any>{

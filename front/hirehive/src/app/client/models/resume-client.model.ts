@@ -9,6 +9,11 @@ export interface GetResumeInfoPayload {
     updatedAt: Date, 
 }
 
+export interface GetResumeUrlPayload {
+    fileName?: string,
+    sasUrl?: string 
+}
+
 export interface UploadResumePayload {
     file: File
 }
