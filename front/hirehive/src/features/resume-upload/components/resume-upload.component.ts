@@ -1,32 +1,104 @@
-import { Component, Input } from "@angular/core";
+import { Component, ElementRef, Input, OnInit, ViewChild } from "@angular/core";
 import { FormControl, FormGroup, Validators } from "@angular/forms";
 import { fileValidator } from "@shared/validators/file.validator";
-import { UploadResumePayload } from "src/app/client/models/resume-client.model";
+import { GetResumeInfoPayload, GetResumeUrlPayload, UploadResumePayload } from "src/app/client/models/resume-client.model";
 import { ResumeClientService } from "src/app/client/services/resume-client.service";
+import { DragDropComponent } from "./drag-drop/drag-drop.component";
 
 @Component({
     selector: 'app-resume-upload',
     standalone: false,
-    templateUrl: './resume-upload.component.html'
+    templateUrl: './resume-upload.component.html',
+    styleUrl: './resume-upload.css'
   })
   
-export class ResumeUploadComponent{
+export class ResumeUploadComponent implements OnInit{
   @Input() userId!: string;
-  selectedFile: File | null = null;
+  fileMetadata: GetResumeInfoPayload | null = null;
+  fileUrl: GetResumeUrlPayload | null = null;
+  @ViewChild(DragDropComponent) dragDropComponent!: DragDropComponent;
 
   constructor(
     private resumeService: ResumeClientService
   ){}
 
+  ngOnInit(): void {
+    this.fetchFileMetadata();
+    this.fetchFileUrl();
+  }
+
+  fetchFileMetadata(){
+    this.resumeService.getById(this.userId).subscribe({
+      next: (fileInfo: GetResumeInfoPayload) => {
+        console.log('File fetched successfully.');
+        this.fileMetadata = fileInfo;
+      },
+      error: (err) => {
+        console.error('Fetch failed:', err);
+      }
+    });
+  }
+
+  fetchFileUrl(){
+    this.resumeService.getFileUrl(this.userId).subscribe({
+      next: (fileUrl: GetResumeUrlPayload) => {
+        console.log('File fetched successfully.');
+        this.fileUrl = fileUrl;
+      },
+      error: (err) => {
+        console.error('Fetch failed:', err);
+      }
+    });
+  }
+
   uploadForm = new FormGroup({
-    selectedFile: new FormControl(null, [Validators.required, fileValidator])
+    selectedFile: new FormControl<File | null>(null, [Validators.required, fileValidator])
   });
 
-  onSubmit(file: File){
-    const uploadData : UploadResumePayload = {
-      file: file
+  onFileReceived(file: File): void {
+    this.uploadForm.patchValue({ selectedFile: file });
+    this.uploadForm.markAsDirty();
+  }
+
+  onFileRemoved(): void {
+    this.uploadForm.reset();
+
+    if (this.dragDropComponent)
+      this.dragDropComponent.clearFileInput();
+
+    if (this.fileMetadata) {
+      this.resumeService.delete(this.userId).subscribe({
+        next: () => {
+          this.fileMetadata = null;
+          this.fileUrl = null;
+          console.log('File removed successfully.');
+        },
+        error: (err) => {
+          console.error('File removal failed:', err);
+        }
+      });
     }
-    if(this.userId)
-      this.resumeService.upload(this.userId, uploadData).subscribe();
+  }
+
+  onSubmit(): void {
+    const file = this.uploadForm.get('selectedFile')?.value;
+
+    if (file && this.userId) {
+      const uploadData: UploadResumePayload = { file };
+
+      this.resumeService.upload(this.userId, uploadData).subscribe({
+        next: () => {
+          console.log('File uploaded successfully.');
+          this.uploadForm.reset();
+        },
+        error: (err) => {
+          console.error('Upload failed:', err);
+        }
+      });
+    }
+  }
+
+  get selectedFile(): File | null {
+    return this.uploadForm.get('selectedFile')?.value ?? null;
   }
 }

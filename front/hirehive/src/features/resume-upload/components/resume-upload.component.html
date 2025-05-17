@@ -1,10 +1,16 @@
-<form [formGroup]="uploadForm" (ngSubmit)="onSubmit">
-    <app-drag-drop></app-drag-drop>
-    <app-file-info></app-file-info>
-    <app-button
-        type="submit"
-        text="Upload"
-        (onClick)="onSubmit"    
-    >
-    </app-button>
+<h1>Add your CV</h1>
+
+<form [formGroup]="uploadForm" (ngSubmit)="onSubmit()">
+  <app-drag-drop
+    [file]="selectedFile"
+    [fileUrl]="fileUrl"
+    [fileMetadata]="fileMetadata"
+    (fileAdded)="onFileReceived($event)"
+    (fileRemoved)="onFileRemoved()"
+  ></app-drag-drop>
+
+  <div class="button-group" *ngIf="selectedFile || fileMetadata">
+    <app-button text="Upload" (click)="onSubmit()" *ngIf="selectedFile && !fileMetadata"></app-button>
+    <app-button text="Remove" (click)="onFileRemoved()"></app-button>
+  </div>
 </form>

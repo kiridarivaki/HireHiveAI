@@ -2,21 +2,25 @@
   class="drag-drop-area"
   (dragover)="onDragOver($event)"
   (dragleave)="onDragLeave($event)"
-  (drop)="onDrop($event)"
+  (drop)="onFileDrop($event)"
   (click)="!file && fileInput.click()"
 >
-  <p *ngIf="!file">Drag and drop a PDF file here, or click to select.</p>
+  <p *ngIf="(!file && !fileMetadata) || !file">Drag and drop a PDF file here, or click to select.</p>
 
   <div *ngIf="file">
     <app-file-info [file]="file"></app-file-info>
-    <app-button type="button" class="remove-button" text="Remove" (click)="removeFile(); $event.stopPropagation()">Remove</app-button>
+    <app-button text="Download" class="download-button" icon="download" (click)="downloadFile()"></app-button>
+  </div>
+
+  <div *ngIf="!file && fileMetadata">
+    <app-file-info [fileMetadata]="fileMetadata"></app-file-info>
+    <app-button text="Download" class="download-button" icon="download" (click)="downloadFile()"></app-button>
   </div>
 
   <input
     #fileInput
     type="file"
-    (change)="onFileSelected($event)"
-    [accept]="acceptTypes"
+    (change)="onFileSelect($event)"
     style="display: none"
   />
 </div>

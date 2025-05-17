@@ -1,4 +1,5 @@
-import { Component, Output, EventEmitter } from '@angular/core';
+import { Component, Output, EventEmitter, Input, ElementRef, ViewChild } from '@angular/core';
+import { GetResumeInfoPayload, GetResumeUrlPayload } from 'src/app/client/models/resume-client.model';
 
 @Component({
   selector: 'app-drag-drop',
@@ -7,10 +8,11 @@ import { Component, Output, EventEmitter } from '@angular/core';
   styleUrls: ['./drag-drop.component.css']
 })
 export class DragDropComponent {
+  @Input() file: File | null = null;
+  @Input() fileUrl: GetResumeUrlPayload | null = null;
+  @Input() fileMetadata: GetResumeInfoPayload | null = null;
   @Output() fileAdded = new EventEmitter<File>();
-  file: File | null = null;
-  acceptTypes: string = '.pdf';
-  maxSize: number = 2 * 1024 * 1024;
+  @ViewChild('fileInput') fileInputRef!: ElementRef<HTMLInputElement>;
 
   onDragOver(event: DragEvent): void {
     event.preventDefault();
@@ -22,7 +24,7 @@ export class DragDropComponent {
     event.stopPropagation();
   }
 
-  onDrop(event: DragEvent): void {
+  onFileDrop(event: DragEvent): void {
     event.preventDefault();
     event.stopPropagation();
   
@@ -40,7 +42,7 @@ export class DragDropComponent {
     this.fileAdded.emit(files[0]);
   } 
 
-  onFileSelected(event: Event): void {
+  onFileSelect(event: Event): void {
     const input = event.target as HTMLInputElement;
     const file = input?.files?.[0];
   
@@ -49,7 +51,26 @@ export class DragDropComponent {
     }
   }
 
-  removeFile(): void {
-    this.file = null;
+  clearFileInput(): void {
+    if (this.fileInputRef) {
+      this.fileInputRef.nativeElement.value = '';
+    }
+  }
+
+  downloadFile(): void {
+    if (this.file) {
+      const url = URL.createObjectURL(this.file);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = this.file.name;
+      a.click();
+      URL.revokeObjectURL(url);
+    }
+    else if (this.fileUrl){
+      const a = document.createElement('a');
+      a.href = this.fileUrl.sasUrl ?? '';
+      a.download = this.fileUrl.fileName ?? '';
+      a.click();
+    }
   }
 }
