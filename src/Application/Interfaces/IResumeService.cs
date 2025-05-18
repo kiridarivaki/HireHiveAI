@@ -7,6 +7,6 @@ namespace HireHive.Application.Interfaces
         Task<ResumeDto> GetByUserId(Guid resumeId);
         Task<UploadResumeDto> Upload(UploadResumeDto uploadDto);
         Task Update(Guid resumeId, UpdateResumeDto updateResumeDto);
-        Task Delete(Guid resumeId);
+        Task Delete(Guid userId);
     }
 }
