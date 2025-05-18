@@ -3,14 +3,45 @@
   flex-direction: column;
   align-items: center;
   gap: 16px;
-  max-width: 400px;
+  width: 400px; /* Fixed width for the form container */
   margin: 0 auto;
   padding: 20px;
   background-color: white;
   border-radius: 8px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  position: relative; /* To keep form fields inside the form container */
 }
 
-.form-element {
+.form-field {
   width: 100%;
+  display: flex;
+  flex-direction: column;
+  position: relative; /* Keeps form fields and error messages aligned */
+}
+
+mat-error {
+  display: block; /* Ensures error message is displayed below the input */
+  width: 100%; /* Makes sure the error message takes the full width available */
+  box-sizing: border-box;
+  margin-top: 5px; /* Adds spacing between the field and error message */
+}
+
+mat-error ul {
+  padding: 0;
+  margin: 0;
+  width: 100%;
+}
+
+mat-error .error-message {
+  color: red; /* Error message color */
+  font-size: 12px; /* Optional: font size for error messages */
+  word-wrap: break-word; /* Ensure long error messages wrap to the next line */
+  white-space: normal; /* Make sure text wraps within the form container */
+  word-break: break-word; /* Break long words if necessary */
+}
+
+.form-field .error-list {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
 }
