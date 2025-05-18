@@ -1,41 +1,46 @@
 <div class="login-container">
-<form [formGroup]="loginForm" (ngSubmit)="onLogin()">
-  <div class="form-field">
-    <app-input
-      type="email"
-      placeholder="Email"
-      inputId="email"
-      label="Email Address"
-      formControlName="email"
-    ></app-input>
-    <mat-error *ngIf="loginForm.controls.email.invalid && (loginForm.controls.email.dirty || loginForm.controls.email.touched)">
-      {{ loginForm.controls.email.errors | validationError }}
-    </mat-error>
-  </div>
+  <h1 class="page-title">Login</h1>
+  <form [formGroup]="loginForm" (ngSubmit)="onLogin()">
+    <div class="form-field">
+      <app-input
+        type="email"
+        placeholder="Email"
+        inputId="email"
+        label="Email Address"
+        formControlName="email"
+      ></app-input>
+      <mat-error *ngIf="loginForm.controls.email.invalid && (loginForm.controls.email.dirty || loginForm.controls.email.touched)">
+        {{ loginForm.controls.email.errors | validationError }}
+      </mat-error>
+    </div>
 
-  <div class="form-field">
-    <app-password-input
-      type="password"
-      placeholder="Password"
-      inputId="password"
-      label="Password"
-      hint="Min 8 characters"
-      [withToggle]="true"
-      formControlName="password"
-    >
-    </app-password-input>
-    <mat-error *ngIf="loginForm.controls.password.invalid && (loginForm.controls.password.dirty || loginForm.controls.password.touched)">
-      {{ loginForm.controls.password.errors | validationError }}
-    </mat-error>
-  </div>
+    <div class="form-field">
+      <app-password-input
+        type="password"
+        placeholder="Password"
+        inputId="password"
+        label="Password"
+        hint="Min 8 characters"
+        [withToggle]="true"
+        formControlName="password"
+      >
+      </app-password-input>
+      <mat-error *ngIf="loginForm.controls.password.invalid && (loginForm.controls.password.dirty || loginForm.controls.password.touched)">
+          <ul>
+            <ng-container *ngFor="let error of loginForm.controls.password.errors | validationError">
+              <li class="error-message">{{ error }}</li>
+            </ng-container>
+          </ul>
+      </mat-error>
+    </div>
 
-  <div class="form-field">
-  <app-button
-    type="submit"
-    text="Login"
-    [disabled]="!loginForm.valid"
-    (onClick)="onLogin()">
-  </app-button>
-  </div>
-</form>
+    <div class="form-field">
+    <app-button
+      type="submit"
+      text="Login"
+      [disabled]="!loginForm.valid"
+      (onClick)="onLogin()">
+    </app-button>
+    </div>
+  </form>
 </div>
