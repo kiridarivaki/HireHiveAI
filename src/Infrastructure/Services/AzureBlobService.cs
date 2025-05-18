@@ -55,5 +55,14 @@ namespace HireHive.Infrastructure.Services
             return $"{blobClient.Uri}?{_blobSasToken}";
         }
 
+        public async Task<Stream> GetFileStream(string blobName)
+        {
+            var containerClient = _blobServiceClient.GetBlobContainerClient("resumefiles");
+            var blobClient = containerClient.GetBlobClient(blobName);
+            var stream = await blobClient.OpenReadAsync();
+
+            return stream;
+        }
+
     }
 }

@@ -20,6 +20,7 @@ namespace HireHive.Api.Areas.Resume.Controllers
         private readonly IResumeJobService _resumeJobService;
         private readonly IBackgroundJobClient _backgroundJobClient;
         private readonly AiAssessmentService _aiService;
+        private readonly IAzureBlobService _azureBlobService;
         private readonly IMapper _mapper;
         private readonly ILogger<ResumeController> _logger;
 
@@ -31,6 +32,7 @@ namespace HireHive.Api.Areas.Resume.Controllers
             IBackgroundJobClient backgroundJobClient,
             AiAssessmentService aiService,
             IUserService userService,
+            IAzureBlobService azureBlobService,
             IMapper mapper,
             ILogger<ResumeController> logger)
             : base(mapper, logger)
@@ -42,6 +44,7 @@ namespace HireHive.Api.Areas.Resume.Controllers
             _backgroundJobClient = backgroundJobClient;
             _aiService = aiService;
             _userService = userService;
+            _azureBlobService = azureBlobService;
             _mapper = mapper;
             _logger = logger;
         }
@@ -64,22 +67,44 @@ namespace HireHive.Api.Areas.Resume.Controllers
         }
 
         [HttpGet("url/{userId}")]
-        public async Task<IActionResult> GetResumeUrl(Guid userId)
+        public async Task<IActionResult> GetUrl(Guid userId)
         {
             try
             {
                 var resume = await _resumeService.GetByUserId(userId);
-
-                if (string.IsNullOrWhiteSpace(resume.BlobName))
+                if (resume == null)
                     return NotFound();
 
-                string sasUrl = _azureBlobService.GetSasUrl(resume.BlobName);
+                string sasUrl = _azureBlobService.GetSasUrl(resume.BlobName!);
+                _logger.LogInformation("Fetched resume url for user {userId}", userId);
 
                 return Ok(sasUrl);
             }
             catch (Exception e)
             {
                 _logger.LogError("Failed to get resume url for user {userId}. With exception: {message}", userId, e.Message);
+                throw;
+            }
+        }
+
+        [HttpGet("stream/{userId}")]
+        public async Task<IActionResult> GetResumeStream(Guid userId)
+        {
+            try
+            {
+                var resume = await _resumeService.GetByUserId(userId);
+                if (resume == null)
+                    return NotFound();
+
+                var stream = await _azureBlobService.GetPdfStreamAsync(resume.BlobName!);
+
+                _logger.LogInformation("Fetched resume stream for user {userId}", userId);
+
+                return File(stream, "application/pdf");
+            }
+            catch (Exception e)
+            {
+                _logger.LogError("Failed to get resume stream for user {userId}. With exception: {message}", userId, e.Message);
                 throw;
             }
         }
@@ -117,23 +142,23 @@ namespace HireHive.Api.Areas.Resume.Controllers
         }
 
         [HttpDelete]
-        [Route("delete/{resumeId}")]
-        public async Task<IActionResult> Delete([FromRoute] Guid resumeId)
+        [Route("delete/{userId}")]
+        public async Task<IActionResult> Delete([FromRoute] Guid userId)
         {
             try
             {
-                await _resumeService.Delete(resumeId);
+                await _resumeService.Delete(userId);
 
                 return NoContent();
             }
             catch (ResumeNotFoundException e)
             {
-                _logger.LogError("Resume {resumeId} not found. With exception: {message}", resumeId, e.Message);
+                _logger.LogError("Resume of user {userId} not found. With exception: {message}", userId, e.Message);
                 return NotFound();
             }
             catch (Exception e)
             {
-                _logger.LogError("Failed to delete {resumeId}. With exception: {message}", resumeId, e.Message);
+                _logger.LogError("Failed to delete resume of user {userId}. With exception: {message}", userId, e.Message);
                 throw;
             }
         }
@@ -192,25 +217,25 @@ namespace HireHive.Api.Areas.Resume.Controllers
             }
         }
 
-        [HttpGet]
-        [Route("assess/{userId}")]
-        public async Task<IActionResult> Assess([FromRoute] Guid userId)
-        {
-            try
-            {
-                //todo : add to hangfire job 
-                await _aiService.Chat(userId);
+        //[HttpGet]
+        //[Route("assess/{userId}")]
+        //public async Task<IActionResult> Assess([FromRoute] Guid userId)
+        //{
+        //    try
+        //    {
+        //        //todo : add to hangfire job 
+        //        await _aiService.Chat(userId);
 
-                _logger.LogInformation("Resume assessment started for user {userId}.", userId);
+        //        _logger.LogInformation("Resume assessment started for user {userId}.", userId);
 
-                return Ok();
-            }
-            catch (Exception e)
-            {
-                _logger.LogError("Resume for user {userId} not found. With exception: {message}", userId, e.Message);
+        //        return Ok();
+        //    }
+        //    catch (Exception e)
+        //    {
+        //        _logger.LogError("Resume for user {userId} not found. With exception: {message}", userId, e.Message);
 
-                return NotFound();
-            }
-        }
+        //        return NotFound();
+        //    }
+        //}
     }
 }

@@ -94,21 +94,21 @@ namespace HireHive.Infrastructure.Services
             }
         }
 
-        public async Task Delete(Guid resumeId)
+        public async Task Delete(Guid userId)
         {
             try
             {
-                var resume = await _resumeRepository.GetByIdAsync(resumeId)
+                var resume = await _resumeRepository.GetByUserIdAsync(userId)
                     ?? throw new ResumeNotFoundException();
 
                 await _azureBlobService.Delete(resume.BlobName!);
 
                 _resumeRepository.Delete(resume);
-                _logger.LogInformation("Resume with id {resumeId} deleted.", resumeId);
+                _logger.LogInformation("Resume of user {userId} deleted.", userId);
             }
             catch (BaseException e)
             {
-                _logger.LogWarning("Failed to delete resume {resumeId}. With exception: {message}", resumeId, e.Message);
+                _logger.LogWarning("Failed to delete resume of user {userId}. With exception: {message}", userId, e.Message);
                 throw;
             }
         }
