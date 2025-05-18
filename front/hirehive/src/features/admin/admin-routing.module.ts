@@ -1,10 +1,9 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { MainLayoutComponent } from '@shared/layouts/main-layout.component.ts/main-layout.component';
-import { CandidateMatchesComponent } from './candidate-matches/pages/candidate-matches.page';
+import { CandidatesMatchComponent } from './candidate-matches/pages/candidate-matches.page';
 
 const routes: Routes = [
-    { path: 'results', component: CandidateMatchesComponent }
+    { path: 'results', component: CandidatesMatchComponent }
 ];
 
 @NgModule({
