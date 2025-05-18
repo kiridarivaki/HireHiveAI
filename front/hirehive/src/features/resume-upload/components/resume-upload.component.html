@@ -3,10 +3,10 @@
 <form [formGroup]="uploadForm" (ngSubmit)="onSubmit()">
   <app-drag-drop
     [file]="selectedFile"
-    [fileUrlPayload]="fileUrl"
     [fileMetadata]="fileMetadata"
     (fileAdded)="onFileReceived($event)"
     (fileRemoved)="onFileRemoved()"
+    (downloadRequested)="onDownload()"
   ></app-drag-drop>
 
   <div class="button-group" *ngIf="selectedFile || fileMetadata">

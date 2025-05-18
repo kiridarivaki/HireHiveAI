@@ -9,12 +9,12 @@
 
   <div *ngIf="file">
     <app-file-info [file]="file"></app-file-info>
-    <app-button text="Download" class="download-button" icon="download" (click)="downloadFile()"></app-button>
+    <app-button text="Download" class="download-button" icon="download" (click)="onDownloadClick()"></app-button>
   </div>
 
   <div *ngIf="!file && fileMetadata">
     <app-file-info [fileMetadata]="fileMetadata"></app-file-info>
-    <app-button text="Download" class="download-button" icon="download" (click)="downloadFile()"></app-button>
+    <app-button text="Download" class="download-button" icon="download" (click)="onDownloadClick()"></app-button>
   </div>
 
   <input
