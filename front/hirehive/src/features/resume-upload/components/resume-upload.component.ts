@@ -13,9 +13,9 @@ import { FileService } from "@shared/services/file.service";
   })
   
 export class ResumeUploadComponent implements OnInit{
-  @Input() userId!: string;
+  @Input() userId?: string | null;
   fileMetadata: GetResumeInfoPayload | null = null;
-  fileUrl: GetResumeUrlPayload | null = null;
+  fileUrl: string | null = null;
   @ViewChild(DragDropComponent) dragDropComponent!: DragDropComponent;
 
   constructor(
@@ -29,27 +29,31 @@ export class ResumeUploadComponent implements OnInit{
   }
 
   fetchFileMetadata(){
-    this.resumeService.getById(this.userId).subscribe({
-      next: (fileInfo: GetResumeInfoPayload) => {
-        console.log('File fetched successfully.');
-        this.fileMetadata = fileInfo;
-      },
-      error: (err) => {
-        console.error('Fetch failed:', err);
-      }
-    });
+      if (this.userId){
+        this.resumeService.getById(this.userId).subscribe({
+          next: (fileInfo: GetResumeInfoPayload) => {
+            console.log('File fetched successfully.');
+            this.fileMetadata = fileInfo;
+          },
+          error: (err) => {
+            console.error('Fetch failed:', err);
+          }
+      });
+    }
   }
 
   fetchFileUrl(){
-    this.fileService.getUrl(this.userId).subscribe({
-      next: (fileUrl: GetResumeUrlPayload) => {
-        console.log('File fetched successfully.');
-        this.fileUrl = fileUrl;
-      },
-      error: (err) => {
-        console.error('Fetch failed:', err);
-      }
-    });
+    if (this.userId){
+      this.fileService.getUrl(this.userId).subscribe({
+        next: (fileUrl: string) => {
+          console.log('File fetched successfully.');
+          this.fileUrl = fileUrl;
+        },
+        error: (err) => {
+          console.error('Fetch failed:', err);
+        }
+      });
+    }
   }
 
   uploadForm = new FormGroup({
@@ -67,7 +71,7 @@ export class ResumeUploadComponent implements OnInit{
     if (this.dragDropComponent)
       this.dragDropComponent.clearFileInput();
 
-    if (this.fileMetadata) {
+    if (this.fileMetadata && this.userId) {
       this.resumeService.delete(this.userId).subscribe({
         next: () => {
           this.fileMetadata = null;
@@ -96,6 +100,16 @@ export class ResumeUploadComponent implements OnInit{
           console.error('Upload failed:', err);
         }
       });
+    }
+  }
+
+  onDownload(): void {
+    console.log(this.fileUrl)
+    if (this.selectedFile) {
+      this.fileService.download(this.selectedFile, undefined);
+    } else if (this.fileUrl) {
+      console.log('check')
+      this.fileService.download(undefined, this.fileUrl);
     }
   }
 

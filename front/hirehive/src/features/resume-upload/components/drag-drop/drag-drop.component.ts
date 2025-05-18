@@ -1,4 +1,4 @@
-import { Component, Output, EventEmitter, Input, ElementRef, ViewChild } from '@angular/core';
+import { Component, Output, EventEmitter, Input, ElementRef, ViewChild, SimpleChanges } from '@angular/core';
 import { FileService } from '@shared/services/file.service';
 import { GetResumeInfoPayload, GetResumeUrlPayload } from 'src/app/client/models/resume-client.model';
 
@@ -10,14 +10,10 @@ import { GetResumeInfoPayload, GetResumeUrlPayload } from 'src/app/client/models
 })
 export class DragDropComponent {
   @Input() file: File | null = null;
-  @Input() fileUrlPayload: GetResumeUrlPayload | null = null;
   @Input() fileMetadata: GetResumeInfoPayload | null = null;
   @Output() fileAdded = new EventEmitter<File>();
+  @Output() downloadRequested = new EventEmitter<void>();
   @ViewChild('fileInput') fileInputRef!: ElementRef<HTMLInputElement>;
-
-  constructor(
-    private fileService: FileService
-  ){}
 
   onDragOver(event: DragEvent): void {
     event.preventDefault();
@@ -62,17 +58,7 @@ export class DragDropComponent {
     }
   }
 
-  downloadFile(): void {
-    if (this.file) {
-      const url = URL.createObjectURL(this.file);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = this.file.name;
-      a.click();
-      URL.revokeObjectURL(url);
-    }
-    else if (this.fileUrlPayload){
-      this.fileService.downloadFile(this.fileUrlPayload);
-    }
+  onDownloadClick() {
+    this.downloadRequested.emit();
   }
 }

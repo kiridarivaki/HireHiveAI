@@ -14,7 +14,7 @@ import { GetUserInfoPayload, UpdateUserPayload } from "src/app/client/models/use
   export class ProfilePageComponent implements OnInit{
     isEditMode: boolean= false;
     userData: GetUserInfoPayload | null = null; 
-    private userId: string | null = null;
+    userId: string | null = null;
 
     readonly employmentOptions = Object.values(EmploymentStatus).map(status => ({
       value: status,
@@ -62,5 +62,6 @@ import { GetUserInfoPayload, UpdateUserPayload } from "src/app/client/models/use
       };
       if (this.userId)
         this.userService.update(this.userId, updateData).subscribe();
+      this.toggleEdit();
     }
 }
