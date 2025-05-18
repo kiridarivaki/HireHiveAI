@@ -14,16 +14,29 @@ export class FileService {
         private dialogService: DialogService
     ){}
     
-    getUrl(userId: string): Observable<GetResumeUrlPayload> {
+    getUrl(userId: string): Observable<string> {
         return this.resumeService.getFileUrl(userId);
     }
 
-    downloadFile(file: GetResumeUrlPayload): void {
+    download(file?: File, fileUrl?: string): void {
+    if (file) {
+        const url = URL.createObjectURL(file);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = file.name;
+        a.click();
+        URL.revokeObjectURL(url);
+    } 
+    else if (fileUrl) {
         const anchor = document.createElement('a');
-        anchor.href = file.sasUrl ?? '';
-        anchor.download = file.fileName ?? '';
+        anchor.href = fileUrl;
+        anchor.target = '_blank';
+        anchor.rel = 'noopener noreferrer';
+
+        document.body.appendChild(anchor);
         anchor.click();
-        anchor.remove();
+        document.body.removeChild(anchor);
+    }
     }
 
     openPreview(fileUrl: string) {

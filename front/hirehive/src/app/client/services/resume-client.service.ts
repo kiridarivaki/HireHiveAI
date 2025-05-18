@@ -19,13 +19,18 @@ export class ResumeClientService{
     }
 
     getById(userId: string) : Observable<GetResumeInfoPayload>{
-        const getResumeUrl = this.urlService.urlFor('resume', undefined, { userId });
+        const getResumeUrl = this.urlService.urlFor('resume', '{userId}', { userId });
         return this.http.get<GetResumeInfoPayload>(getResumeUrl);
     }
 
-    getFileUrl(userId: string) : Observable<GetResumeUrlPayload>{
-        const getFileUrlUrl = this.urlService.urlFor('resume', 'getUrl', { userId });
-        return this.http.get<GetResumeUrlPayload>(getFileUrlUrl);
+    getFileUrl(userId: string) : Observable<string>{
+        const getFileUrlUrl = this.urlService.urlFor('resume', 'url/{userId}', { userId });
+        return this.http.get<string>(getFileUrlUrl);
+    }
+
+    getFileStream(userId: string): Observable<Blob> { 
+        const getFileUrlUrl = this.urlService.urlFor('resume', 'stream/{userId}', { userId });
+        return this.http.get(getFileUrlUrl, { responseType: 'blob' });
     }
 
     upload(userId: string, uploadData: UploadResumePayload) : Observable<any>{
