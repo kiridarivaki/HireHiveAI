@@ -1,0 +1,10 @@
+<ng-container *ngIf="!errorMessage; else errorTemplate">
+    <iframe *ngIf="sanitizedUrl" [src]="sanitizedUrl" width="100%" height="400px" style="border:none;"></iframe>
+    <p *ngIf="!sanitizedUrl">Loading preview...</p>
+</ng-container>
+
+<ng-template #errorTemplate>
+    <div class="error-message">
+    <p *ngIf="errorMessage">{{ errorMessage }}</p>
+    </div>
+</ng-template>
