@@ -1,9 +1,9 @@
-<h2 *ngIf="data.title">{{ data.title }}</h2>
+<div class="dialog-header">
+  <h2 *ngIf="data.title">{{ data.title }}</h2>
+  <app-button text="Close" (click)="dialogRef.close()"></app-button>
+</div>
 
 <mat-dialog-content>
-  <ng-container *ngComponentOutlet="data.component"></ng-container>
+  <ng-container *ngComponentOutlet="data.component; injector: customInjector"></ng-container>
 </mat-dialog-content>
 
-<mat-dialog-actions>
-  <button mat-button (click)="dialogRef.close()">Close</button>
-</mat-dialog-actions>
