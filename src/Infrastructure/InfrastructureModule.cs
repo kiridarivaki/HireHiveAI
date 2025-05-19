@@ -30,6 +30,8 @@ namespace HireHive.Infrastructure
 
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IAuthService, AuthService>();
+            services.AddScoped<ITokenService, TokenService>();
+
             services.AddScoped<IResumeService, ResumeService>();
 
             var blobConnectionString = configuration["AzureBlobStorageConnection"];
@@ -68,13 +70,6 @@ namespace HireHive.Infrastructure
             var credential = new AzureKeyCredential(configuration["GitHubToken"]!);
 
             var aiClient = new ChatCompletionsClient(githubEndpoint, credential, new AzureAIInferenceClientOptions());
-
-            //var openAIEndpoint = new Uri("https://hirehive.openai.azure.com/");
-            //var apiKey = configuration["OpenAIApiKey"]!;
-
-            //var credential = new AzureKeyCredential(apiKey);
-
-            //var aiClient = new ChatCompletionsClient(openAIEndpoint, credential, new AzureAIInferenceClientOptions());
 
             services.AddSingleton(aiClient);
             services.AddScoped<AiAssessmentService>();

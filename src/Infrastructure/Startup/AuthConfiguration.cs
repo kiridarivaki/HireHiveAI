@@ -1,7 +1,8 @@
-﻿using Microsoft.AspNetCore.Authentication.BearerToken;
-using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 namespace HireHive.Infrastructure.Startup;
 
@@ -9,18 +10,29 @@ public static class AuthConfiguration
 {
     public static void ConfigureAuthentication(this IServiceCollection services, IConfiguration configuration)
     {
-        services.AddAuthentication(o =>
+        var secret = configuration["JwtKey"];
+        var signingKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(secret!.PadRight((512 / 8), '\0')));
+        services.AddAuthentication(options =>
         {
-            o.DefaultAuthenticateScheme = IdentityConstants.BearerScheme;
-            o.DefaultChallengeScheme = IdentityConstants.BearerScheme;
-            o.DefaultSignInScheme = IdentityConstants.BearerScheme;
+            options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+            options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
         })
-            .AddBearerToken(IdentityConstants.BearerScheme);
-
-        services.AddOptions<BearerTokenOptions>(IdentityConstants.BearerScheme).Configure(x =>
+        .AddJwtBearer(options =>
         {
-            x.BearerTokenExpiration = TimeSpan.FromHours(1);
-            x.RefreshTokenExpiration = TimeSpan.FromDays(14);
+            options.SaveToken = true;
+            options.RequireHttpsMetadata = false;
+            options.TokenValidationParameters = new TokenValidationParameters
+            {
+                ValidateIssuer = true,
+                ValidateAudience = true,
+                ValidateLifetime = true,
+                ValidateIssuerSigningKey = true,
+                RequireSignedTokens = true,
+                ValidIssuer = configuration["JwtSettings:Issuer"],
+                ValidAudience = configuration["JwtSettings:Audience"],
+                IssuerSigningKey = signingKey,
+            };
         });
     }
 }
