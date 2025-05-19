@@ -6,12 +6,16 @@ export interface GetUserInfoPayload {
     email: string,
     firstName: string,
     lastName: string,
-    employmentStatus: string,
-    resumeId?: string | null;
+    employmentStatus?: string,
+    resumeId?: string | null
+}
+
+export interface GetMatchPercentagePayload {
+    matchPercentage: string,
 }
 
 export interface UpdateUserPayload {
     firstName?: string | null,
     lastName?: string | null,
-    employmentStatus?: string | null,
+    employmentStatus?: string | null
 }
