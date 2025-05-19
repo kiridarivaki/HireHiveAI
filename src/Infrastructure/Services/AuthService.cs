@@ -110,6 +110,8 @@ namespace HireHive.Infrastructure.Services
                 var accessTokenResponse = await _tokenService.GenerateToken(user);
 
                 _mapper.Map(accessTokenResponse, loginDto);
+                loginDto.UserId = user.Id;
+
                 _logger.LogInformation("Login succeeded for user {email}.", loginDto.Email);
 
                 return loginDto;
