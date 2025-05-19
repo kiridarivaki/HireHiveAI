@@ -1,5 +1,6 @@
 ﻿using FluentValidation;
 using HireHive.Api.Areas.Account.Models.BindingModels;
+using HireHive.Api.Areas.Account.Models.ViewModels;
 using HireHive.Api.Areas.Common.Controllers;
 using HireHive.Application.DTOs.Account;
 using HireHive.Application.Interfaces;
@@ -63,7 +64,7 @@ public class AuthController : ApiController
 
             _logger.LogInformation("User with email {email} logged in.", loginModel.Email);
 
-            return Ok();
+            return Ok(_mapper.Map<LoginVm>(authenticatedUser));
         }
         catch (Exception e)
         {

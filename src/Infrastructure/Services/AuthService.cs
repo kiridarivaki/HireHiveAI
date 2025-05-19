@@ -18,6 +18,7 @@ namespace HireHive.Infrastructure.Services
         private readonly UserManager<User> _userManager;
         private readonly SignInManager<User> _signInManager;
         private readonly IEmailService _emailService;
+        private readonly ITokenService _tokenService;
         private readonly IMapper _mapper;
         private readonly ILogger<AuthService> _logger;
 
@@ -26,6 +27,7 @@ namespace HireHive.Infrastructure.Services
             UserManager<User> userManager,
             SignInManager<User> signInManager,
             IEmailService emailService,
+            ITokenService tokenService,
             IMapper mapper,
             ILogger<AuthService> logger)
         {
@@ -33,6 +35,7 @@ namespace HireHive.Infrastructure.Services
             _userManager = userManager;
             _signInManager = signInManager;
             _emailService = emailService;
+            _tokenService = tokenService;
             _mapper = mapper;
             _logger = logger;
         }
@@ -100,11 +103,14 @@ namespace HireHive.Infrastructure.Services
                 if (!emailConfirmed)
                     throw new UnauthorizedAccessException("Email addresss is not confirmed.");
 
-                var result = await _signInManager.PasswordSignInAsync(user, loginDto.Password, false, false);
-                if (!result.Succeeded)
+                var isPasswordValid = await _userManager.CheckPasswordAsync(user, loginDto.Password);
+                if (!isPasswordValid)
                     throw new UnauthorizedAccessException("Invalid credentials.");
 
-                _logger.LogInformation("User {email} successfully logged in.", loginDto.Email);
+                var accessTokenResponse = await _tokenService.GenerateToken(user);
+
+                _mapper.Map(accessTokenResponse, loginDto);
+                _logger.LogInformation("Login succeeded for user {email}.", loginDto.Email);
 
                 return loginDto;
             }

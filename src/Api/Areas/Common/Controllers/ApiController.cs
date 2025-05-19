@@ -1,12 +1,11 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 
 namespace HireHive.Api.Areas.Common.Controllers
 {
-#if DEBUG
-    [AllowAnonymous]
-#endif
+    //#if DEBUG
+    //    [AllowAnonymous]
+    //#endif
     [ApiController]
     [Route("api/[controller]")]
     [Produces("application/json")]

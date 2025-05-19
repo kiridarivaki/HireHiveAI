@@ -1,42 +1,74 @@
 ﻿using HireHive.Application.Interfaces;
+using HireHive.Domain.Entities;
+using Microsoft.AspNetCore.Authentication.BearerToken;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
+using System.Security.Cryptography;
 using System.Text;
 
 namespace HireHive.Infrastructure.Services
 {
     public class TokenService : ITokenService
     {
-        private readonly string _jwtKey;
-        public TokenService(string jwtKey)
+        private readonly UserManager<User> _userManager;
+        private readonly IConfiguration _configuration;
+
+        public TokenService(UserManager<User> userManager, IConfiguration configuration)
         {
-            _jwtKey = jwtKey;
+            _userManager = userManager;
+            _configuration = configuration;
         }
-        public string GenerateToken(Guid userId, string email)
+        public async Task<AccessTokenResponse> GenerateToken(User user)
         {
             var tokenHandler = new JwtSecurityTokenHandler();
-            var key = Encoding.ASCII.GetBytes(_jwtKey);
+
+            var roles = await _userManager.GetRolesAsync(user);
 
             var claims = new List<Claim>
             {
                 new(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-                new(JwtRegisteredClaimNames.Sub, userId.ToString()),
-                new Claim(JwtRegisteredClaimNames.Email, email)
+                new(JwtRegisteredClaimNames.Sub, user.Id.ToString()),
+                new Claim(JwtRegisteredClaimNames.Email, user.Email!)
             };
+
+            foreach (var role in roles)
+            {
+                claims.Add(new Claim(ClaimTypes.Role, role));
+            }
+
+            var key = _configuration["JwtKey"];
+            var signingKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(key!.PadRight((512 / 8), '\0')));
 
             var tokenDescriptor = new SecurityTokenDescriptor
             {
                 Subject = new ClaimsIdentity(claims),
                 Expires = DateTime.UtcNow.AddMinutes(60),
-                Issuer = "https://localhost:7206/",
-                Audience = "https://localhost:7206/",
-                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
+                Issuer = _configuration["JwtSettings:Issuer"],
+                Audience = _configuration["JwtSettings:Audience"],
+                SigningCredentials = new SigningCredentials(signingKey, SecurityAlgorithms.HmacSha256)
             };
-
             var token = tokenHandler.CreateToken(tokenDescriptor);
+            var accessToken = tokenHandler.WriteToken(token);
 
-            return tokenHandler.WriteToken(token);
+            return new AccessTokenResponse
+            {
+                AccessToken = accessToken,
+                RefreshToken = GenerateRefreshToken(),
+                ExpiresIn = (int)(token.ValidTo - DateTime.UtcNow).TotalSeconds,
+            };
+        }
+
+        public string GenerateRefreshToken()
+        {
+            var randomNumber = new byte[32];
+
+            using var randomNumberGenerator = RandomNumberGenerator.Create();
+            randomNumberGenerator.GetBytes(randomNumber);
+
+            return Convert.ToBase64String(randomNumber);
         }
     }
 }

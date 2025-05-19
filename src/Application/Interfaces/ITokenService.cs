@@ -1,7 +1,11 @@
-﻿namespace HireHive.Application.Interfaces
+﻿using HireHive.Domain.Entities;
+using Microsoft.AspNetCore.Authentication.BearerToken;
+
+namespace HireHive.Application.Interfaces
 {
     public interface ITokenService
     {
-        string GenerateToken(Guid userId, string email);
+        Task<AccessTokenResponse> GenerateToken(User user);
+        string GenerateRefreshToken();
     }
 }
