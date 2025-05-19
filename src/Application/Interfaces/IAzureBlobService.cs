@@ -7,8 +7,6 @@ namespace HireHive.Application.Interfaces
         Task<string> Upload(IFormFile file);
         Task Delete(string blobName);
         string GetSasUrl(string blobName);
-        Task<Stream> GetPdfStreamAsync(string blobName);
-
-
+        Task<Stream> GetFileStream(string blobName);
     }
 }

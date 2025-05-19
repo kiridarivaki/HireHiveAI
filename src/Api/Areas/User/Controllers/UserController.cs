@@ -5,10 +5,12 @@ using HireHive.Api.Areas.User.Models.ViewModels;
 using HireHive.Application.DTOs.User;
 using HireHive.Application.Interfaces;
 using HireHive.Domain.Exceptions.User;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace HireHive.Api.Areas.User.Controllers;
 
+[Authorize]
 public class UserController : ApiController
 {
     private readonly IUserService _userService;
