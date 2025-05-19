@@ -1,16 +1,16 @@
 import { Component, Input } from "@angular/core";
 import { ResumePreviewComponent } from "../resume-preview/resume-preview.component";
+import { MatCardModule } from "@angular/material/card";
+import { GetUserInfoPayload } from "src/app/client/models/user-client.model";
+import { AppButtonComponent } from "@shared/components/button/button.component";
 
 @Component({
   selector: 'app-candidate-card',
-  imports: [ResumePreviewComponent],
-  template: `
-    <div>
-      <p>{{ candidate.name }}</p>
-      <app-resume-preview [userId]="candidate.userId"></app-resume-preview>
-    </div>
-  `
+  imports: [ResumePreviewComponent, MatCardModule, AppButtonComponent],
+  templateUrl: './candidate-card.component.html',
+  styleUrl: './candidate-card.component.css'
 })
 export class CandidateCardComponent {
-  @Input() candidate!: { userId: string; name: string; };
+  @Input() userInfo!: GetUserInfoPayload;
+  @Input() matchPercentage!: string;
 }

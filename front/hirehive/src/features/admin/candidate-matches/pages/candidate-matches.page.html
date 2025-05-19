@@ -1,4 +1,11 @@
-<app-candidate-card
-    *ngFor="let candidate of candidates"
-    [candidate]="candidate"
-></app-candidate-card>
+<div class="candidate-list-container">
+  <h2 class="page-title">Candidate Matches</h2>
+
+  <div class="candidate-cards-wrapper">
+    <app-candidate-card
+      *ngFor="let candidate of candidates"
+      [userInfo]="candidate.userInfo"
+      [matchPercentage]="candidate.matchPercentage"
+    ></app-candidate-card>
+  </div>
+</div>

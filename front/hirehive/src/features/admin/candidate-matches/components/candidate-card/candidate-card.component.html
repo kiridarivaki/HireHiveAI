@@ -1,0 +1,13 @@
+<mat-card class="user-card">
+  <div class="card-content">
+    <div class="user-details">
+      <h3>{{ userInfo.firstName }} {{ userInfo.lastName }}</h3>
+      <p>Email: {{ userInfo.email }}</p>
+      <p>Match: {{ matchPercentage }}%</p>
+    </div>
+    <div class="action-buttons">
+      <app-resume-preview></app-resume-preview>
+      <app-button text="Download" icon="download"></app-button>
+    </div>
+  </div>
+</mat-card>
