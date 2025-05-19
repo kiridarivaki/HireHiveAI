@@ -96,7 +96,7 @@ namespace HireHive.Api.Areas.Resume.Controllers
                 if (resume == null)
                     return NotFound();
 
-                var stream = await _azureBlobService.GetPdfStreamAsync(resume.BlobName!);
+                var stream = await _azureBlobService.GetFileStream(resume.BlobName!);
 
                 _logger.LogInformation("Fetched resume stream for user {userId}", userId);
 
