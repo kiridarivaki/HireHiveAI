@@ -10,7 +10,7 @@ const routes: Routes = [
     path: '',
     component: MainLayoutComponent,
     children: [
-      { path: 'user/:id', component: ProfilePageComponent },
+      { path: 'user/:userId', component: ProfilePageComponent },
       { path: 'login', component: LoginPageComponent },
       { path: 'register', component: RegisterPageComponent }
     ]

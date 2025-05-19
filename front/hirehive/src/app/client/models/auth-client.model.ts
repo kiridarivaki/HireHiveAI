@@ -10,7 +10,7 @@ export interface RegisterPayload{
 export interface EmailConfirmationResponse{
     accessToken: string,
     refreshToken: string,
-    expiresIn: Date
+    expiresIn: number
 }
 
 export interface LoginPayload{
@@ -19,13 +19,15 @@ export interface LoginPayload{
 }
 
 export interface LoginResponse{
+    userId: string,
+    tokenType: string,
     accessToken: string,
     refreshToken: string,
-    expiresIn: Date
+    expiresIn: number
 }
 
 export interface RefreshTokenResponse{
     acessToken: string,
     refreshToken: string,
-    expiresIn: Date
+    expiresIn: number
 }

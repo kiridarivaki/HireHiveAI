@@ -21,7 +21,7 @@ export class AuthClientService{
     }
 
     refreshToken(): Observable<RefreshTokenResponse>{
-        const refreshTokenUrl = this.urlService.urlFor("auth", "refreshToken", undefined)
+        const refreshTokenUrl = this.urlService.urlFor("auth", "refresh-token", undefined)
         return this.http.get<RefreshTokenResponse>(refreshTokenUrl)
     }
 }

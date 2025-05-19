@@ -32,10 +32,10 @@ export class LoginPageComponent {
 
         this.authService.login(loginData).subscribe({
             next: (response) => {
-              this.router.navigate(['/profile']);
+              this.router.navigate([`/user/${response.userId}`]);
             },
             error: (err)=>{
-              this.router.navigate(['/']);
+              this.router.navigate(['/home']);
             }
           }
         )
