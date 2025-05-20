@@ -1,3 +1,5 @@
+import { UserRole } from "@shared/models/auth.model";
+
 export interface RegisterPayload{
     email: string,
     firstName: string,
@@ -30,4 +32,12 @@ export interface RefreshTokenResponse{
     acessToken: string,
     refreshToken: string,
     expiresIn: number
+}
+
+export interface GetInfoResponse{
+    userId: string,
+    roles: Array<UserRole>,
+    email: string,
+    firstName: string,
+    lastName: string
 }
