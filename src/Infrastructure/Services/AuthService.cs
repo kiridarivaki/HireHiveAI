@@ -122,5 +122,25 @@ namespace HireHive.Infrastructure.Services
                 throw;
             }
         }
+
+        public async Task<IList<string>> GetRole(Guid userId)
+        {
+            try
+            {
+                var user = await _userManager.FindByIdAsync(userId.ToString())
+                    ?? throw new UserNotFoundException();
+
+                var roles = await _userManager.GetRolesAsync(user);
+                _logger.LogWarning("Role for user {userId} successfully fetched.", userId);
+
+                return roles;
+
+            }
+            catch (Exception e)
+            {
+                _logger.LogWarning("Failed to get role for user {userId}. With exception: {message}", userId, e.Message);
+                throw;
+            }
+        }
     }
 }
