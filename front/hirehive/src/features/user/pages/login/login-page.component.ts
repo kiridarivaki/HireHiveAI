@@ -1,9 +1,16 @@
 import { Component } from '@angular/core';
 import { FormGroup, FormControl,  Validators } from '@angular/forms';
 import { Router } from '@angular/router';
+import { StorageService } from '@shared/services/storage.service';
 import { passwordValidator } from '@shared/validators/password.validator';
+import { tap } from 'rxjs';
 import { LoginPayload } from 'src/app/client/models/auth-client.model';
 import { AuthClientService } from 'src/app/client/services/auth-client.service';
+import { StoredAuth, UserRole } from '@shared/models/auth.model';
+import { User } from '@shared/models/user.model';
+import { EmploymentStatus } from '@shared/constants/employment-options';
+import { AuthService } from '@shared/services/auth.service';
+
 
 @Component({
   selector: 'app-login-page',
@@ -13,7 +20,8 @@ import { AuthClientService } from 'src/app/client/services/auth-client.service';
 })
 export class LoginPageComponent {
     constructor(
-      private authService: AuthClientService,
+      private authService: AuthService,
+      private storageService: StorageService,
       private router: Router
     ) {}
   loginForm = new FormGroup ({
@@ -30,15 +38,53 @@ export class LoginPageComponent {
           password: loginForm.password!
         };
 
-        this.authService.login(loginData).subscribe({
+        this.authService.login(loginData)
+        .pipe(
+          tap((auth)=>{
+            const storedAuth: StoredAuth = {
+              accessToken: auth.accessToken,
+              refreshToken: auth.refreshToken,
+              expiresIn: auth.expiresIn
+            }
+            this.storageService.storeAuth(storedAuth);
+          })
+        )
+        .subscribe({
             next: (response) => {
+              this.fetchUser(response.userId)
               this.router.navigate([`/user/${response.userId}`]);
             },
             error: (err)=>{
-              this.router.navigate(['/home']);
+              this.storageService.removeAuth()
+              this.storageService.removeUser()
+              this.router.navigate(['/login']);
             }
           }
         )
     }
+  }
+
+  fetchUser(userId: string){
+    this.authService.getUserInfo(userId)
+    .subscribe({
+      next: (userInfo) => {
+        const roles: UserRole[] = userInfo.roles
+          .filter((role): role is UserRole =>
+            Object.values(UserRole).includes(role as UserRole)
+          );
+
+        const user: User = {
+          id: userInfo.userId,
+          roles: roles,
+          email: userInfo.email,
+          firstName: userInfo.firstName,
+          lastName: userInfo.lastName
+        }
+        this.storageService.setUser(user)
+        this.authService.setUser(user)
+      }
+    }
+
+    );
   }
 }
