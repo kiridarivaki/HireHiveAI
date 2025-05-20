@@ -36,7 +36,7 @@ namespace HireHive.Api.Areas.Admin.Controllers
                     return BadRequest(new { errors });
                 }
 
-                var paginatedUsers = await _userService.GetAllPaginated();
+                //var paginatedUsers = await _userService.GetAllPaginated();
 
                 return Ok();
             }

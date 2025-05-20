@@ -123,7 +123,7 @@ namespace HireHive.Infrastructure.Services
             }
         }
 
-        public async Task<IList<string>> GetRole(Guid userId)
+        public async Task<UserInfoDto> GetInfo(Guid userId)
         {
             try
             {
@@ -131,14 +131,17 @@ namespace HireHive.Infrastructure.Services
                     ?? throw new UserNotFoundException();
 
                 var roles = await _userManager.GetRolesAsync(user);
-                _logger.LogWarning("Role for user {userId} successfully fetched.", userId);
 
-                return roles;
+                var authUser = _mapper.Map<UserInfoDto>(user);
+                authUser.Role = roles.ToList();
 
+                _logger.LogWarning("Info for user {userId} successfully fetched.", userId);
+
+                return authUser;
             }
             catch (Exception e)
             {
-                _logger.LogWarning("Failed to get role for user {userId}. With exception: {message}", userId, e.Message);
+                _logger.LogWarning("Failed to get info for user {userId}. With exception: {message}", userId, e.Message);
                 throw;
             }
         }
