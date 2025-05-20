@@ -133,7 +133,7 @@ namespace HireHive.Infrastructure.Services
                 var roles = await _userManager.GetRolesAsync(user);
 
                 var authUser = _mapper.Map<UserInfoDto>(user);
-                authUser.Role = roles.ToList();
+                authUser.Roles = roles.ToList();
 
                 _logger.LogWarning("Info for user {userId} successfully fetched.", userId);
 
