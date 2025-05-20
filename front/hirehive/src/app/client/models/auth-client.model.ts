@@ -40,3 +40,8 @@ export interface GetInfoResponse{
     firstName: string,
     lastName: string
 }
+
+export interface EmailConfirmationPayload{
+    confirmationToken: string,
+    email: string
+}

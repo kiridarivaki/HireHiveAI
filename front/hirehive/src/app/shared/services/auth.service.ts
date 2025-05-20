@@ -1,6 +1,6 @@
 import { Injectable } from "@angular/core";
 import { BehaviorSubject, Observable } from "rxjs";
-import { GetInfoResponse, LoginPayload, LoginResponse, RefreshTokenResponse, RegisterPayload } from "src/app/client/models/auth-client.model";
+import { EmailConfirmationPayload, GetInfoResponse, LoginPayload, LoginResponse, RefreshTokenResponse, RegisterPayload } from "src/app/client/models/auth-client.model";
 import { AuthClientService } from "src/app/client/services/auth-client.service";
 import { StorageService } from "./storage.service";
 import { Router } from "@angular/router";
@@ -42,6 +42,10 @@ export class AuthService {
         this.authClientService.login(registerData);
     }
 
+    confirmEmail(confirmEmailData: EmailConfirmationPayload){
+        this.authClientService.confirmEmail(confirmEmailData);
+    }
+
     isTokenExpired(): boolean {
         const expiration = this.storageService.getAuth()?.expiresIn;
         if (!expiration) return true;
@@ -51,7 +55,6 @@ export class AuthService {
         
         return expiryTime < now;
     }
-
 
     refreshToken(): Observable<RefreshTokenResponse>{
         return this.authClientService.refreshToken();
