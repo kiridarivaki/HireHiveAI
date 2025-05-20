@@ -18,6 +18,7 @@ namespace HireHive.Api.PresentationMappings
             CreateMap<LoginBm, LoginDto>().ReverseMap();
             CreateMap<LoginVm, LoginDto>().ReverseMap();
             CreateMap<ListUsersBm, PaginateUsersDto>().ReverseMap();
+            CreateMap<UserInfoVm, UserInfoDto>().ReverseMap();
         }
     }
 }

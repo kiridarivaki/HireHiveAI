@@ -10,6 +10,7 @@ namespace HireHive.Infrastructure.InfrastructureMappings
         {
             CreateMap<RegisterDto, User>();
             CreateMap<AccessTokenResponse, LoginDto>().ReverseMap();
+            CreateMap<UserInfoDto, User>().ReverseMap();
         }
     }
 }

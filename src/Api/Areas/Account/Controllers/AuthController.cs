@@ -94,16 +94,16 @@ public class AuthController : ApiController
     }
 
     [HttpGet]
-    [Route("/get-role/{userId}")]
-    public async Task<IActionResult> GetRole([FromRoute] Guid userId)
+    [Route("/get-info/{userId}")]
+    public async Task<IActionResult> GetUserInfo([FromRoute] Guid userId)
     {
         try
         {
-            var roles = await _authService.GetRole(userId);
+            var userInfo = await _authService.GetInfo(userId);
 
             _logger.LogInformation("Fetched user info for user {userId}.", userId);
 
-            return Ok(roles);
+            return Ok(_mapper.Map<UserInfoVm>(userInfo));
         }
         catch (Exception e)
         {
