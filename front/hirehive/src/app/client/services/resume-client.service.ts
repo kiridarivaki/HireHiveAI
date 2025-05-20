@@ -1,7 +1,7 @@
 import { HttpClient, HttpResponse } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { Observable } from "rxjs";
-import { UrlService } from "../helpers/url-service.service";
+import { UrlService } from "../../shared/services/url.service";
 import { GetAllResumesResponse, GetResumeInfoPayload, GetResumeUrlPayload, UpdateResumePayload, UploadResumePayload } from "../models/resume-client.model";
 
 @Injectable({
