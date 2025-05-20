@@ -92,4 +92,23 @@ public class AuthController : ApiController
             throw;
         }
     }
+
+    [HttpGet]
+    [Route("/get-role")]
+    public async Task<IActionResult> GetRole(Guid userId)
+    {
+        try
+        {
+            var roles = await _authService.GetRole(userId);
+
+            _logger.LogInformation("Fetched user info for user {userId}.", userId);
+
+            return Ok(roles);
+        }
+        catch (Exception e)
+        {
+            _logger.LogError("Fetched user info for user {userId}. With exception: {message}", userId, e.Message);
+            throw;
+        }
+    }
 }
