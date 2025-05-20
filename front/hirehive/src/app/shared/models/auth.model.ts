@@ -1,7 +1,7 @@
 export interface StoredAuth{
     accessToken: string;
     refreshToken: string;
-    expiresIn: string;
+    expiresIn: number;
 }
 
 export enum UserRole{

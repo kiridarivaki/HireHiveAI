@@ -1,7 +1,7 @@
 import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { UrlService } from "../helpers/url-service.service";
-import { LoginPayload, LoginResponse, RefreshTokenResponse, RegisterPayload } from "../models/auth-client.model";
+import { GetInfoResponse, LoginPayload, LoginResponse, RefreshTokenResponse, RegisterPayload } from "../models/auth-client.model";
 import { Observable } from "rxjs";
 
 @Injectable({
@@ -25,8 +25,8 @@ export class AuthClientService{
         return this.http.get<RefreshTokenResponse>(refreshTokenUrl)
     }
 
-    getRole(userId: string) : Observable<Array<string>>{
-        const getRoleUrl = this.urlService.urlFor('auth', 'get-role/{id}', {id: userId})
-        return this.http.get<Array<string>>(getRoleUrl);
+    getUserInfo(userId: string) : Observable<GetInfoResponse>{
+        const getInfoUrl = this.urlService.urlFor('auth', 'get-info/{id}', {id: userId})
+        return this.http.get<GetInfoResponse>(getInfoUrl);
     }
 }
