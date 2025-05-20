@@ -6,9 +6,18 @@ import { User } from '@shared/models/user.model';
   providedIn: 'root'
 })
 export class StorageService {
-    storeAuth(auth: StoredAuth) : void {
-        localStorage.setItem("auth", JSON.stringify(auth));
+    storeAuth(auth: StoredAuth): void {
+    const expiryTimestamp = Date.now() + auth.expiresIn * 1000;
+
+    const updatedAuth: StoredAuth = {   
+        accessToken: auth.accessToken,
+        refreshToken: auth.refreshToken,
+        expiresIn: expiryTimestamp
+    };
+
+    localStorage.setItem("auth", JSON.stringify(updatedAuth));
     }
+
 
     getAuth(): StoredAuth | null {
         const storedAuth = localStorage.getItem("auth");

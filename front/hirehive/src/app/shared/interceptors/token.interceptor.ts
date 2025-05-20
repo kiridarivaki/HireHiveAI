@@ -41,7 +41,6 @@ export class TokenInterceptor implements HttpInterceptor{
   addTokenToRequest(request: HttpRequest<any>): HttpRequest<any>{
     const token = this.storageService.getAuth()?.accessToken;
     const authRequest = request.clone({
-      withCredentials: true,
       setHeaders: {Authorization: `Bearer ${token}`}
     });
     return authRequest;

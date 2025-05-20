@@ -5,10 +5,8 @@ import { StorageService } from '@shared/services/storage.service';
 import { passwordValidator } from '@shared/validators/password.validator';
 import { tap } from 'rxjs';
 import { LoginPayload } from 'src/app/client/models/auth-client.model';
-import { AuthClientService } from 'src/app/client/services/auth-client.service';
 import { StoredAuth, UserRole } from '@shared/models/auth.model';
 import { User } from '@shared/models/user.model';
-import { EmploymentStatus } from '@shared/constants/employment-options';
 import { AuthService } from '@shared/services/auth.service';
 
 
@@ -54,7 +52,7 @@ export class LoginPageComponent {
               this.fetchUser(response.userId)
               this.router.navigate([`/user/${response.userId}`]);
             },
-            error: (err)=>{
+            error: ()=>{
               this.storageService.removeAuth()
               this.storageService.removeUser()
               this.router.navigate(['/login']);
@@ -74,17 +72,16 @@ export class LoginPageComponent {
           );
 
         const user: User = {
-          id: userInfo.userId,
+          id: userId,
           roles: roles,
           email: userInfo.email,
           firstName: userInfo.firstName,
           lastName: userInfo.lastName
         }
+
         this.storageService.setUser(user)
         this.authService.setUser(user)
       }
-    }
-
-    );
+    });
   }
 }

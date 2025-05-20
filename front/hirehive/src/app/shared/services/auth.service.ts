@@ -27,6 +27,7 @@ export class AuthService {
 
     setUser(user: User): void {
         this.currentUserSubject.next(user);
+        console.log('userset',this.currentUser$)
     }
 
     getCurrentUser(): User | null{
@@ -41,14 +42,16 @@ export class AuthService {
         this.authClientService.login(registerData);
     }
 
-    isTokenExpired(): boolean{
+    isTokenExpired(): boolean {
         const expiration = this.storageService.getAuth()?.expiresIn;
-        if (!expiration)
-            return true;
-        const expiryDate = new Date(expiration).getTime();
+        if (!expiration) return true;
+
+        const expiryTime = Number(expiration);
         const now = Date.now();
-        return expiryDate < now;
+        
+        return expiryTime < now;
     }
+
 
     refreshToken(): Observable<RefreshTokenResponse>{
         return this.authClientService.refreshToken();
