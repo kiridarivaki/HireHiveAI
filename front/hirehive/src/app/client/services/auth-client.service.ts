@@ -1,6 +1,6 @@
 import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
-import { UrlService } from "../helpers/url-service.service";
+import { UrlService } from "../../shared/services/url.service";
 import { GetInfoResponse, LoginPayload, LoginResponse, RefreshTokenResponse, RegisterPayload } from "../models/auth-client.model";
 import { Observable } from "rxjs";
 
