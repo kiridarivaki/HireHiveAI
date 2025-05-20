@@ -35,7 +35,6 @@ export interface RefreshTokenResponse{
 }
 
 export interface GetInfoResponse{
-    userId: string,
     roles: Array<UserRole>,
     email: string,
     firstName: string,
