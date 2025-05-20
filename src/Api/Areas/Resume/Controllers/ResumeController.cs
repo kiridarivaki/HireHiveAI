@@ -111,8 +111,8 @@ namespace HireHive.Api.Areas.Resume.Controllers
 
 
         [HttpPost]
-        [Route("upload")]
-        public async Task<IActionResult> Upload([FromForm] UploadResumeBm uploadModel)
+        [Route("upload/{userId}")]
+        public async Task<IActionResult> Upload([FromRoute] Guid userId, [FromForm] UploadResumeBm uploadModel)
         {
             try
             {
@@ -124,19 +124,17 @@ namespace HireHive.Api.Areas.Resume.Controllers
                     return BadRequest(new { errors });
                 }
 
-                var user = await _userService.GetById(uploadModel.UserId);
-                var resume = await _resumeService.Upload(_mapper.Map<UploadResumeDto>(uploadModel));
+                var resume = await _resumeService.Upload(userId, _mapper.Map<UploadResumeDto>(uploadModel));
 
+                var fileProcessingJob = _backgroundJobClient.Enqueue(() => _resumeJobService.ProcessResume(uploadModel.File, userId));
 
-                var fileProcessingJob = _backgroundJobClient.Enqueue(() => _resumeJobService.ProcessResume(uploadModel.File, uploadModel.UserId));
-
-                _logger.LogInformation("Resume processing started for user {userId}.", uploadModel.UserId);
+                _logger.LogInformation("Resume processing started for user {userId}.", userId);
 
                 return Ok(_mapper.Map<UploadResumeVm>(resume));
             }
             catch (Exception e)
             {
-                _logger.LogError("Failed to upload resume for user {userId}. With exception: {message}", uploadModel.UserId, e.Message);
+                _logger.LogError("Failed to upload resume for user {userId}. With exception: {message}", userId, e.Message);
                 throw;
             }
         }

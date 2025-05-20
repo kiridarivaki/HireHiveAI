@@ -75,7 +75,7 @@ public class AuthController : ApiController
     }
 
     [HttpPost]
-    [Route("/confirm-email")]
+    [Route("confirm-email")]
     public async Task<IActionResult> ConfirmEmail([FromBody] ConfirmEmailBm confirmEmailModel)
     {
         try
@@ -94,7 +94,7 @@ public class AuthController : ApiController
     }
 
     [HttpGet]
-    [Route("/get-info/{userId}")]
+    [Route("get-info/{userId}")]
     public async Task<IActionResult> GetUserInfo([FromRoute] Guid userId)
     {
         try
