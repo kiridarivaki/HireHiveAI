@@ -30,9 +30,10 @@ namespace HireHive.Infrastructure.Data.Repositories
             await _context.SaveChangesAsync();
         }
 
-        public void Delete(Resume resume)
+        public async Task DeleteAsync(Resume resume)
         {
             _context.Remove(resume);
+            await _context.SaveChangesAsync();
         }
 
         public async Task UpdateAsync(Resume resume)

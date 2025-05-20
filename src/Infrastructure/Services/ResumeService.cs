@@ -43,7 +43,7 @@ namespace HireHive.Infrastructure.Services
             }
         }
 
-        public async Task<UploadResumeDto> Upload(UploadResumeDto uploadDto)
+        public async Task<UploadResumeDto> Upload(Guid userId, UploadResumeDto uploadDto)
         {
             using (TransactionScope scope = new TransactionScope(TransactionScopeOption.Required,
                                              new TransactionOptions { IsolationLevel = IsolationLevel.ReadCommitted },
@@ -54,7 +54,7 @@ namespace HireHive.Infrastructure.Services
                     var file = uploadDto.File;
                     var blobName = await _azureBlobService.Upload(file);
 
-                    var resume = new Resume(file.FileName, blobName, file.ContentType, file.Length, uploadDto.UserId, null);
+                    var resume = new Resume(file.FileName, blobName, file.ContentType, file.Length, userId, null);
 
                     await _resumeRepository.AddAsync(resume);
                     scope.Complete();
@@ -64,7 +64,7 @@ namespace HireHive.Infrastructure.Services
                 }
                 catch (BaseException e)
                 {
-                    _logger.LogWarning("Failed to upload resume for customer {userId}. With exception: {message}", uploadDto.UserId, e.Message);
+                    _logger.LogWarning("Failed to upload resume for customer {userId}. With exception: {message}", userId, e.Message);
                     throw;
                 }
             }
@@ -103,7 +103,7 @@ namespace HireHive.Infrastructure.Services
 
                 await _azureBlobService.Delete(resume.BlobName!);
 
-                _resumeRepository.Delete(resume);
+                _resumeRepository.DeleteAsync(resume);
                 _logger.LogInformation("Resume of user {userId} deleted.", userId);
             }
             catch (BaseException e)
