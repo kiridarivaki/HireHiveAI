@@ -24,4 +24,9 @@ export class AuthClientService{
         const refreshTokenUrl = this.urlService.urlFor("auth", "refresh-token", undefined)
         return this.http.get<RefreshTokenResponse>(refreshTokenUrl)
     }
+
+    getRole(userId: string) : Observable<Array<string>>{
+        const getRoleUrl = this.urlService.urlFor('auth', 'get-role/{id}', {id: userId})
+        return this.http.get<Array<string>>(getRoleUrl);
+    }
 }
