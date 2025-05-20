@@ -8,6 +8,5 @@ namespace HireHive.Application.DTOs.Resume
         public string? FileName { get; set; }
         public long FileSize { get; set; }
         public DateTime LastUpdated { get; set; }
-        public Guid UserId { get; set; }
     }
 }

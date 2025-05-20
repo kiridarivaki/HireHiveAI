@@ -8,6 +8,6 @@ namespace HireHive.Domain.Interfaces
         Task<Resume?> GetByUserIdAsync(Guid userId);
         Task AddAsync(Resume resume);
         Task UpdateAsync(Resume resume);
-        void Delete(Resume resume);
+        Task DeleteAsync(Resume resume);
     }
 }
