@@ -94,8 +94,8 @@ public class AuthController : ApiController
     }
 
     [HttpGet]
-    [Route("/get-role")]
-    public async Task<IActionResult> GetRole(Guid userId)
+    [Route("/get-role/{userId}")]
+    public async Task<IActionResult> GetRole([FromRoute] Guid userId)
     {
         try
         {
