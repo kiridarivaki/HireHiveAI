@@ -1,0 +1,35 @@
+<div class="p-6 max-w-2xl mx-auto space-y-6 bg-white rounded-xl shadow-md">
+
+  <h2 class="text-2xl font-semibold">Job Configuration</h2>
+
+  <!-- Job Type Select -->
+  <mat-form-field appearance="outline" class="w-full">
+    <mat-label>Job Type</mat-label>
+    <app-select
+      label="Job Type"
+      selectId="typeSelect"
+      [disabled]="false">
+    </app-select>
+  </mat-form-field>
+
+  <!-- Job Description -->
+  <mat-form-field appearance="outline" class="w-full">
+    <mat-label>Job Description</mat-label>
+    <textarea matInput [(ngModel)]="jobDescription" rows="6" placeholder="Enter job description here..."></textarea>
+  </mat-form-field>
+
+  <!-- Criteria Sliders -->
+  <div>
+    <label class="font-medium">Criteria Weights</label>
+
+    <label class="block font-medium">Education: {{ educationWeight }}%</label>
+    <mat-slider><input matSliderThumb/></mat-slider>
+
+  <button
+    class="w-full bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700"
+    (click)="submitConfig()"
+  >
+    Save & Continue
+  </button>
+
+</div>

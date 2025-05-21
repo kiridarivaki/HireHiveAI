@@ -38,12 +38,4 @@ export class FileService {
         document.body.removeChild(anchor);
     }
     }
-
-    openPreview(fileUrl: string) {
-        this.dialogService.open(ResumePreviewComponent, {
-        title: 'Resume Preview',
-        data: { fileUrl },
-        width: '800px'
-        });
-    }
 }
