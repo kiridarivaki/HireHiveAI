@@ -1,28 +1,57 @@
-@use "@angular/material" as mat; 
-@use "@styles/custom-theme.scss" as theme;
-
-$primary-color : mat.m2-get-color-from-palette(theme.$hirehive-primary);
-$accent-color : mat.m2-get-color-from-palette(theme.$hirehive-accent);
+/* navbar.component.css */
 
 .navbar {
-  // background-color: $primary-color;
-  padding: 10px;
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  height: 56px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  font-family: 'Roboto', sans-serif;
 }
 
 .logo {
-  height: 100%;
-  margin-right: 10px;
-}
-
-button{
-  color: $accent-color;
+  height: 40px;
+  margin-right: 1rem;
+  cursor: pointer;
 }
 
 .spacer {
-  flex-grow: 1;
+  flex: 1 1 auto;
 }
 
+app-button {
+  margin-left: 0.75rem;
+}
 
+/* Style the welcome message nicely */
+.welcome-msg {
+  margin-left: 1rem;
+  font-weight: 500;
+  font-size: 0.9rem;
+  white-space: nowrap;
+}
+
+/* Optional: add a hover effect on buttons */
+app-button:hover {
+  opacity: 0.9;
+  cursor: pointer;
+}
+
+/* Responsive adjustments */
+@media (max-width: 600px) {
+  .navbar {
+    flex-wrap: wrap;
+    height: auto;
+    padding: 0.5rem;
+  }
+
+  app-button {
+    margin: 0.5rem 0.5rem 0 0;
+  }
+
+  .welcome-msg {
+    width: 100%;
+    margin-left: 0;
+    margin-top: 0.5rem;
+    text-align: center;
+  }
+}
