@@ -3,11 +3,11 @@ import { RouterModule, Routes } from '@angular/router';
 import { EmailConfirmationComponent } from './email-confirmation/email-confirmation.component';
 
 const routes: Routes = [
-    { path: 'confirm-email/:userId', component: EmailConfirmationComponent },
+    { path: 'confirm-email', component: EmailConfirmationComponent }
 ];
 
 @NgModule({
   imports: [RouterModule.forChild(routes)],
   exports: [RouterModule]
 })
-export class CommonRoutingModule {}
+export class CoreRoutingModule {}
