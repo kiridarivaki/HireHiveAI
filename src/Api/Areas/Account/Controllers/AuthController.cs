@@ -70,7 +70,7 @@ public class AuthController : ApiController
         {
             _logger.LogError("Failed to login user {email}, With exception: {message}", loginModel.Email, e.Message);
 
-            return Unauthorized();
+            return Unauthorized(new { message = e.Message });
         }
     }
 
@@ -95,19 +95,19 @@ public class AuthController : ApiController
 
     [HttpPost]
     [Route("resend-confirmation")]
-    public async Task<IActionResult> ResendConfirmation([FromBody] string email)
+    public async Task<IActionResult> ResendConfirmation([FromBody] EmailConfirmationBm emailConfirmationBm)
     {
         try
         {
-            var emailConfirmationDto = await _authService.SendEmailConfirmation(email);
+            var emailConfirmationDto = await _authService.SendEmailConfirmation(emailConfirmationBm.Email);
 
-            _logger.LogInformation("Email confirmation sent to {email}.", email);
+            _logger.LogInformation("Email confirmation sent to {email}.", emailConfirmationBm.Email);
 
             return Ok(_mapper.Map<EmailConfirmationVm>(emailConfirmationDto));
         }
         catch (Exception e)
         {
-            _logger.LogError("Email confirmation failed to send to {email}. With exception: {message}", email, e.Message);
+            _logger.LogError("Email confirmation failed to send to {email}. With exception: {message}", emailConfirmationBm.Email, e.Message);
             throw;
         }
     }
