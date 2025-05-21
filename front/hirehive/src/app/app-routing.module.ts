@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { MainLayoutComponent } from '@shared/layouts/main-layout.component.ts/main-layout.component';
+import { CoreRoutingModule } from 'src/features/core/core-routing.module';
 
 const routes: Routes = [
   {
@@ -10,7 +11,7 @@ const routes: Routes = [
       {
         path: 'home',
         loadChildren: () =>
-          import('../features/common/home/home.module').then(m => m.HomeModule)
+          import('../features/core/home/home.module').then(m => m.HomeModule)
       }
     ]
   },
@@ -20,7 +21,7 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  imports: [RouterModule.forRoot(routes)],
+  imports: [RouterModule.forRoot(routes), CoreRoutingModule],
   exports: [RouterModule],
 })
 export class AppRoutingModule {}
