@@ -1,0 +1,20 @@
+<div class="notice-container">
+  <mat-icon color="warn" class="icon">mail_outline</mat-icon>
+
+  <h2>Please confirm your email</h2>
+
+  <p>
+    Your email address <strong>{{ userEmail }}</strong> is not confirmed yet.
+    Please check your inbox for the confirmation email.
+  </p>
+
+  <button mat-raised-button color="primary" (click)="resendEmailConfirmation()" [disabled]="resendStatus === 'sending'">
+    {{ resendStatus === 'sending' ? 'Resending...' : resendStatus === 'sent' ? 'Email Sent' : 'Resend Confirmation Email' }}
+  </button>
+
+  <button mat-button color="accent" (click)="goToLogin()">Back to Login</button>
+
+  <p class="error-message" *ngIf="resendStatus === 'error'">
+    Failed to resend confirmation email. Please try again later.
+  </p>
+</div>
