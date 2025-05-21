@@ -1,5 +1,4 @@
-﻿using HireHive.Application.DTOs.Account;
-using HireHive.Application.Interfaces;
+﻿using HireHive.Application.Interfaces;
 using HireHive.Domain.Entities;
 using Microsoft.AspNetCore.Authentication.BearerToken;
 using Microsoft.AspNetCore.Identity;
@@ -73,19 +72,12 @@ namespace HireHive.Infrastructure.Services
             return Convert.ToBase64String(randomNumber);
         }
 
-        public async Task<EmailConfirmationDto> GenerateEmailConfirmationToken(User user)
+        public async Task<string> GenerateEmailConfirmationToken(User user)
         {
             var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
             var encodedToken = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(token));
 
-            var confirmationToken = new EmailConfirmationDto
-            {
-                Token = encodedToken,
-                Email = user.Email!,
-                ExpiresIn = (long)TimeSpan.FromMinutes(10).TotalSeconds
-            };
-
-            return confirmationToken;
+            return encodedToken;
         }
     }
 }
