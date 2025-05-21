@@ -4,6 +4,7 @@
   [type]="type"
   [ngClass]="btnClass"
   [disabled]="disabled"
+  [routerLink]="routerLink"
   (click)="emitEvent()">
   <mat-icon *ngIf="icon">{{ icon }}</mat-icon>
   <span *ngIf="text">{{ text }}</span>
