@@ -99,11 +99,11 @@ public class AuthController : ApiController
     {
         try
         {
-            var emailConfirmationDto = await _authService.SendEmailConfirmation(emailConfirmationBm.Email);
+            await _authService.SendEmailConfirmation(emailConfirmationBm.Email);
 
             _logger.LogInformation("Email confirmation sent to {email}.", emailConfirmationBm.Email);
 
-            return Ok(_mapper.Map<EmailConfirmationVm>(emailConfirmationDto));
+            return Ok();
         }
         catch (Exception e)
         {

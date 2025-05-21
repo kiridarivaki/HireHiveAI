@@ -39,7 +39,7 @@ namespace HireHive.Infrastructure.Services
             _mapper = mapper;
             _logger = logger;
         }
-        public async Task<EmailConfirmationDto> Register(RegisterDto registerDto)
+        public async Task Register(RegisterDto registerDto)
         {
             using (TransactionScope scope = new TransactionScope(TransactionScopeOption.Required,
                                              new TransactionOptions { IsolationLevel = IsolationLevel.ReadCommitted },
@@ -55,11 +55,9 @@ namespace HireHive.Infrastructure.Services
 
                     await _userRepository.AddAsync(newUser, registerDto.Password);
 
-                    var emailConfirmationDto = await SendEmailConfirmation(newUser.Email!);
+                    await SendEmailConfirmation(newUser.Email!);
 
                     scope.Complete();
-
-                    return emailConfirmationDto;
                 }
                 catch (BaseException)
                 {
@@ -92,19 +90,17 @@ namespace HireHive.Infrastructure.Services
             }
         }
 
-        public async Task<EmailConfirmationDto> SendEmailConfirmation(string email)
+        public async Task SendEmailConfirmation(string email)
         {
             try
             {
                 var user = await _userManager.FindByEmailAsync(email)
                     ?? throw new UserNotFoundException();
 
-                var emailConfirmationDto = await _tokenService.GenerateEmailConfirmationToken(user);
-                await _emailService.SendConfirmationEmail(email!, emailConfirmationDto.Token);
+                var confirmationToken = await _tokenService.GenerateEmailConfirmationToken(user);
+                await _emailService.SendConfirmationEmail(email!, confirmationToken);
 
                 _logger.LogInformation("Confirmation email sent to {email}.", email);
-
-                return emailConfirmationDto;
             }
             catch (BaseException e)
             {
