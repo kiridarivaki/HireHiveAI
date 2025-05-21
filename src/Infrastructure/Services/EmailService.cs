@@ -15,7 +15,7 @@ namespace HireHive.Infrastructure.Services
             _logger = logger;
         }
 
-        public async Task SendEmailAsync(string toEmail, string subject, string plainTextMessage, string htmlMessage)
+        public async Task SendEmail(string toEmail, string subject, string plainTextMessage, string htmlMessage)
         {
             try
             {
@@ -46,16 +46,15 @@ namespace HireHive.Infrastructure.Services
             }
         }
 
-        public async Task SendEmailConfirmationAsync(string toEmail, Guid userId, string token)
+        public async Task SendConfirmationEmail(string toEmail, string token)
         {
-            //todo: update confirmation url with correct fe route
-            var confirmationUrl = $"https://localhost:4700/confirm-email?userId={Uri.EscapeDataString(userId.ToString())}&token={Uri.EscapeDataString(token)}";
+            var confirmationUrl = $"https://localhost:4700/confirm-email?token={Uri.EscapeDataString(token)}";
 
             var subject = "HireHive: Email address confirmation";
             var plainTextMessage = "Click the link below to confirm your email address:";
             var htmlMessage = $"<br /><a href=\"{confirmationUrl}\">Confirm Email</a>";
 
-            await SendEmailAsync(toEmail, subject, plainTextMessage, htmlMessage);
+            await SendEmail(toEmail, subject, plainTextMessage, htmlMessage);
         }
 
         public Task SendPasswordResetEmailAsync(string toEmail, string subject, string message)

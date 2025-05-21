@@ -39,7 +39,7 @@ namespace HireHive.Infrastructure.Services
             _mapper = mapper;
             _logger = logger;
         }
-        public async Task Register(RegisterDto registerDto)
+        public async Task<EmailConfirmationDto> Register(RegisterDto registerDto)
         {
             using (TransactionScope scope = new TransactionScope(TransactionScopeOption.Required,
                                              new TransactionOptions { IsolationLevel = IsolationLevel.ReadCommitted },
@@ -55,12 +55,11 @@ namespace HireHive.Infrastructure.Services
 
                     await _userRepository.AddAsync(newUser, registerDto.Password);
 
-                    var token = await _userManager.GenerateEmailConfirmationTokenAsync(newUser);
-                    var encodedToken = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(token));
-
-                    await _emailService.SendEmailConfirmationAsync(newUser.Email!, newUser.Id, encodedToken);
+                    var emailConfirmationDto = await SendEmailConfirmation(newUser.Email!);
 
                     scope.Complete();
+
+                    return emailConfirmationDto;
                 }
                 catch (BaseException)
                 {
@@ -77,7 +76,8 @@ namespace HireHive.Infrastructure.Services
                 var user = await _userManager.FindByEmailAsync(email)
                     ?? throw new UserNotFoundException();
 
-                var decodedToken = Uri.UnescapeDataString(token);
+                var decodedTokenBytes = WebEncoders.Base64UrlDecode(token);
+                var decodedToken = Encoding.UTF8.GetString(decodedTokenBytes);
                 var result = await _userManager.ConfirmEmailAsync(user, decodedToken);
 
                 if (!result.Succeeded)
@@ -88,6 +88,27 @@ namespace HireHive.Infrastructure.Services
             catch (BaseException e)
             {
                 _logger.LogWarning("Email confirmation failed for user {email}. With exception: {message}", email, e.Message);
+                throw;
+            }
+        }
+
+        public async Task<EmailConfirmationDto> SendEmailConfirmation(string email)
+        {
+            try
+            {
+                var user = await _userManager.FindByEmailAsync(email)
+                    ?? throw new UserNotFoundException();
+
+                var emailConfirmationDto = await _tokenService.GenerateEmailConfirmationToken(user);
+                await _emailService.SendConfirmationEmail(email!, emailConfirmationDto.Token);
+
+                _logger.LogInformation("Confirmation email sent to {email}.", email);
+
+                return emailConfirmationDto;
+            }
+            catch (BaseException e)
+            {
+                _logger.LogWarning("Confirmation email failed to send to {email}. With exception: {message}", email, e.Message);
                 throw;
             }
         }

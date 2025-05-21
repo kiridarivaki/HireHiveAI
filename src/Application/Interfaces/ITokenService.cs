@@ -1,4 +1,5 @@
-﻿using HireHive.Domain.Entities;
+﻿using HireHive.Application.DTOs.Account;
+using HireHive.Domain.Entities;
 using Microsoft.AspNetCore.Authentication.BearerToken;
 
 namespace HireHive.Application.Interfaces
@@ -7,5 +8,6 @@ namespace HireHive.Application.Interfaces
     {
         Task<AccessTokenResponse> GenerateToken(User user);
         string GenerateRefreshToken();
+        Task<EmailConfirmationDto> GenerateEmailConfirmationToken(User user);
     }
 }
