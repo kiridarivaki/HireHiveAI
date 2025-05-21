@@ -13,6 +13,9 @@ export class ErrorInterceptor implements HttpInterceptor{
   ) {}
 
   intercept(request: HttpRequest<undefined>, next: HttpHandler): Observable<HttpEvent<undefined>> {
+    if (this.shouldNotIntercept(request.url)) {
+      return next.handle(request);
+    } 
     return next.handle(request).pipe(
       catchError((err: HttpErrorResponse) => {
         let message = 'Something went wrong. Please try again.'
@@ -27,9 +30,6 @@ export class ErrorInterceptor implements HttpInterceptor{
           case 403:
             message = 'Forbidden. You don’t have permission.';
             break;
-          case 404:
-            message = 'Resource not found.';
-            break;
           case 500:
             message = 'Server error. Try again later.';
             break;
@@ -41,6 +41,14 @@ export class ErrorInterceptor implements HttpInterceptor{
 
         return throwError(() => err);
       })
+    );
+  }
+
+  private shouldNotIntercept(url: string): boolean {
+    return (
+      url.includes('/login') ||
+      url.includes('/refreshToken') ||
+      url.includes('/register')
     );
   }
 } 

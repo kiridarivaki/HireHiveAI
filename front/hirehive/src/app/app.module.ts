@@ -7,6 +7,7 @@ import { HomeModule } from 'src/features/core/home/home.module';
 import { HTTP_INTERCEPTORS, provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { ErrorInterceptor } from './shared/interceptors/error.interceptor';
 import { TokenInterceptor } from './shared/interceptors/token.interceptor';
+import { ErrorComponent } from '@shared/components/error/error.component';
 
 @NgModule({
   declarations: [
@@ -16,7 +17,8 @@ import { TokenInterceptor } from './shared/interceptors/token.interceptor';
     BrowserModule,
     AppRoutingModule,
     UserModule,
-    HomeModule
+    HomeModule,
+    ErrorComponent
 ],
   providers: [
     provideHttpClient(withInterceptorsFromDi()),
