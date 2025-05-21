@@ -39,10 +39,14 @@ export interface GetInfoResponse{
     email: string,
     firstName: string,
     lastName: string,
-    isEmailConfirmed: boolean
+    emailConfirmed: boolean
 }
 
 export interface EmailConfirmationPayload{
     confirmationToken: string,
+    email: string
+}
+
+export interface EmailConfirmationResendPayload{
     email: string
 }
