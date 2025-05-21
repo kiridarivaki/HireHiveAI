@@ -93,6 +93,25 @@ public class AuthController : ApiController
         }
     }
 
+    [HttpPost]
+    [Route("resend-confirmation")]
+    public async Task<IActionResult> ResendConfirmation([FromBody] string email)
+    {
+        try
+        {
+            var emailConfirmationDto = await _authService.SendEmailConfirmation(email);
+
+            _logger.LogInformation("Email confirmation sent to {email}.", email);
+
+            return Ok(_mapper.Map<EmailConfirmationVm>(emailConfirmationDto));
+        }
+        catch (Exception e)
+        {
+            _logger.LogError("Email confirmation failed to send to {email}. With exception: {message}", email, e.Message);
+            throw;
+        }
+    }
+
     [HttpGet]
     [Route("get-info/{userId}")]
     public async Task<IActionResult> GetUserInfo([FromRoute] Guid userId)
