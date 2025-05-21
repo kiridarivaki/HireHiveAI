@@ -4,10 +4,12 @@ import { Router } from '@angular/router';
 import { StorageService } from '@shared/services/storage.service';
 import { passwordValidator } from '@shared/validators/password.validator';
 import { tap } from 'rxjs';
-import { LoginPayload } from 'src/app/client/models/auth-client.model';
+import { EmailConfirmationResendPayload, LoginPayload } from 'src/app/client/models/auth-client.model';
 import { StoredAuth, UserRole } from '@shared/models/auth.model';
 import { User } from '@shared/models/user.model';
 import { AuthService } from '@shared/services/auth.service';
+import { ErrorService } from '@shared/services/error.service';
+import { EmailResendService } from '@shared/services/email-resend.service';
 
 
 @Component({
@@ -20,6 +22,8 @@ export class LoginPageComponent {
     constructor(
       private authService: AuthService,
       private storageService: StorageService,
+      private emailResendService: EmailResendService,
+      private errorService: ErrorService,
       private router: Router
     ) {}
   loginForm = new FormGroup ({
@@ -50,17 +54,16 @@ export class LoginPageComponent {
         .subscribe({
             next: (response) => {
               this.fetchUser(response.userId)
-              this.router.navigate([`/user/${response.userId}`]);
             },
             error: (err)=>{
               this.storageService.removeAuth()
               this.storageService.removeUser()
-              if (err.status === 401 && err.error?.message === 'Email addresss is not confirmed.') {
-                this.router.navigate(['/confirm-email'], {
-                  queryParams: { email: this.loginForm.value.email }
-                });
-              } else {
-                console.log("Invalid email or password.");
+              if (err.status === 401 && err.error?.message === 'Email addresss is not confirmed.'){
+                this.errorService.showError('Email confirmation is required.');
+                this.emailResendService.resendEmailConfirmation(loginData.email);
+                this.router.navigate(['/check-email'], { queryParams: { email: loginData.email } });
+              }else{
+                this.errorService.showError('Invalid credentials.');
               }
             }
           }
@@ -88,6 +91,13 @@ export class LoginPageComponent {
 
         this.storageService.setUser(user)
         this.authService.setUser(user)
+        if (!user.emailConfirmed) {
+          this.router.navigate(['/check-email'], {
+            queryParams: { email: user.email }
+          });
+        } else {
+          this.router.navigate([`/user/${userId}`]);
+        }
       }
     });
   }
