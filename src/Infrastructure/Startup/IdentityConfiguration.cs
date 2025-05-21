@@ -27,6 +27,11 @@ namespace HireHive.Infrastructure.Startup
                 x.Password.RequiredLength = 8;
                 x.SignIn.RequireConfirmedAccount = true;
             });
+
+            services.Configure<DataProtectionTokenProviderOptions>(options =>
+            {
+                options.TokenLifespan = TimeSpan.FromMinutes(10);
+            });
         }
     }
 }
