@@ -38,7 +38,8 @@ export interface GetInfoResponse{
     roles: Array<UserRole>,
     email: string,
     firstName: string,
-    lastName: string
+    lastName: string,
+    isEmailConfirmed: boolean
 }
 
 export interface EmailConfirmationPayload{

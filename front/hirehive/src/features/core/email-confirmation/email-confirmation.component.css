@@ -1,0 +1,37 @@
+.confirmation-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 3rem auto;
+  max-width: 400px;
+  text-align: center;
+  padding: 1.5rem;
+  border-radius: 8px;
+  box-shadow: 0 0 12px rgba(0,0,0,0.1);
+  background-color: #fafafa;
+
+  .message {
+    margin: 1rem 0;
+    font-size: 1.1rem;
+    font-weight: 500;
+  }
+
+  .icon {
+    padding: 5px;
+  }
+}
+
+.success {
+  color: #2e7d32;
+  background-color: #e8f5e9;
+}
+
+.info {
+  color: black;
+  background-color:lightgrey;
+}
+
+.error {
+  color: #d32f2f;
+  background-color: #ffebee;
+}

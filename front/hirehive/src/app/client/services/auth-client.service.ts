@@ -3,6 +3,7 @@ import { Injectable } from "@angular/core";
 import { UrlService } from "../../shared/services/url.service";
 import { EmailConfirmationPayload, GetInfoResponse, LoginPayload, LoginResponse, RefreshTokenResponse, RegisterPayload } from "../models/auth-client.model";
 import { Observable } from "rxjs";
+import { observableToBeFn } from "rxjs/internal/testing/TestScheduler";
 
 @Injectable({
     providedIn : 'root'
@@ -30,8 +31,13 @@ export class AuthClientService{
         return this.http.get<GetInfoResponse>(getInfoUrl);
     }
 
-    confirmEmail(confirmEmailData: EmailConfirmationPayload){
-        const confirmEmailUrl = this.urlService.urlFor('auth', 'confirm-email', undefined)
+    confirmEmail(confirmEmailData: EmailConfirmationPayload): Observable<any> {
+        const confirmEmailUrl = this.urlService.urlFor('auth', 'confirm-email', undefined);
         return this.http.post<void>(confirmEmailUrl, confirmEmailData);
+    }
+    
+    resendConfirmation(email: string): Observable<any> {
+        const resendConfirmationUrl = this.urlService.urlFor('auth', 'resend-confirmation', undefined);
+        return this.http.post<void>(resendConfirmationUrl, email);
     }
 }
