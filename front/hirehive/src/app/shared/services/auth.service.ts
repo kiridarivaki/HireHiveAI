@@ -1,6 +1,6 @@
 import { Injectable } from "@angular/core";
 import { BehaviorSubject, Observable } from "rxjs";
-import { EmailConfirmationPayload, GetInfoResponse, LoginPayload, LoginResponse, RefreshTokenResponse, RegisterPayload } from "src/app/client/models/auth-client.model";
+import { EmailConfirmationPayload, EmailConfirmationResendPayload, GetInfoResponse, LoginPayload, LoginResponse, RefreshTokenResponse, RegisterPayload } from "src/app/client/models/auth-client.model";
 import { AuthClientService } from "src/app/client/services/auth-client.service";
 import { StorageService } from "./storage.service";
 import { Router } from "@angular/router";
@@ -38,16 +38,16 @@ export class AuthService {
         return this.authClientService.getUserInfo(userId);
     }
 
-    register(registerData: RegisterPayload): void{
-        this.authClientService.login(registerData);
+    register(registerData: RegisterPayload): Observable<any>{
+        return this.authClientService.register(registerData);
     }
 
     confirmEmail(confirmEmailData: EmailConfirmationPayload): Observable<any>{
         return this.authClientService.confirmEmail(confirmEmailData);
     }
 
-    resendConfirmation(email: string): Observable<any>{
-        return this.authClientService.resendConfirmation(email);
+    resendConfirmation(emailResendData: EmailConfirmationResendPayload): Observable<any>{
+        return this.authClientService.resendConfirmation(emailResendData);
     }
 
     isTokenExpired(): boolean {

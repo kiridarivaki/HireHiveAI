@@ -1,7 +1,7 @@
 import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { UrlService } from "../../shared/services/url.service";
-import { EmailConfirmationPayload, GetInfoResponse, LoginPayload, LoginResponse, RefreshTokenResponse, RegisterPayload } from "../models/auth-client.model";
+import { EmailConfirmationPayload, EmailConfirmationResendPayload, GetInfoResponse, LoginPayload, LoginResponse, RefreshTokenResponse, RegisterPayload } from "../models/auth-client.model";
 import { Observable } from "rxjs";
 import { observableToBeFn } from "rxjs/internal/testing/TestScheduler";
 
@@ -11,7 +11,7 @@ import { observableToBeFn } from "rxjs/internal/testing/TestScheduler";
 export class AuthClientService{
     constructor(private http: HttpClient, private urlService: UrlService){ }
 
-    register(registerData: RegisterPayload){
+    register(registerData: RegisterPayload): Observable<any>{
         const registerUrl = this.urlService.urlFor('auth', 'register', undefined);
         return this.http.post<void>(registerUrl, registerData)
     }
@@ -36,8 +36,8 @@ export class AuthClientService{
         return this.http.post<void>(confirmEmailUrl, confirmEmailData);
     }
     
-    resendConfirmation(email: string): Observable<any> {
+    resendConfirmation(emailResendData: EmailConfirmationResendPayload): Observable<any> {
         const resendConfirmationUrl = this.urlService.urlFor('auth', 'resend-confirmation', undefined);
-        return this.http.post<void>(resendConfirmationUrl, email);
+        return this.http.post<void>(resendConfirmationUrl, emailResendData);
     }
 }

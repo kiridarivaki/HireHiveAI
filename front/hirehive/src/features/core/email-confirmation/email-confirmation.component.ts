@@ -1,31 +1,39 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
-import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AppButtonComponent } from '@shared/components/button/button.component';
 import { AuthService } from '@shared/services/auth.service';
-import { tap } from 'rxjs';
+import { EmailResendService, ResendStatus } from '@shared/services/email-resend.service';
 import { EmailConfirmationPayload } from 'src/app/client/models/auth-client.model';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-email-confirmation',
   templateUrl: './email-confirmation.component.html',
-  imports: [CommonModule, MatIconModule, MatProgressSpinnerModule, AppButtonComponent],
-  styleUrl: './email-confirmation.component.css'
+  styleUrls: ['./email-confirmation.component.css'],
+  standalone: true,
+  imports: [CommonModule, MatIconModule, MatProgressSpinnerModule, AppButtonComponent]
 })
-export class EmailConfirmationComponent implements OnInit{
+export class EmailConfirmationComponent implements OnInit, OnDestroy {
   private userEmail: string | null = null;
-  confirmationStatus: 'pending' | 'success' | 'error'| 'alreadyConfirmed' | 'tokenExpired' = 'pending';
-  resendStatus: 'idle' | 'sending' | 'sent' | 'error' = 'idle';
+  confirmationStatus: 'pending' | 'success' | 'error' | 'alreadyConfirmed' = 'pending';
+  resendStatus: ResendStatus = 'idle';
+  private resendSub?: Subscription;
 
   constructor(
     private route: ActivatedRoute,
     private authService: AuthService,
+    private resendService: EmailResendService,
     private router: Router
   ) {}
 
   ngOnInit(): void {
+    this.resendSub = this.resendService.resendStatus$.subscribe(status => {
+      this.resendStatus = status;
+    });
+
     const userId = this.route.snapshot.queryParamMap.get('userId');
     const token = this.route.snapshot.queryParamMap.get('token');
 
@@ -35,7 +43,8 @@ export class EmailConfirmationComponent implements OnInit{
       this.authService.getUserInfo(userId).subscribe({
         next: (user) => {
           this.userEmail = user.email;
-          if (user.isEmailConfirmed) {
+
+          if (user.emailConfirmed) {
             this.confirmationStatus = 'alreadyConfirmed';
           } else {
             const emailConfirmationData: EmailConfirmationPayload = {
@@ -53,12 +62,8 @@ export class EmailConfirmationComponent implements OnInit{
             });
           }
         },
-        error: (err) => {
-          if (err.status === 400 && err.error?.message === 'Token Expired') {
-            this.confirmationStatus = 'tokenExpired';
-          } else {
-            this.confirmationStatus = 'error';
-          }
+        error: () => {
+          this.confirmationStatus = 'error';
         }
       });
     } else {
@@ -68,15 +73,10 @@ export class EmailConfirmationComponent implements OnInit{
 
   resendEmailConfirmation(): void {
     if (!this.userEmail) return;
+    this.resendService.resendEmailConfirmation(this.userEmail);
+  }
 
-    this.resendStatus = 'sending';
-    this.authService.resendConfirmation(this.userEmail).subscribe({
-      next: () => {
-        this.resendStatus = 'sent';
-      },
-      error: () => {
-        this.resendStatus = 'error';
-      }
-    });
+  ngOnDestroy(): void {
+    this.resendSub?.unsubscribe();
   }
 }

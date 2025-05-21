@@ -15,11 +15,9 @@
   <app-button routerLink="/login" text="Login"></app-button>
 </div>
 
-<div class="confirmation-container error" *ngIf="confirmationStatus === 'error' || confirmationStatus === 'tokenExpired'">
+<div class="confirmation-container error" *ngIf="confirmationStatus === 'error'">
   <mat-icon>error</mat-icon>
-  <p class="message">
-    Email confirmation failed. 
-  </p>
+  <p class="message">Email confirmation failed.</p>
   <app-button
     *ngIf="resendStatus !== 'sent'"
     (click)="resendEmailConfirmation()"
