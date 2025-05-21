@@ -52,10 +52,16 @@ export class LoginPageComponent {
               this.fetchUser(response.userId)
               this.router.navigate([`/user/${response.userId}`]);
             },
-            error: ()=>{
+            error: (err)=>{
               this.storageService.removeAuth()
               this.storageService.removeUser()
-              this.router.navigate(['/login']);
+              if (err.status === 401 && err.error?.message === 'Email addresss is not confirmed.') {
+                this.router.navigate(['/confirm-email'], {
+                  queryParams: { email: this.loginForm.value.email }
+                });
+              } else {
+                console.log("Invalid email or password.");
+              }
             }
           }
         )
@@ -76,7 +82,8 @@ export class LoginPageComponent {
           roles: roles,
           email: userInfo.email,
           firstName: userInfo.firstName,
-          lastName: userInfo.lastName
+          lastName: userInfo.lastName,
+          emailConfirmed: userInfo.emailConfirmed
         }
 
         this.storageService.setUser(user)

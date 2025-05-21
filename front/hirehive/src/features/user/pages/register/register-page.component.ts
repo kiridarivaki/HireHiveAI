@@ -1,10 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
 import { EmploymentStatus } from '@shared/constants/employment-options';
+import { AuthService } from '@shared/services/auth.service';
 import { fieldsMatchValidator } from '@shared/validators/fields-match.validator';
 import { passwordValidator } from '@shared/validators/password.validator';
 import { RegisterPayload } from 'src/app/client/models/auth-client.model';
-import { AuthClientService } from 'src/app/client/services/auth-client.service';
 
 @Component({
   selector: 'app-register-page',
@@ -15,7 +16,8 @@ import { AuthClientService } from 'src/app/client/services/auth-client.service';
 export class RegisterPageComponent implements OnInit {
 
   constructor(
-    private authService: AuthClientService
+    private authService: AuthService,
+    private router: Router
   ) {}
 
   employmentOptions: { value: string, label: string }[] = [];
@@ -52,7 +54,14 @@ export class RegisterPageComponent implements OnInit {
         confirmPassword: registerForm.confirmPassword!
       };
 
-      this.authService.register(registerData);
+      this.authService.register(registerData).subscribe({
+        next: () => {
+          this.router.navigate(['/check-email'], { queryParams: { email: registerData.email } });
+        },
+        error: (err) => {
+          console.error('Registration failed', err);
+        }
+      });
     };
   }
 }
