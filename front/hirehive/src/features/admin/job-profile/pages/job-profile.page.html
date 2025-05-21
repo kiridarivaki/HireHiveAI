@@ -1,0 +1,34 @@
+<form [formGroup]="jobForm" class="job-profile-form">
+  <div class="left-panel">
+    <h2 class="field-label">
+      Job Description
+    </h2>
+    <textarea formControlName="jobDescription" rows="6" class="textarea-input"></textarea>
+
+    <app-select
+      [options]="jobTypes"
+      label="Job Type"
+      formControlName="jobType"
+      class="select-input"
+    ></app-select>
+
+    <app-button
+      type="button"
+      text="Submit"
+      (onClick)="submitConfig()"
+      class="submit-button"
+    ></app-button>
+  </div>
+
+  <div class="right-panel">
+    <h3>Assessment Criteria</h3>
+
+    <ng-container *ngFor="let c of criteria">
+      <app-criteria-slider
+        [label]="c.label"
+        [formControlName]="c.key"
+        class="criteria-slider"
+      ></app-criteria-slider>
+    </ng-container>
+  </div>
+</form>
