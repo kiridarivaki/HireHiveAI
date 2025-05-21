@@ -14,10 +14,6 @@ export interface GetResumeUrlPayload {
     sasUrl?: string 
 }
 
-export interface UploadResumePayload {
-    file: File
-}
-
 export interface UpdateResumePayload {
     file?: File | null;
 }
