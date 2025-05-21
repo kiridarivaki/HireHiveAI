@@ -1,18 +1,11 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { CandidateMatchesComponent } from './candidate-matches/pages/candidate-matches.page';
-import { MainLayoutComponent } from '@shared/layouts/main-layout.component.ts/main-layout.component';
-import { JobProfileComponent } from './candidate-matches/pages/job-profile.page';
+import { CandidatesMatchComponent } from './candidate-matches/pages/candidate-matches.page';
+import { AuthGuard } from '@shared/guards/auth.guard';
+import { RoleGuard } from '@shared/guards/role.guard';
 
 const routes: Routes = [
-  {
-    path: '',
-    component: MainLayoutComponent,
-    children: [
-      { path: 'results', component: CandidateMatchesComponent },
-      { path: 'job-profile', component: JobProfileComponent }
-    ]
-  }
+  { path: 'results', component: CandidatesMatchComponent, canActivate: [AuthGuard, RoleGuard] }
 ];
 
 @NgModule({

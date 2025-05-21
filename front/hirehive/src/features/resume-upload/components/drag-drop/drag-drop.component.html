@@ -5,7 +5,7 @@
   (drop)="onFileDrop($event)"
   (click)="!file && fileInput.click()"
 >
-  <p *ngIf="(!file && !fileMetadata) || !file">Drag and drop a PDF file here, or click to select.</p>
+  <p *ngIf="(!file || !fileMetadata)">Drag and drop a PDF file here, or click to select.</p>
 
   <div *ngIf="file">
     <app-file-info [file]="file"></app-file-info>

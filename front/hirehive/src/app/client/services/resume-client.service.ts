@@ -1,8 +1,8 @@
 import { HttpClient, HttpResponse } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { Observable } from "rxjs";
-import { UrlService } from "../helpers/url-service.service";
-import { GetAllResumesResponse, GetResumeInfoPayload, GetResumeUrlPayload, UpdateResumePayload, UploadResumePayload } from "../models/resume-client.model";
+import { UrlService } from "../../shared/services/url.service";
+import { GetAllResumesResponse, GetResumeInfoPayload, GetResumeUrlPayload, UpdateResumePayload } from "../models/resume-client.model";
 
 @Injectable({
     providedIn : 'root'
@@ -33,9 +33,9 @@ export class ResumeClientService{
         return this.http.get(getFileUrlUrl, { responseType: 'blob' });
     }
 
-    upload(userId: string, uploadData: UploadResumePayload) : Observable<any>{
+    upload(userId: string, uploadData: FormData) : Observable<any>{
         const uploadResumeUrl = this.urlService.urlFor('resume', 'upload/{userId}', { userId });
-        return this.http.post<void>(uploadResumeUrl, uploadData);
+        return this.http.post<FormData>(uploadResumeUrl, uploadData);
     }
 
     update(userId: string, updateData: UpdateResumePayload) : Observable<any>{

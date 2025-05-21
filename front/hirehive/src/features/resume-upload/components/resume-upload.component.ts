@@ -1,7 +1,7 @@
 import { Component, ElementRef, Input, OnInit, ViewChild } from "@angular/core";
 import { FormControl, FormGroup, Validators } from "@angular/forms";
 import { fileValidator } from "@shared/validators/file.validator";
-import { GetResumeInfoPayload, GetResumeUrlPayload, UploadResumePayload } from "src/app/client/models/resume-client.model";
+import { GetResumeInfoPayload } from "src/app/client/models/resume-client.model";
 import { ResumeClientService } from "src/app/client/services/resume-client.service";
 import { DragDropComponent } from "./drag-drop/drag-drop.component";
 import { FileService } from "@shared/services/file.service";
@@ -24,8 +24,9 @@ export class ResumeUploadComponent implements OnInit{
   ){}
 
   ngOnInit(): void {
-    this.fetchFileMetadata();
     this.fetchFileUrl();
+    this.fetchFileMetadata();
+
   }
 
   fetchFileMetadata(){
@@ -86,21 +87,21 @@ export class ResumeUploadComponent implements OnInit{
   }
 
   onSubmit(): void {
-    const file = this.uploadForm.get('selectedFile')?.value;
-
-    if (file && this.userId) {
-      const uploadData: UploadResumePayload = { file };
-
+    if (!this.userId) return;
+    const uploadData = new FormData();
+    const file: File | null | undefined = this.uploadForm.get('selectedFile')?.value;
+    if (file) {
+      uploadData.append('file', file);
       this.resumeService.upload(this.userId, uploadData).subscribe({
         next: () => {
           console.log('File uploaded successfully.');
-          this.uploadForm.reset();
+          this.uploadForm.get('selectedFile')?.setValue(file);
         },
         error: (err) => {
           console.error('Upload failed:', err);
         }
-      });
-    }
+      })
+    };
   }
 
   onDownload(): void {
