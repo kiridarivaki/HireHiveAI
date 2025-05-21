@@ -1,9 +1,23 @@
 <mat-toolbar class="navbar">
-  <img alt="Hire Hive Logo" class="logo">
+  <img alt="Hire Hive Logo" class="logo" />
+
   <span class="spacer"></span>
 
-  <button mat-button routerLink="/">Home</button>
-  <button mat-button routerLink="/register">Register</button>
-  <button mat-button routerLink="/login">Login</button>
-  <button mat-button routerLink="/aboutus">About Us</button>
+  <app-button routerLink="/" text="Home"></app-button>
+  <app-button routerLink="/about" text="About Us"></app-button>
+
+  <ng-container *ngIf="!isLoggedIn">
+    <app-button routerLink="/register" text="Register"></app-button>
+    <app-button routerLink="/login" text="Login"></app-button>
+  </ng-container>
+
+  <ng-container *ngIf="isLoggedIn">
+    <app-button [routerLink]="['/user', currentUser?.id]" text="Profile"></app-button>
+
+    <app-button *ngIf="hasRole(UserRole.admin)" routerLink="/admin/job-profile" text="Find Matches"></app-button>
+
+    <app-button (onClick)="onLogout()" text="Logout"></app-button>
+
+    <span class="welcome-msg">Welcome {{ currentUser?.firstName }}!</span>
+  </ng-container>
 </mat-toolbar>
