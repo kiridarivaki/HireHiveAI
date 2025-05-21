@@ -42,8 +42,12 @@ export class AuthService {
         this.authClientService.login(registerData);
     }
 
-    confirmEmail(confirmEmailData: EmailConfirmationPayload){
-        this.authClientService.confirmEmail(confirmEmailData);
+    confirmEmail(confirmEmailData: EmailConfirmationPayload): Observable<any>{
+        return this.authClientService.confirmEmail(confirmEmailData);
+    }
+
+    resendConfirmation(email: string): Observable<any>{
+        return this.authClientService.resendConfirmation(email);
     }
 
     isTokenExpired(): boolean {
