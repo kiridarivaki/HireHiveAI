@@ -1,9 +1,11 @@
 ﻿using Domain.Enums;
 using HireHive.Domain.Entities;
+using HireHive.Domain.Enums;
 using HireHive.Domain.Exceptions.User;
 using HireHive.Domain.Interfaces;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using System.Data.Entity;
 
 namespace HireHive.Infrastructure.Data.Repositories;
 
@@ -66,5 +68,12 @@ public class UserRepository : IUserRepository
         var result = await _userManager.UpdateAsync(user);
         if (!result.Succeeded)
             throw new Exception("Failed to update user.");
+    }
+
+    public int CountFiltered(JobType jobType)
+    {
+        return _context.Users
+            .Where(u => u.JobTypes.Contains(jobType))
+            .Count();
     }
 }
