@@ -1,4 +1,4 @@
-<form [formGroup]="jobForm" class="job-profile-form">
+<form [formGroup]="jobForm" (ngSubmit)="onSubmit()" class="job-profile-form">
   <div class="left-panel">
     <h2 class="field-label">
       Job Description
@@ -15,7 +15,8 @@
     <app-button
       type="button"
       text="Submit"
-      (onClick)="submitConfig()"
+      [disabled]="!jobForm.get('jobDescription')?.value && !jobForm.get('jobType')?.value"
+      (onClick)="onSubmit()"
       class="submit-button"
     ></app-button>
   </div>

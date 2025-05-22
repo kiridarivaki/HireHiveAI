@@ -4,6 +4,7 @@
   <app-drag-drop
     [file]="selectedFile"
     [fileMetadata]="fileMetadata"
+    [disabled]="!!selectedFile || !!fileMetadata"
     (fileAdded)="onFileReceived($event)"
     (fileRemoved)="onFileRemoved()"
     (downloadRequested)="onDownload()"

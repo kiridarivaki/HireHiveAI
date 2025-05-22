@@ -1,24 +1,14 @@
 import { Component, Input, forwardRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatSliderModule } from '@angular/material/slider';
-import { ReactiveFormsModule, ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
+import { ReactiveFormsModule, ControlValueAccessor, NG_VALUE_ACCESSOR, FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-criteria-slider',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, MatSliderModule],
+  imports: [CommonModule, ReactiveFormsModule, MatSliderModule, FormsModule],
   templateUrl:'./criteria-slider.component.html',
-  styles: [`
-    :host {
-      display: block;
-      margin-bottom: 1rem;
-    }
-    label {
-      font-weight: 600;
-      margin-bottom: 0.25rem;
-      display: block;
-    }
-  `],
+  styleUrl: './criteria-slider.component.css',
   providers: [{
     provide: NG_VALUE_ACCESSOR,
     useExisting: forwardRef(() => CriteriaSliderComponent),
@@ -28,7 +18,7 @@ import { ReactiveFormsModule, ControlValueAccessor, NG_VALUE_ACCESSOR } from '@a
 export class CriteriaSliderComponent implements ControlValueAccessor {
   @Input() label = '';
 
-  value = 50;
+  selectedValue = 50;
   disabled = false;
 
   private onChange = (value: any) => {};
@@ -36,7 +26,7 @@ export class CriteriaSliderComponent implements ControlValueAccessor {
 
   writeValue(value: any): void {
     if (value !== undefined && value !== null) {
-      this.value = value;
+      this.selectedValue = value;
     }
   }
 
@@ -48,8 +38,9 @@ export class CriteriaSliderComponent implements ControlValueAccessor {
     this.onTouched = fn;
   }
 
-  setDisabledState(isDisabled: boolean): void {
-    this.disabled = isDisabled;
+  onInput(event: any) {
+    this.selectedValue = Number((event.target as HTMLInputElement).value);
+    this.onChange(this.selectedValue);
   }
 
   onBlur() {
