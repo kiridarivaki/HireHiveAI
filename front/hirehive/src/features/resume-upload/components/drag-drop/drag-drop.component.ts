@@ -1,6 +1,5 @@
 import { Component, Output, EventEmitter, Input, ElementRef, ViewChild, SimpleChanges } from '@angular/core';
-import { FileService } from '@shared/services/file.service';
-import { GetResumeInfoPayload, GetResumeUrlPayload } from 'src/app/client/models/resume-client.model';
+import { GetResumeInfoPayload } from 'src/app/client/models/resume-client.model';
 
 @Component({
   selector: 'app-drag-drop',
@@ -11,6 +10,7 @@ import { GetResumeInfoPayload, GetResumeUrlPayload } from 'src/app/client/models
 export class DragDropComponent {
   @Input() file: File | null = null;
   @Input() fileMetadata: GetResumeInfoPayload | null = null;
+  @Input() disabled: boolean = false;
   @Output() fileAdded = new EventEmitter<File>();
   @Output() downloadRequested = new EventEmitter<void>();
   @ViewChild('fileInput') fileInputRef!: ElementRef<HTMLInputElement>;

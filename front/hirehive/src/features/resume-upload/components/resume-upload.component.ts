@@ -26,7 +26,6 @@ export class ResumeUploadComponent implements OnInit{
   ngOnInit(): void {
     this.fetchFileUrl();
     this.fetchFileMetadata();
-
   }
 
   fetchFileMetadata(){
