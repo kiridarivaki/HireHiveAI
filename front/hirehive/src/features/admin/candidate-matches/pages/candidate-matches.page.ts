@@ -4,6 +4,9 @@ import { delay } from 'rxjs/operators';
 import { GetUserInfoPayload } from 'src/app/client/models/user-client.model';
 import { CandidateCardComponent } from '../components/candidate-card/candidate-card.component';
 import { CommonModule } from '@angular/common';
+import { JobStateService } from '@shared/services/state.service';
+import { AdminClientService } from 'src/app/client/services/admin-client.service';
+import { ErrorService } from '@shared/services/error.service';
 
 @Component({
   selector: 'app-candidates-match',
@@ -16,12 +19,26 @@ export class CandidateMatchesComponent implements OnInit {
 
   candidates: { userInfo: GetUserInfoPayload; matchPercentage: string }[] = [];
 
+  constructor(
+    private adminService: AdminClientService,
+    private stateService: JobStateService, 
+    private errorService: ErrorService
+  ){}
+
   ngOnInit() {
     this.getUsersByIds(this.candidateIds).subscribe(users => {
       this.candidates = users.map((user, index) => ({
         userInfo: user,
         matchPercentage: this.matchPercentages[index]
-      }));
+      })); //change to user service 
+
+      const assessmentData= this.stateService.getJobData();
+      if (assessmentData){
+        this.adminService.assess(assessmentData);
+        //add loader
+      }else{
+        this.errorService.showError('No job description was given.')
+      }
     });
   }
 
