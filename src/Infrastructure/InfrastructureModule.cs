@@ -31,8 +31,8 @@ namespace HireHive.Infrastructure
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IAuthService, AuthService>();
             services.AddScoped<ITokenService, TokenService>();
-
             services.AddScoped<IResumeService, ResumeService>();
+            services.AddScoped<IAdminService, AdminService>();
 
             var blobConnectionString = configuration["AzureBlobStorageConnection"];
             var blobSasToken = configuration["BlobSaSToken"];
