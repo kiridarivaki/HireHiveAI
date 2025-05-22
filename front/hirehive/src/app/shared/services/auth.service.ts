@@ -27,7 +27,6 @@ export class AuthService {
 
     setUser(user: User): void {
         this.currentUserSubject.next(user);
-        console.log('userset',this.currentUser$)
     }
 
     getCurrentUser(): User | null{

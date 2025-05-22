@@ -19,23 +19,23 @@ export class FileService {
     }
 
     download(file?: File, fileUrl?: string): void {
+        const a = document.createElement('a');
+
         if (file) {
             const url = URL.createObjectURL(file);
-            const a = document.createElement('a');
             a.href = url;
             a.download = file.name;
             a.click();
             URL.revokeObjectURL(url);
         } 
         else if (fileUrl) {
-            const anchor = document.createElement('a');
-            anchor.href = fileUrl;
-            anchor.target = '_blank';
-            anchor.rel = 'noopener noreferrer';
+            a.href = fileUrl;
+            a.target = '_blank';
+            a.rel = 'noopener noreferrer';
 
-            document.body.appendChild(anchor);
-            anchor.click();
-            document.body.removeChild(anchor);
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
         }
     }
 }
