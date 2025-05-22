@@ -31,8 +31,8 @@ namespace HireHive.Infrastructure.Services
         {
             try
             {
-                var resume = await _resumeRepository.GetByUserIdAsync(userId)
-                    ?? throw new ResumeNotFoundException();
+                var resume = await _resumeRepository.GetByUserIdAsync(userId);
+                _logger.LogInformation("Resume of user {resumeId} fetched.", userId);
 
                 return _mapper.Map<ResumeDto>(resume);
             }
