@@ -1,4 +1,5 @@
 ﻿using Domain.Enums;
+using HireHive.Domain.Enums;
 
 namespace HireHive.Application.DTOs.User
 {
@@ -9,5 +10,6 @@ namespace HireHive.Application.DTOs.User
         public string FirstName { get; set; } = null!;
         public string LastName { get; set; } = null!;
         public EmploymentStatus EmploymentStatus { get; set; }
+        public List<JobType>? JobTypes { get; set; }
     }
 }

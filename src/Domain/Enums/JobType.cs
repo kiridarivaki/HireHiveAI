@@ -1,7 +1,8 @@
 ﻿namespace HireHive.Domain.Enums
 {
-    public enum JobPositions
+    public enum JobType
     {
+        Undefined,
         SoftwareEngineer,
         ProductManager,
         DataScientist,
