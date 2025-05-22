@@ -1,4 +1,5 @@
 ﻿using HireHive.Domain.Entities;
+using HireHive.Domain.Enums;
 using HireHive.Domain.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
@@ -41,5 +42,25 @@ namespace HireHive.Infrastructure.Data.Repositories
             _context.Update(resume);
             await _context.SaveChangesAsync();
         }
+
+        public List<Resume> GetResumesToAssess(JobType jobType, int skip, int take)
+        {
+            return _context.Resume
+                .Join(_context.Users,
+                      resume => resume.UserId,
+                      user => user.Id,
+                      (resume, user) => new { Resume = resume, User = user })
+                .Where(joined => joined.User.JobTypes.Contains(jobType))
+                .OrderBy(joined => joined.User.Id)
+                .Select(joined => new Resume
+                {
+                    UserId = joined.Resume.UserId,
+                    Text = joined.Resume.Text
+                })
+                .Skip(skip)
+                .Take(take)
+                .ToList();
+        }
+
     }
 }

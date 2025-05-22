@@ -1,4 +1,5 @@
 ﻿using HireHive.Domain.Entities;
+using HireHive.Domain.Enums;
 
 namespace HireHive.Domain.Interfaces
 {
@@ -9,5 +10,6 @@ namespace HireHive.Domain.Interfaces
         Task<User> AddAsync(User user, string password);
         Task UpdateAsync(User user);
         Task DeleteAsync(User user);
+        int CountFiltered(JobType jobType);
     }
 }
