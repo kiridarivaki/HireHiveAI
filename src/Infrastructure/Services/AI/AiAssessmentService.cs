@@ -1,7 +1,6 @@
 ﻿using Azure;
 using Azure.AI.Inference;
-using HireHive.Domain.Entities;
-using HireHive.Domain.Exceptions.Resume;
+using HireHive.Application.DTOs.Admin;
 using HireHive.Domain.Interfaces;
 using Microsoft.Extensions.Logging;
 
@@ -19,51 +18,58 @@ namespace HireHive.Infrastructure.Services.AI
             _logger = logger;
         }
 
-        public async Task Chat(Guid userId)
+        public string AssessUsers(List<UserResumeDto> usersToAssess, AssessmentDto assessmentDto)
         {
-            var resume = await _resumeRepository.GetByUserIdAsync(userId)
-                ?? throw new ResumeNotFoundException();
+            var experienceWeight = assessmentDto.CriteriaWeights[0];
+            var educationWeight = assessmentDto.CriteriaWeights[1];
+            var skillsWeight = assessmentDto.CriteriaWeights[2];
 
-            var resume2 = await _resumeRepository.GetByUserIdAsync(new Guid("0196a012-7461-74d7-a2af-7ec497432399"))
-                ?? throw new ResumeNotFoundException();
-            _logger.LogInformation("AI assessment: ");
-
-            var resumes = new List<Resume> { resume, resume2 };
-
-            string prompt = @"
+            string prompt = @$"
                 You are an HR specialist responsible for evaluating how well candidate resumes match a given job description.
 
                 You will receive:
                 - A single job description
-                - Multiple resumes in plain text format
+                - A list of resumes in plain text format
+
+                You consider most important the assessment criteria with the most weight. Criteria weights:
+                - Education: {experienceWeight}
+                - Education: {educationWeight}
+                - Skills: {skillsWeight}
 
                 Your task is to assess each resume providing a numeric percentage (0 to 100) indicating how closely the resume matches the job description. 
                 You refer to the candidate with their user id. 
                 Do not include any explanation or text outside the JSON response.
                 ";
 
-            string description = "Job Title: Software Engineer (Backend)\r\nLocation: Hybrid – New York, NY\r\nType: Full-time\r\n\r\nAbout the Role:\r\nWe’re seeking a backend-focused Software Engineer to join our team. You'll build scalable APIs and microservices using C# and .NET, helping power our data platform.\r\n\r\nKey Responsibilities:\r\nDevelop and maintain backend services in .NET 6+\r\n\r\nCollaborate with cross-functional teams\r\n\r\nWrite clean, tested, and maintainable code\r\n\r\nTroubleshoot production issues\r\n\r\nRequirements:\r\n3+ years of experience with C#/.NET\r\n\r\nProficient in SQL/NoSQL databases\r\n\r\nFamiliarity with Docker, CI/CD, and cloud platforms (AWS/Azure)\r\n\r\nBonus Points:\r\nKnowledge of Kafka, GraphQL, or DDD\r\n\r\nPerks:\r\nCompetitive salary + benefits\r\n\r\nFlexible PTO & remote work\r\n\r\nHealth, dental, 401(k), and more";
+            var contentItems = new List<ChatMessageContentItem>();
 
-            var chatHistory = new List<ChatRequestMessage>(){
-                new ChatRequestSystemMessage(prompt),
-                new ChatRequestUserMessage(description),
-            };
 
-            foreach (var r in resumes)
+            foreach (var resume in usersToAssess)
             {
-                chatHistory.Add(new ChatRequestUserMessage(r.UserId + r.Text));
+                var resumeText = $"UserId: {resume.UserId}\nResume: {resume.ResumeText}";
+                contentItems.Add(new ChatMessageTextContentItem(resumeText));
             }
+
+            var userMessage = new ChatRequestUserMessage(contentItems);
+
+            var chatHistory = new List<ChatRequestMessage> {
+                new ChatRequestSystemMessage(prompt),
+                new ChatRequestUserMessage(assessmentDto.JobDescription),
+                userMessage
+            };
 
             var requestOptions = new ChatCompletionsOptions(chatHistory)
             {
                 Model = "openai/gpt-4.1",
                 ResponseFormat = new ChatCompletionsResponseFormatJsonObject(),
             };
-            //ChatCompletionsToolDefinition evaluateCandidateTool = new ChatCompletionsToolDefinition(EvaluateCandidateTool.GetToolDefinition());
+            ChatCompletionsToolDefinition evaluateCandidateTool = new ChatCompletionsToolDefinition(MatchJobTool.GetToolDefinition());
 
             Response<ChatCompletions> response = _client.Complete(requestOptions);
-            _logger.LogInformation("", response);
-            //return assessment;
+            var jsonResponse = response.Value.Content;
+            _logger.LogInformation("assessment:", jsonResponse);
+
+            return jsonResponse;
         }
     }
 }
