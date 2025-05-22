@@ -1,5 +1,6 @@
 ﻿using Domain.Enums;
 using HireHive.Domain.Entities;
+using HireHive.Domain.Enums;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -61,7 +62,7 @@ namespace HireHive.Infrastructure.Data
 
             if (await userManager.FindByEmailAsync(adminEmail) == null)
             {
-                var admin = new User(adminEmail, "Kyriaki", "Darivaki", EmploymentStatus.Intern);
+                var admin = new User(adminEmail, "Kyriaki", "Darivaki", EmploymentStatus.Intern, [JobType.Undefined]);
 
                 var result = await userManager.CreateAsync(admin, "Password1!@#");
                 if (!result.Succeeded)
@@ -76,7 +77,7 @@ namespace HireHive.Infrastructure.Data
 
             if (await userManager.FindByEmailAsync(userEmail) == null)
             {
-                var user = new User(userEmail, "John", "Doe", EmploymentStatus.Student);
+                var user = new User(userEmail, "John", "Doe", EmploymentStatus.Student, [JobType.DataScientist]);
 
                 var result = await userManager.CreateAsync(user, "Hello1!@#");
                 if (!result.Succeeded)

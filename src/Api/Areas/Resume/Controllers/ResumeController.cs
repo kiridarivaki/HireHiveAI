@@ -57,12 +57,17 @@ namespace HireHive.Api.Areas.Resume.Controllers
             {
                 var resume = await _resumeService.GetByUserId(userId);
 
+                if (resume == null)
+                    return Ok();
+
+                _logger.LogInformation("Fetched resume for user {userId}", userId);
+
                 return Ok(_mapper.Map<ResumeVm>(resume));
             }
             catch (Exception e)
             {
-                _logger.LogError("Resume for user {userId} not found. With exception: {message}", userId, e.Message);
-                return NotFound();
+                _logger.LogError("Failed to get resume of user {userId}. With exception: {message}", userId, e.Message);
+                throw;
             }
         }
 
@@ -73,7 +78,7 @@ namespace HireHive.Api.Areas.Resume.Controllers
             {
                 var resume = await _resumeService.GetByUserId(userId);
                 if (resume == null)
-                    return NotFound();
+                    return Ok();
 
                 string sasUrl = _azureBlobService.GetSasUrl(resume.BlobName!);
                 _logger.LogInformation("Fetched resume url for user {userId}", userId);
@@ -214,26 +219,5 @@ namespace HireHive.Api.Areas.Resume.Controllers
                 throw;
             }
         }
-
-        //[HttpGet]
-        //[Route("assess/{userId}")]
-        //public async Task<IActionResult> Assess([FromRoute] Guid userId)
-        //{
-        //    try
-        //    {
-        //        //todo : add to hangfire job 
-        //        await _aiService.Chat(userId);
-
-        //        _logger.LogInformation("Resume assessment started for user {userId}.", userId);
-
-        //        return Ok();
-        //    }
-        //    catch (Exception e)
-        //    {
-        //        _logger.LogError("Resume for user {userId} not found. With exception: {message}", userId, e.Message);
-
-        //        return NotFound();
-        //    }
-        //}
     }
 }

@@ -1,4 +1,5 @@
 ﻿using Domain.Enums;
+using HireHive.Domain.Enums;
 
 namespace HireHive.Api.Areas.User.Models.ViewModels
 {
@@ -8,5 +9,6 @@ namespace HireHive.Api.Areas.User.Models.ViewModels
         public string FirstName { get; set; } = null!;
         public string LastName { get; set; } = null!;
         public EmploymentStatus EmploymentStatus { get; set; }
+        public List<JobType>? JobTypes { get; set; }
     }
 }
