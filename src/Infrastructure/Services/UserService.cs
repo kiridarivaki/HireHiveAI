@@ -88,10 +88,10 @@ namespace HireHive.Infrastructure.Services
 
         }
 
-        public async Task GetAllPaginated(PaginateUsersDto listDto)
+        public async Task GetAllPaginated()
         {
             var users = await _userRepository.GetAllAsync();
-            _aiService.Chat();
+            //_aiService.Chat();
         }
     }
 }
