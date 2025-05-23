@@ -3,9 +3,8 @@
 
   <div class="candidate-cards-wrapper">
     <app-candidate-card
-      *ngFor="let candidate of candidates"
-      [userInfo]="candidate.userInfo"
-      [matchPercentage]="candidate.matchPercentage"
+      *ngFor="let user of usersList"
+      [assessedUserInfo]="user"
     ></app-candidate-card>
   </div>
 </div>

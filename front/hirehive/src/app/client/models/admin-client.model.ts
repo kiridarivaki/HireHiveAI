@@ -1,14 +1,18 @@
+import { EmploymentStatus } from "@shared/constants/employment-options";
 import { JobType } from "@shared/constants/job-types";
 
 export interface AssessmentDataPayload {
-    criteriaWeights: Array<number>,
     jobDescription: string,
     jobType: JobType,
+    criteriaWeights: Array<number>,
     cursor?: number
 }
 
 export interface AssessResponse {
-    matchPercentages: Array<string>,
-    pageSize: number,
-    pageNumber: number
+    matchPercentage: string,
+    userId: string,
+    email: string,
+    firstName: string,
+    lastName: string,
+    employmentStatus: EmploymentStatus
 }
