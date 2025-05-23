@@ -13,8 +13,9 @@ export class AdminClientService{
         private urlService : UrlService
     ){}
 
-    assess(assessData: AssessmentDataPayload) : Observable<AssessResponse>{
-        const uploadResumeUrl = this.urlService.urlFor('admin', 'assess', undefined);
-        return this.http.post<AssessResponse>(uploadResumeUrl, assessData);
+    assess(assessData: AssessmentDataPayload) : Observable<Array<AssessResponse>>{
+        const assessUrl = this.urlService.urlFor('admin', 'assess', undefined);
+        console.log(assessData)
+        return this.http.post<Array<AssessResponse>>(assessUrl, assessData);
     }
 }

@@ -1,6 +1,10 @@
 export enum JobType {
-  BackEndDeveloper = 'Back End Developer',
-  FrontEndDeveloper = 'Front End Developer',
-  DataEngineer = 'Data Engineer',
-  ITProjectManager = 'IT Project Manager'
+  Undefined = 'No Preference',
+  SoftwareEngineer = 'Software Engineer',
+  FullStackDeveloper = 'Full Stack Developer',
+  DataScientist = 'Data Scientist',
+  UXDesigner = 'UX Designer',
+  DevOpsEngineer = 'DevOps Engineer',
+  QAEngineer = 'QA Engineer',
+  BusinessAnalyst = 'Business Analyst'
 }

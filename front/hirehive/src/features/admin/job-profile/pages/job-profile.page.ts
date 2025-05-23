@@ -10,7 +10,7 @@ import { AssessmentCriteria } from '@shared/constants/assessment-criteria';
 import { AssessmentDataPayload } from 'src/app/client/models/admin-client.model';
 import { AdminClientService } from 'src/app/client/services/admin-client.service';
 import { Router } from '@angular/router';
-import { JobStateService } from '@shared/services/state.service';
+import { JobStateService } from '@shared/services/job-state.service';
 
 @Component({
   selector: 'app-job-profile',
@@ -22,13 +22,17 @@ import { JobStateService } from '@shared/services/state.service';
 export class JobProfileComponent {
   jobForm = new FormGroup({
     jobDescription: new FormControl(''),
-    jobType: new FormControl(''),
+    jobType: new FormControl(''), 
     education: new FormControl(50),
     skills: new FormControl(50),
     experience: new FormControl(50),
   });
 
-  jobTypes = Object.entries(JobType).map(([key, label]) => ({ value: key, label }));
+  jobTypes = Object.entries(JobType).map(([key, label], index) => ({
+    value: index.toString(),  
+    label: label as string
+  }));
+
   criteria = Object.entries(AssessmentCriteria).map(([key, label]) => ({ key, label }));
 
   constructor(
@@ -38,20 +42,23 @@ export class JobProfileComponent {
   ){}
 
   onSubmit() {
-      if (this.jobForm.valid) {
-        const jobForm = this.jobForm.value;
-        const criteriaWeights = this.criteria.map(c => {
-          const value = this.jobForm.get(c.key)?.value;
-          return typeof value === 'number' ? value : 0;
-        });
+    if (this.jobForm.valid) {
+      const jobForm = this.jobForm.value;
 
-        const assessmentData: AssessmentDataPayload = {
-          criteriaWeights: criteriaWeights,
-          jobDescription: jobForm.jobDescription!,
-          jobType: jobForm.jobType as JobType
-        }
-        this.stateService.setJobData(assessmentData);
-        this.router.navigate(['/admin/results']);
-      }
+      const criteriaWeights = this.criteria.map(c => {
+        const value = this.jobForm.get(c.key)?.value;
+        return typeof value === 'number' ? value : 0;
+      });
+
+      const assessmentData: AssessmentDataPayload = {
+        criteriaWeights,
+        jobDescription: jobForm.jobDescription!,
+        jobType: jobForm.jobType! as JobType, 
+        cursor: 0
+      };
+
+      this.stateService.setAssessmentData(assessmentData);
+      this.router.navigate(['/admin/results']);
+    }
   }
 }
