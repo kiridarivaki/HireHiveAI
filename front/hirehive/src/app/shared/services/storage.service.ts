@@ -18,7 +18,6 @@ export class StorageService {
     localStorage.setItem("auth", JSON.stringify(updatedAuth));
     }
 
-
     getAuth(): StoredAuth | null {
         const storedAuth = localStorage.getItem("auth");
         return storedAuth ? (JSON.parse(storedAuth) as StoredAuth) : null;
