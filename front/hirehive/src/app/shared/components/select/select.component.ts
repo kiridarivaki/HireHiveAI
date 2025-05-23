@@ -1,3 +1,4 @@
+import { CommonModule } from '@angular/common';
 import { Component, Input } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -10,7 +11,8 @@ import { MatSelectModule } from '@angular/material/select';
   providers: [{ provide: NG_VALUE_ACCESSOR, useExisting: AppSelectComponent, multi: true }],
   imports: [
     MatSelectModule, 
-    MatFormFieldModule
+    MatFormFieldModule,
+    CommonModule
   ]
 })
 export class AppSelectComponent implements ControlValueAccessor {
@@ -36,9 +38,10 @@ export class AppSelectComponent implements ControlValueAccessor {
     this.onTouched = fn;
   }
 
-  onValueChange(value: any): void {
-    this.value = value;
-    this.onChange(value);
+  onValueChange(value: string | number): void {
+    const numericValue = typeof value === 'string' ? parseInt(value, 10) : value;
+    this.value = numericValue;
+    this.onChange(numericValue);
     this.onTouched();
   }
 }
