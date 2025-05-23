@@ -5,11 +5,11 @@ using Microsoft.AspNetCore.Http;
 
 namespace HireHive.Infrastructure.Services
 {
-    public class AzureBlobService : IAzureBlobService
+    public class BlobService : IBlobService
     {
         private readonly BlobServiceClient _blobServiceClient;
         private readonly string _blobSasToken;
-        public AzureBlobService(BlobServiceClient blobServiceClient, string blobSasToken)
+        public BlobService(BlobServiceClient blobServiceClient, string blobSasToken)
         {
             _blobServiceClient = blobServiceClient;
             _blobSasToken = blobSasToken;
@@ -20,9 +20,8 @@ namespace HireHive.Infrastructure.Services
             var containerClient = _blobServiceClient.GetBlobContainerClient("resumefiles");
             await containerClient.CreateIfNotExistsAsync();
 
-            Guid blobId = Guid.NewGuid();
             string fileExtension = Path.GetExtension(file.FileName);
-            string blobName = blobId.ToString() + fileExtension;
+            string blobName = file.FileName.ToString() + fileExtension;
 
             var blobClient = containerClient.GetBlobClient(blobName);
 

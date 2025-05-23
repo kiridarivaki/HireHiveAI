@@ -5,11 +5,12 @@ namespace HireHive.Domain.Interfaces
 {
     public interface IUserRepository
     {
-        Task<User>? GetByIdAsync(Guid id);
-        Task<IEnumerable<User>> GetAllAsync();
-        Task<User> AddAsync(User user, string password);
-        Task UpdateAsync(User user);
-        Task DeleteAsync(User user);
+        Task<User>? GetById(Guid id);
+        Task<List<User>> GetAll();
+        Task<List<User>> GetByIds(List<Guid> userIds);
+        Task<User> Add(User user, string password);
+        Task Update(User user);
+        Task Delete(User user);
         int CountFiltered(JobType jobType);
     }
 }

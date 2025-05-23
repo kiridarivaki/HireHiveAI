@@ -49,11 +49,11 @@ namespace HireHive.Infrastructure.Services
                 {
                     var user = await _userManager.FindByEmailAsync(registerDto.Email);
                     if (user != null)
-                        throw new ArgumentException("A user with email {Email} already exists.", registerDto.Email);
+                        throw new ArgumentException("A user with email {email} already exists.", registerDto.Email);
 
-                    var newUser = new User(registerDto.Email, registerDto.FirstName, registerDto.LastName, registerDto.EmploymentStatus);
+                    var newUser = new User(registerDto.Email, registerDto.FirstName, registerDto.LastName, registerDto.EmploymentStatus, registerDto.JobTypes);
 
-                    await _userRepository.AddAsync(newUser, registerDto.Password);
+                    await _userRepository.Add(newUser, registerDto.Password);
 
                     await SendEmailConfirmation(newUser.Email!);
 

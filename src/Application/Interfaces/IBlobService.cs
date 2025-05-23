@@ -2,7 +2,7 @@
 
 namespace HireHive.Application.Interfaces
 {
-    public interface IAzureBlobService
+    public interface IBlobService
     {
         Task<string> Upload(IFormFile file);
         Task Delete(string blobName);

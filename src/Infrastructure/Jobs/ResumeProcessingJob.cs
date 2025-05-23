@@ -1,44 +1,38 @@
-﻿using HireHive.Application.DTOs.Resume;
-using HireHive.Application.Interfaces;
-using HireHive.Domain.Entities;
+﻿using HireHive.Application.Interfaces;
 using HireHive.Domain.Exceptions;
 using HireHive.Domain.Exceptions.Resume;
-using Microsoft.AspNetCore.Http;
+using HireHive.Domain.Interfaces;
 using Microsoft.Extensions.Logging;
 
-namespace HireHive.Infrastructure.Services
+namespace HireHive.Infrastructure.Jobs
 {
-    public class ResumeJobService : IResumeJobService
+    public class ResumeProcessingJob : IResumeProcessingJob
     {
         private readonly IPiiRedactionService _piiRedactionService;
-        private readonly IResumeService _resumeService;
-        private readonly IMapper _mapper;
-        private readonly ILogger<ResumeJobService> _logger;
-        public ResumeJobService(IPiiRedactionService piiRedactionService, IResumeService resumeService, IMapper mapper, ILogger<ResumeJobService> logger)
+        private readonly IResumeRepository _resumeRepository;
+        private readonly ILogger<ResumeProcessingJob> _logger;
+        public ResumeProcessingJob(IPiiRedactionService piiRedactionService, IResumeRepository resumeRepository, ILogger<ResumeProcessingJob> logger)
         {
             _piiRedactionService = piiRedactionService;
-            _resumeService = resumeService;
-            _mapper = mapper;
+            _resumeRepository = resumeRepository;
             _logger = logger;
         }
-        public async Task ProcessResume(IFormFile file, Guid userId)
+        public async Task ProcessResumeText(Guid userId, byte[] fileBytes)
         {
             try
             {
-                var resume = _mapper.Map<Resume>(await _resumeService.GetByUserId(userId));
-
-                using var ms = new MemoryStream();
-                file.CopyTo(ms);
-                var fileBytes = ms.ToArray();
+                var resume = await _resumeRepository.GetByUserIdAsync(userId)
+                    ?? throw new ResumeNotFoundException();
 
                 using var fileStream = new MemoryStream(fileBytes);
 
                 var documentText = await _piiRedactionService.ExtractText(fileStream);
 
                 var processedDocumentText = await _piiRedactionService.RedactPii(documentText);
+                _logger.LogInformation("Resume processing finished for user {userId}.", userId);
 
                 resume.Update(text: processedDocumentText);
-                await _resumeService.Update(resume.Id, _mapper.Map<UpdateResumeDto>(resume));
+                await _resumeRepository.UpdateAsync(resume);
             }
             catch (ResumeNotFoundException e)
             {

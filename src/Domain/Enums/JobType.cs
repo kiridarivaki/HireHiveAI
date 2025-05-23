@@ -4,7 +4,7 @@
     {
         Undefined,
         SoftwareEngineer,
-        ProductManager,
+        FullStackDeveloper,
         DataScientist,
         UXDesigner,
         DevOpsEngineer,
