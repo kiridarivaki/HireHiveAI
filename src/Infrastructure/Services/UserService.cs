@@ -3,7 +3,6 @@ using HireHive.Application.Interfaces;
 using HireHive.Domain.Exceptions;
 using HireHive.Domain.Exceptions.User;
 using HireHive.Domain.Interfaces;
-using HireHive.Infrastructure.Services.AI;
 using Microsoft.Extensions.Logging;
 
 namespace HireHive.Infrastructure.Services
@@ -29,16 +28,20 @@ namespace HireHive.Infrastructure.Services
 
         public async Task<List<UserDto>> GetAll()
         {
-            var users = await _userRepository.GetAllAsync();
-
+            var users = await _userRepository.GetAll();
             return _mapper.Map<List<UserDto>>(users);
+        }
+        public async Task<List<UsersDto>> GetByIds(List<Guid> userIds)
+        {
+            var users = await _userRepository.GetByIds(userIds);
+            return _mapper.Map<List<UsersDto>>(users);
         }
 
         public async Task<UserDto> GetById(Guid id)
         {
             try
             {
-                var user = await _userRepository.GetByIdAsync(id)
+                var user = await _userRepository.GetById(id)
                     ?? throw new UserNotFoundException();
 
                 return _mapper.Map<UserDto>(user);
@@ -54,12 +57,12 @@ namespace HireHive.Infrastructure.Services
         {
             try
             {
-                var userToUpdate = await _userRepository.GetByIdAsync(id)
+                var userToUpdate = await _userRepository.GetById(id)
                     ?? throw new UserNotFoundException();
 
                 userToUpdate.UpdateUser(userModel.FirstName, userModel.LastName);
 
-                await _userRepository.UpdateAsync(userToUpdate);
+                await _userRepository.Update(userToUpdate);
 
                 _logger.LogInformation("User {id} updated.", id);
             }
@@ -74,10 +77,10 @@ namespace HireHive.Infrastructure.Services
         {
             try
             {
-                var user = await _userRepository.GetByIdAsync(id)
+                var user = await _userRepository.GetById(id)
                                 ?? throw new UserNotFoundException();
 
-                await _userRepository.DeleteAsync(user);
+                await _userRepository.Delete(user);
                 _logger.LogInformation("User {id} deleted.", id);
             }
             catch (BaseException)
@@ -86,12 +89,6 @@ namespace HireHive.Infrastructure.Services
                 throw;
             }
 
-        }
-
-        public async Task GetAllPaginated()
-        {
-            var users = await _userRepository.GetAllAsync();
-            //_aiService.Chat();
         }
     }
 }

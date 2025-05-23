@@ -1,24 +1,22 @@
 ﻿using Azure;
 using Azure.AI.Inference;
 using HireHive.Application.DTOs.Admin;
-using HireHive.Domain.Interfaces;
 using Microsoft.Extensions.Logging;
+using System.Text.Json;
 
-namespace HireHive.Infrastructure.Services.AI
+namespace HireHive.Infrastructure.Services
 {
     public class AiAssessmentService
     {
         private readonly ChatCompletionsClient _client;
-        private readonly IResumeRepository _resumeRepository;
         private readonly ILogger<AiAssessmentService> _logger;
-        public AiAssessmentService(ChatCompletionsClient client, IResumeRepository resumeRepository, ILogger<AiAssessmentService> logger)
+        public AiAssessmentService(ChatCompletionsClient client, ILogger<AiAssessmentService> logger)
         {
             _client = client;
-            _resumeRepository = resumeRepository;
             _logger = logger;
         }
 
-        public string AssessUsers(List<UserResumeDto> usersToAssess, AssessmentDto assessmentDto)
+        public List<AssessmentResultDto> AssessUsers(List<UserResumeDto> usersToAssess, AssessmentParamsDto assessmentDto)
         {
             var experienceWeight = assessmentDto.CriteriaWeights[0];
             var educationWeight = assessmentDto.CriteriaWeights[1];
@@ -63,13 +61,19 @@ namespace HireHive.Infrastructure.Services.AI
                 Model = "openai/gpt-4.1",
                 ResponseFormat = new ChatCompletionsResponseFormatJsonObject(),
             };
-            ChatCompletionsToolDefinition evaluateCandidateTool = new ChatCompletionsToolDefinition(MatchJobTool.GetToolDefinition());
 
             Response<ChatCompletions> response = _client.Complete(requestOptions);
-            var jsonResponse = response.Value.Content;
-            _logger.LogInformation("assessment:", jsonResponse);
 
-            return jsonResponse;
+            var jsonResponse = response.Value.Content;
+            var dictResponse = JsonSerializer.Deserialize<Dictionary<Guid, int>>(jsonResponse);
+
+            var assessmentResultDto = dictResponse.Select(kvp => new AssessmentResultDto
+            {
+                UserId = kvp.Key,
+                MatchPercentage = kvp.Value
+            }).ToList();
+            _logger.LogInformation(jsonResponse);
+            return assessmentResultDto;
         }
     }
 }

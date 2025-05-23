@@ -84,6 +84,9 @@ namespace Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.PrimitiveCollection<int[]>("JobTypes")
+                        .HasColumnType("integer[]");
+
                     b.Property<string>("LastName")
                         .IsRequired()
                         .HasColumnType("text");

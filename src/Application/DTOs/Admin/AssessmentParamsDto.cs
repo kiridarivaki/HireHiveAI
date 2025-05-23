@@ -2,7 +2,7 @@
 
 namespace HireHive.Application.DTOs.Admin
 {
-    public class AssessmentDto
+    public class AssessmentParamsDto
     {
         public string JobDescription { get; set; } = null!;
         public JobType JobType { get; set; }

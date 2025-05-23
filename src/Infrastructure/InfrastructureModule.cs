@@ -8,8 +8,8 @@ using HireHive.DependencyInjection;
 using HireHive.Domain.Interfaces;
 using HireHive.Infrastructure.Data;
 using HireHive.Infrastructure.Data.Repositories;
+using HireHive.Infrastructure.Jobs;
 using HireHive.Infrastructure.Services;
-using HireHive.Infrastructure.Services.AI;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -31,7 +31,7 @@ namespace HireHive.Infrastructure
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IAuthService, AuthService>();
             services.AddScoped<ITokenService, TokenService>();
-            services.AddScoped<IResumeService, ResumeService>();
+            services.AddScoped<Application.Interfaces.IResumeService, ResumeService>();
             services.AddScoped<IAdminService, AdminService>();
 
             var blobConnectionString = configuration["AzureBlobStorageConnection"];
@@ -40,7 +40,7 @@ namespace HireHive.Infrastructure
 
             services.AddSingleton(blobClient);
             services.AddSingleton(blobSasToken!);
-            services.AddScoped<IAzureBlobService, AzureBlobService>();
+            services.AddScoped<IBlobService, BlobService>();
 
             var emailSettings = new EmailSettings
             {
@@ -64,7 +64,7 @@ namespace HireHive.Infrastructure
             services.AddSingleton(diClient);
 
             services.AddScoped<IPiiRedactionService, PiiRedactionService>();
-            services.AddScoped<IResumeJobService, ResumeJobService>();
+            services.AddScoped<IResumeProcessingJob, ResumeProcessingJob>();
 
             var githubEndpoint = new Uri("https://models.github.ai/inference");
             var credential = new AzureKeyCredential(configuration["GitHubToken"]!);
@@ -73,9 +73,10 @@ namespace HireHive.Infrastructure
 
             services.AddSingleton(aiClient);
             services.AddScoped<AiAssessmentService>();
+            services.AddScoped<TokenCountingService>();
 
             services.AddScoped<IUserRepository, UserRepository>();
-            services.AddScoped<IResumeRepository, ResumeRepository>();
+            services.AddScoped<Domain.Interfaces.IResumeRepository, ResumeRepository>();
         }
     }
 }

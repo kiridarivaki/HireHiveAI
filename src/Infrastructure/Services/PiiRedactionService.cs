@@ -4,7 +4,7 @@ using Azure.AI.TextAnalytics;
 using HireHive.Application.Interfaces;
 using System.Text;
 
-namespace HireHive.Infrastructure.Services.AI
+namespace HireHive.Infrastructure.Services
 {
     public class PiiRedactionService : IPiiRedactionService
     {

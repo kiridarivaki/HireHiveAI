@@ -8,8 +8,8 @@ namespace HireHive.Api.PresentationMappings
     {
         public AssessmentPresentationMapping()
         {
-            CreateMap<AssessmentBm, AssessmentDto>().ReverseMap();
-            CreateMap<AssessmentDto, AssessmentVm>().ReverseMap();
+            CreateMap<AssessmentParamsBm, AssessmentParamsDto>().ReverseMap();
+            CreateMap<AssessmentResultDto, AssessmentResultVm>().ReverseMap();
         }
     }
 }

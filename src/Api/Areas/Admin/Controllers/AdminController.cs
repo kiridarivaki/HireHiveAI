@@ -1,4 +1,5 @@
 ﻿using HireHive.Api.Areas.Admin.Models.BindingModels;
+using HireHive.Api.Areas.Admin.Models.ViewModels;
 using HireHive.Api.Areas.Common.Controllers;
 using HireHive.Application.DTOs.Admin;
 using HireHive.Application.Interfaces;
@@ -12,7 +13,7 @@ namespace HireHive.Api.Areas.Admin.Controllers
         private readonly IAdminService _adminService;
         private readonly ILogger<AdminController> _logger;
         private readonly IMapper _mapper;
-        protected AdminController(IMapper mapper,
+        public AdminController(IMapper mapper,
             ILogger<AdminController> logger,
             IUserService userService,
             IAdminService adminService)
@@ -26,14 +27,14 @@ namespace HireHive.Api.Areas.Admin.Controllers
 
         [HttpPost]
         [Route("assess")]
-        public async Task<IActionResult> Assess([FromForm] AssessmentBm assessmentModel)
+        public async Task<IActionResult> Assess([FromBody] AssessmentParamsBm assessmentModel)
         {
             try
             {
-                var assessmentResult = await _adminService.AssessBatch(_mapper.Map<AssessmentDto>(assessmentModel));
+                var assessmentResult = await _adminService.AssessBatch(_mapper.Map<AssessmentParamsDto>(assessmentModel));
                 _logger.LogInformation("Resume assessment done.");
 
-                return Ok(assessmentResult);
+                return Ok(_mapper.Map<List<AssessmentResultVm>>(assessmentResult));
             }
             catch (Exception e)
             {

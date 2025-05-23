@@ -6,7 +6,6 @@ using HireHive.Api.Areas.Resume.Models.ViewModels;
 using HireHive.Application.DTOs.Resume;
 using HireHive.Application.Interfaces;
 using HireHive.Domain.Exceptions.Resume;
-using HireHive.Infrastructure.Services.AI;
 using Microsoft.AspNetCore.Mvc;
 
 namespace HireHive.Api.Areas.Resume.Controllers
@@ -17,10 +16,7 @@ namespace HireHive.Api.Areas.Resume.Controllers
         private readonly IValidator<UploadResumeBm> _uploadFileValidator;
         private readonly IValidator<UpdateResumeBm> _updateFileValidator;
         private readonly IUserService _userService;
-        private readonly IResumeJobService _resumeJobService;
-        private readonly IBackgroundJobClient _backgroundJobClient;
-        private readonly AiAssessmentService _aiService;
-        private readonly IAzureBlobService _azureBlobService;
+        private readonly IBlobService _azureBlobService;
         private readonly IMapper _mapper;
         private readonly ILogger<ResumeController> _logger;
 
@@ -28,11 +24,10 @@ namespace HireHive.Api.Areas.Resume.Controllers
             IResumeService resumeService,
             IValidator<UploadResumeBm> uploadFileValidator,
             IValidator<UpdateResumeBm> updateFileValidator,
-            IResumeJobService resumeJobService,
+            IResumeProcessingJob resumeJobService,
             IBackgroundJobClient backgroundJobClient,
-            AiAssessmentService aiService,
             IUserService userService,
-            IAzureBlobService azureBlobService,
+            IBlobService azureBlobService,
             IMapper mapper,
             ILogger<ResumeController> logger)
             : base(mapper, logger)
@@ -40,9 +35,6 @@ namespace HireHive.Api.Areas.Resume.Controllers
             _resumeService = resumeService;
             _uploadFileValidator = uploadFileValidator;
             _updateFileValidator = updateFileValidator;
-            _resumeJobService = resumeJobService;
-            _backgroundJobClient = backgroundJobClient;
-            _aiService = aiService;
             _userService = userService;
             _azureBlobService = azureBlobService;
             _mapper = mapper;
@@ -131,8 +123,6 @@ namespace HireHive.Api.Areas.Resume.Controllers
 
                 var resume = await _resumeService.Upload(userId, _mapper.Map<UploadResumeDto>(uploadModel));
 
-                var fileProcessingJob = _backgroundJobClient.Enqueue(() => _resumeJobService.ProcessResume(uploadModel.File, userId));
-
                 _logger.LogInformation("Resume processing started for user {userId}.", userId);
 
                 return Ok(_mapper.Map<UploadResumeVm>(resume));
@@ -192,30 +182,6 @@ namespace HireHive.Api.Areas.Resume.Controllers
             catch (Exception e)
             {
                 _logger.LogError("Failed to update resume of user {userId}. With exception: {message}", userId, e.Message);
-                throw;
-            }
-        }
-
-        [HttpPost]
-        [Route("process")]
-        public IActionResult Process([FromForm] ProcessResumeBm resumeModel)
-        {
-            try
-            {
-                var fileProcessingJob = _backgroundJobClient.Enqueue(() => _resumeJobService.ProcessResume(resumeModel.File, resumeModel.UserId));
-
-                _logger.LogInformation("Resume processing started for user {userId}.", resumeModel.UserId);
-
-                return Ok();
-            }
-            catch (ResumeNotFoundException e)
-            {
-                _logger.LogError("Resume for user {userId} not found. With exception: {message}", resumeModel.UserId, e.Message);
-                return NotFound();
-            }
-            catch (Exception e)
-            {
-                _logger.LogError("Failed to process resume for user {userId}. With exception: {message}", resumeModel.UserId, e.Message);
                 throw;
             }
         }

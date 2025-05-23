@@ -33,11 +33,10 @@ public class UserController : ApiController
 
     [HttpGet]
     [Route("")]
-    public async Task<IActionResult> GetUsers()
+    public async Task<IActionResult> GetAll()
     {
         var users = await _userService.GetAll();
-
-        return Ok(_mapper.Map<List<UserVm>>(users));
+        return Ok(_mapper.Map<UserVm>(users));
     }
 
     [HttpGet]
