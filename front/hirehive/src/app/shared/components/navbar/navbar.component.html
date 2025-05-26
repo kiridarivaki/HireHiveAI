@@ -1,5 +1,5 @@
 <mat-toolbar class="navbar">
-  <img alt="Hire Hive Logo" class="logo" />
+  <img src="assets/logo.png" alt="Logo" class="logo" (click)="goHome()" style="cursor: pointer" />
 
   <span class="spacer"></span>
 
@@ -14,7 +14,7 @@
   <ng-container *ngIf="isLoggedIn">
     <app-button [routerLink]="['/user', currentUser?.id]" text="Profile"></app-button>
 
-    <app-button *ngIf="hasRole(UserRole.admin)" routerLink="/admin/job-profile" text="Find Matches"></app-button>
+    <app-button *ngIf="isAdmin$ | async" routerLink="/admin/job-profile" text="Find Matches"></app-button>
 
     <app-button (onClick)="onLogout()" text="Logout"></app-button>
 

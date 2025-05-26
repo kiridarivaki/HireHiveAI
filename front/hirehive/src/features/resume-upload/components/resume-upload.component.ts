@@ -5,6 +5,8 @@ import { GetResumeInfoPayload } from "src/app/client/models/resume-client.model"
 import { ResumeClientService } from "src/app/client/services/resume-client.service";
 import { DragDropComponent } from "./drag-drop/drag-drop.component";
 import { FileService } from "@shared/services/file.service";
+import { DialogService } from "@shared/services/dialog.service";
+import { ConfirmDialogComponent } from "@shared/components/dialog/confirm-dialog/confirm-dialog.component";
 
 @Component({
     selector: 'app-resume-upload',
@@ -20,7 +22,8 @@ export class ResumeUploadComponent implements OnInit{
 
   constructor(
     private resumeService: ResumeClientService,
-    private fileService: FileService
+    private fileService: FileService,
+    private dialogService: DialogService 
   ){}
 
   ngOnInit(): void {
@@ -66,24 +69,36 @@ export class ResumeUploadComponent implements OnInit{
   }
 
   onFileRemoved(): void {
-    this.uploadForm.reset();
+    this.dialogService.open(ConfirmDialogComponent, {
+      title: 'Confirm Removal',
+      data: {
+        message: 'Are you sure you want to remove the current resume file?',
+        confirmText: 'Remove',
+        cancelText: 'Cancel'
+      },
+      width: '400px'
+    }).afterClosed().subscribe(confirmed => {
+      if (!confirmed) {
+        return;
+      }
 
-    if (this.dragDropComponent)
-      this.dragDropComponent.clearFileInput();
+      this.uploadForm.reset();
 
-    if (this.fileMetadata && this.userId) {
-      this.resumeService.delete(this.userId).subscribe({
-        next: () => {
-          this.fileMetadata = null;
-          this.fileUrl = null;
-          console.log('File removed successfully.');
-        },
-        error: (err) => {
-          console.error('File removal failed:', err);
-        }
-      });
-    }
+      if (this.dragDropComponent) {
+        this.dragDropComponent.clearFileInput();
+      }
+
+      if (this.fileMetadata && this.userId) {
+        this.resumeService.delete(this.userId).subscribe({
+          next: () => {
+            this.fileMetadata = null;
+            this.fileUrl = null;
+          }
+        });
+      }
+    });
   }
+
 
   onSubmit(): void {
     if (!this.userId) return;
