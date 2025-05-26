@@ -1,9 +1,10 @@
 <div
   class="drag-drop-area"
+  [class.disabled]="disabled"
   (dragover)="onDragOver($event)"
   (dragleave)="onDragLeave($event)"
   (drop)="onFileDrop($event)"
-  (click)="!file && fileInput.click()"
+  (click)="!file && !disabled ? fileInput.click() : $event.preventDefault()"
 >
   <p *ngIf="(!file && !fileMetadata)">Drag and drop a PDF file here, or click to select.</p>
   <div >
