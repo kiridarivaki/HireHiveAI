@@ -8,6 +8,7 @@ import { AppButtonComponent } from './components/button/button.component';
 import { AppNavBarComponent } from './components/navbar/navbar.component';
 import { AppDialogComponent } from './components/dialog/dialog.component';
 import { AppChipListComponent } from './components/chip-list/chip-list.component';
+import { AppNotificationComponent } from './components/notification/notification.component';
 
 @NgModule({
     imports: [
@@ -20,6 +21,7 @@ import { AppChipListComponent } from './components/chip-list/chip-list.component
         AppDialogComponent,
         CommonModule,
         ReactiveFormsModule,
+        AppNotificationComponent
     ],
     exports: [
         AppInputComponent,
@@ -29,7 +31,8 @@ import { AppChipListComponent } from './components/chip-list/chip-list.component
         AppButtonComponent,
         AppNavBarComponent,
         AppDialogComponent,
-        ReactiveFormsModule
+        ReactiveFormsModule,
+        AppNotificationComponent
     ]
 })
 export class SharedModule { }

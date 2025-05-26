@@ -1,25 +1,25 @@
 import { Component } from '@angular/core';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
-import { ErrorService } from '@shared/services/error.service';
+import { NotificationService } from '@shared/services/notification.service';
 
 @Component({
-  selector: 'app-error',
+  selector: 'app-notification',
   standalone: true,
   imports: [MatSnackBarModule],
-  templateUrl: './error.component.html',
+  template: ``,
 })
-export class ErrorComponent {
+export class AppNotificationComponent {
   constructor(
-    private errorService: ErrorService,
+    private notificationService: NotificationService,
     private snackBar: MatSnackBar
   ) {}
 
-    ngOnInit(): void {
-    this.errorService.error$.subscribe(message => {
+  ngOnInit(): void {
+    this.notificationService.notification$.subscribe(message => {
       if (message) {
         this.snackBar.open(message, 'Close', {
           duration: 3000,
-          panelClass: ['snackbar-error'] 
+          panelClass: ['snackbar-success'] 
         });
       }
     });
