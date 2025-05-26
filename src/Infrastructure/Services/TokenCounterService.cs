@@ -2,9 +2,9 @@
 
 namespace HireHive.Infrastructure.Services
 {
-    public class TokenCountingService
+    public class TokenCounterService
     {
-        const int MAX_TOKENS = 34815;
+        const int MAX_TOKENS = 8000;
         public int CountTokens(string? text)
         {
             var encoding = GptEncoding.GetEncodingForModel("gpt-4");

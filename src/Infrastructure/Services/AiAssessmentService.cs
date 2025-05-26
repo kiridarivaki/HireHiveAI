@@ -1,22 +1,20 @@
 ﻿using Azure;
 using Azure.AI.Inference;
 using HireHive.Application.DTOs.Admin;
-using Microsoft.Extensions.Logging;
+using HireHive.Application.Interfaces;
 using System.Text.Json;
 
 namespace HireHive.Infrastructure.Services
 {
-    public class AiAssessmentService
+    public class AiAssessmentService : IAiAssessmentService
     {
         private readonly ChatCompletionsClient _client;
-        private readonly ILogger<AiAssessmentService> _logger;
-        public AiAssessmentService(ChatCompletionsClient client, ILogger<AiAssessmentService> logger)
+        public AiAssessmentService(ChatCompletionsClient client)
         {
             _client = client;
-            _logger = logger;
         }
 
-        public List<AssessmentResultDto> AssessUsers(List<UserResumeDto> usersToAssess, AssessmentParamsDto assessmentDto)
+        public Dictionary<Guid, int> AssessUsers(List<UserResumeDto> usersToAssess, AssessmentParamsDto assessmentDto)
         {
             var experienceWeight = assessmentDto.CriteriaWeights[0];
             var educationWeight = assessmentDto.CriteriaWeights[1];
@@ -67,13 +65,7 @@ namespace HireHive.Infrastructure.Services
             var jsonResponse = response.Value.Content;
             var dictResponse = JsonSerializer.Deserialize<Dictionary<Guid, int>>(jsonResponse);
 
-            var assessmentResultDto = dictResponse.Select(kvp => new AssessmentResultDto
-            {
-                UserId = kvp.Key,
-                MatchPercentage = kvp.Value
-            }).ToList();
-            _logger.LogInformation(jsonResponse);
-            return assessmentResultDto;
+            return dictResponse;
         }
     }
 }
