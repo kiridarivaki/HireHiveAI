@@ -3,11 +3,11 @@ import { DialogData } from "@shared/models/dialog.model";
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { MatDialogModule } from '@angular/material/dialog';
 import { CommonModule } from "@angular/common";
-import { AppButtonComponent } from "../button/button.component";
+import { MatIconModule } from "@angular/material/icon";
 
 @Component({
   selector: 'app-dialog',
-  imports: [MatDialogModule, CommonModule, AppButtonComponent],
+  imports: [MatDialogModule, CommonModule, MatIconModule],
   templateUrl: './dialog.component.html',
   styleUrl: './dialog.component.css'
 })

@@ -7,6 +7,8 @@ import { AppButtonComponent } from '../button/button.component';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { Observable } from 'rxjs';
+import { DialogService } from '@shared/services/dialog.service';
+import { ConfirmDialogComponent } from '../dialog/confirm-dialog/confirm-dialog.component';
 
 interface MenuOption {
   label: string;
@@ -26,7 +28,8 @@ export class AppNavBarComponent implements OnInit {
   isLoggedIn = false;
 
   constructor(
-    private authService: AuthService, 
+    private authService: AuthService,
+    private dialogService: DialogService, 
     private router: Router
   ) {}
 
@@ -68,7 +71,15 @@ export class AppNavBarComponent implements OnInit {
   }
 
   onLogout() {
-    this.authService.logout();
-    this.router.navigate(['/home']);
+    this.dialogService.open(ConfirmDialogComponent, {
+      title: 'Confirm Logout',
+    })
+    .afterClosed().subscribe(confirmed => {
+      if (!confirmed) {
+        return;
+      }
+      this.authService.logout();
+      this.router.navigate(['/home']);
+    });
   }
 }

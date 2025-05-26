@@ -1,5 +1,6 @@
 import { Injectable, Type } from '@angular/core';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
+import { ConfirmDialogComponent } from '@shared/components/dialog/confirm-dialog/confirm-dialog.component';
 import { AppDialogComponent } from '@shared/components/dialog/dialog.component';
 import { DialogData } from '@shared/models/dialog.model';
 
@@ -15,15 +16,16 @@ export class DialogService {
     height?: string;
   }) {
     const dialogConfig: MatDialogConfig<DialogData> = {
-      width: config?.width || '600px',
+      width: config?.width || '400px',
       height: config?.height,
       data: {
         title: config?.title,
         component,
-        data: config?.data
+        data: config?.data ?? {}
       }
     };
 
     return this.dialog.open(AppDialogComponent, dialogConfig);
   }
+
 }

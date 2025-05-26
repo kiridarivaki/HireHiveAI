@@ -1,0 +1,5 @@
+<p>{{ data.message }}</p>
+<div class="dialog-actions">
+    <app-button [text]="data.cancelText" (onClick)="dialogRef.close(false)"></app-button>
+    <app-button [text]="data.confirmText" (onClick)="dialogRef.close(true)"></app-button>
+</div>
