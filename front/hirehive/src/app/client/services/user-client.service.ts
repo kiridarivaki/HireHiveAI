@@ -24,7 +24,7 @@ export class UserClientService{
     }
 
     update(userId: string, updateData: UpdateUserPayload) : Observable<any>{
-        const updateUserUrl = this.urlService.urlFor('user', 'update/{id}', { id: userId });
+        const updateUserUrl = this.urlService.urlFor('user', '{id}', { id: userId });
         return this.http.patch<void>(updateUserUrl, updateData);
     }
 
