@@ -5,6 +5,8 @@ import { AuthService } from '@shared/services/auth.service';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { AppButtonComponent } from '../button/button.component';
 import { CommonModule } from '@angular/common';
+import { Router } from '@angular/router';
+import { Observable } from 'rxjs';
 
 interface MenuOption {
   label: string;
@@ -23,7 +25,10 @@ export class AppNavBarComponent implements OnInit {
   menuOptions: MenuOption[] = [];
   isLoggedIn = false;
 
-  constructor(private authService: AuthService) {}
+  constructor(
+    private authService: AuthService, 
+    private router: Router
+  ) {}
 
   ngOnInit() {
     this.authService.currentUser$.subscribe(user => {
@@ -33,38 +38,37 @@ export class AppNavBarComponent implements OnInit {
     });
   }
 
-  hasRole(role: UserRole): boolean {
-    return !!this.currentUser?.roles?.includes(role);
-  }
-
   setupMenuOptions() {
     this.menuOptions = [
       { label: 'Home', route: '/' },
       { label: 'About Us', route: '/about' }
     ];
-
     if (!this.isLoggedIn) {
       this.menuOptions.push(
         { label: 'Register', route: '/register' },
         { label: 'Login', route: '/login' }
       );
     } else {
-      // Logged-in user menu
       this.menuOptions.push(
         { label: 'Profile', route: '/profile' },
         { label: 'Logout', route: '/logout' }
       );
-
-      if (this.hasRole(UserRole.admin)) {
-        this.menuOptions.push(
-          { label: 'Find Candidate Matches', route: '/matches' }
-        );
+      if (this.authService.isAdmin$()) {
+        this.menuOptions.push({ label: 'Find Candidate Matches', route: '/matches' });
       }
     }
   }
 
+  get isAdmin$(): Observable<boolean> {
+    return this.authService.isAdmin$();
+  }
+
+  goHome() {
+    this.router.navigate(['/']);
+  }
+
   onLogout() {
     this.authService.logout();
-    // Optionally redirect after logout
+    this.router.navigate(['/home']);
   }
 }

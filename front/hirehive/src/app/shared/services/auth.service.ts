@@ -1,10 +1,11 @@
 import { Injectable } from "@angular/core";
-import { BehaviorSubject, Observable } from "rxjs";
+import { BehaviorSubject, map, Observable } from "rxjs";
 import { EmailConfirmationPayload, EmailConfirmationResendPayload, GetInfoResponse, LoginPayload, LoginResponse, RefreshTokenResponse, RegisterPayload } from "src/app/client/models/auth-client.model";
 import { AuthClientService } from "src/app/client/services/auth-client.service";
 import { StorageService } from "./storage.service";
 import { Router } from "@angular/router";
 import { User } from "@shared/models/user.model";
+import { UserRole } from "@shared/models/auth.model";
 
 @Injectable({
   providedIn: 'root'
@@ -37,6 +38,12 @@ export class AuthService {
         return this.authClientService.getUserInfo(userId);
     }
 
+    isAdmin$(): Observable<boolean> {
+        return this.currentUser$.pipe(
+            map(user => !!user?.roles?.includes(UserRole.admin))
+        );
+    }
+
     register(registerData: RegisterPayload): Observable<any>{
         return this.authClientService.register(registerData);
     }
@@ -66,6 +73,7 @@ export class AuthService {
     logout(){
         this.storageService.removeAuth();
         this.storageService.removeUser();
+        this.currentUserSubject.next(null);
         this.router.navigate(['/home']);
     }
     

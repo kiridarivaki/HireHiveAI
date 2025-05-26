@@ -56,9 +56,9 @@ export class JobProfileComponent {
         jobType: jobForm.jobType! as JobType, 
         cursor: 0
       };
-
+      console.log(assessmentData)
       this.stateService.setAssessmentData(assessmentData);
-      this.router.navigate(['/admin/results']);
+      // this.router.navigate(['/admin/results']);
     }
   }
 }
