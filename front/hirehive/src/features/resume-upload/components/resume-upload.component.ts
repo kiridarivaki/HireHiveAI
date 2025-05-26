@@ -7,6 +7,9 @@ import { DragDropComponent } from "./drag-drop/drag-drop.component";
 import { FileService } from "@shared/services/file.service";
 import { DialogService } from "@shared/services/dialog.service";
 import { ConfirmDialogComponent } from "@shared/components/dialog/confirm-dialog/confirm-dialog.component";
+import { finalize } from "rxjs";
+import { LoaderService } from "@shared/services/loader.service";
+import { NotificationService } from "@shared/services/notification.service";
 
 @Component({
     selector: 'app-resume-upload',
@@ -23,7 +26,9 @@ export class ResumeUploadComponent implements OnInit{
   constructor(
     private resumeService: ResumeClientService,
     private fileService: FileService,
-    private dialogService: DialogService 
+    private loaderService: LoaderService,
+    private dialogService: DialogService,
+    private notificationService: NotificationService
   ){}
 
   ngOnInit(): void {
@@ -32,14 +37,13 @@ export class ResumeUploadComponent implements OnInit{
   }
 
   fetchFileMetadata(){
+      this.loaderService.show();
       if (this.userId){
-        this.resumeService.getById(this.userId).subscribe({
+        this.resumeService.getById(this.userId)
+        .pipe(finalize(() => this.loaderService.hide()))
+        .subscribe({
           next: (fileInfo: GetResumeInfoPayload) => {
-            console.log('File fetched successfully.');
             this.fileMetadata = fileInfo;
-          },
-          error: (err) => {
-            console.error('Fetch failed:', err);
           }
       });
     }
@@ -47,13 +51,12 @@ export class ResumeUploadComponent implements OnInit{
 
   fetchFileUrl(){
     if (this.userId){
-      this.fileService.getUrl(this.userId).subscribe({
+      this.loaderService.show();
+      this.fileService.getUrl(this.userId)
+      .pipe(finalize(() => this.loaderService.hide()))
+      .subscribe({
         next: (fileUrl: string) => {
-          console.log('File fetched successfully.');
           this.fileUrl = fileUrl;
-        },
-        error: (err) => {
-          console.error('Fetch failed:', err);
         }
       });
     }
@@ -77,7 +80,8 @@ export class ResumeUploadComponent implements OnInit{
         cancelText: 'Cancel'
       },
       width: '400px'
-    }).afterClosed().subscribe(confirmed => {
+    })
+    .afterClosed().subscribe(confirmed => {
       if (!confirmed) {
         return;
       }
@@ -93,12 +97,12 @@ export class ResumeUploadComponent implements OnInit{
           next: () => {
             this.fileMetadata = null;
             this.fileUrl = null;
+            this.notificationService.showNotification('File removed successfully!');
           }
         });
       }
     });
   }
-
 
   onSubmit(): void {
     if (!this.userId) return;
@@ -108,22 +112,17 @@ export class ResumeUploadComponent implements OnInit{
       uploadData.append('file', file);
       this.resumeService.upload(this.userId, uploadData).subscribe({
         next: () => {
-          console.log('File uploaded successfully.');
           this.uploadForm.get('selectedFile')?.setValue(file);
-        },
-        error: (err) => {
-          console.error('Upload failed:', err);
+          this.notificationService.showNotification('File uploaded successfully!');
         }
       })
     };
   }
 
   onDownload(): void {
-    console.log(this.fileUrl)
     if (this.selectedFile) {
       this.fileService.download(this.selectedFile, undefined);
     } else if (this.fileUrl) {
-      console.log('check')
       this.fileService.download(undefined, this.fileUrl);
     }
   }

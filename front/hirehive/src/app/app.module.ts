@@ -8,6 +8,8 @@ import { HTTP_INTERCEPTORS, provideHttpClient, withInterceptorsFromDi } from '@a
 import { ErrorInterceptor } from './shared/interceptors/error.interceptor';
 import { TokenInterceptor } from './shared/interceptors/token.interceptor';
 import { ErrorComponent } from '@shared/components/error/error.component';
+import { LoaderComponent } from '@shared/components/loader/loader.component';
+import { AppNotificationComponent } from '@shared/components/notification/notification.component';
 
 @NgModule({
   declarations: [
@@ -18,7 +20,9 @@ import { ErrorComponent } from '@shared/components/error/error.component';
     AppRoutingModule,
     UserModule,
     HomeModule,
-    ErrorComponent
+    ErrorComponent, 
+    AppNotificationComponent,
+    LoaderComponent
 ],
   providers: [
     provideHttpClient(withInterceptorsFromDi()),

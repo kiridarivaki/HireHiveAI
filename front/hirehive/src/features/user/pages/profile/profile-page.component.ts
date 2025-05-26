@@ -6,7 +6,9 @@ import { UserClientService } from "src/app/client/services/user-client.service";
 import { GetUserInfoPayload, UpdateUserPayload } from "src/app/client/models/user-client.model";
 import { JobType } from "@shared/constants/job-types";
 import { AuthService } from "@shared/services/auth.service";
-import { Observable } from "rxjs";
+import { finalize, Observable } from "rxjs";
+import { LoaderService } from "@shared/services/loader.service";
+import { NotificationService } from "@shared/services/notification.service";
 
 @Component({
     selector: 'app-profile-page',
@@ -31,6 +33,8 @@ export class ProfilePageComponent implements OnInit{
   constructor(
     private activatedRoute: ActivatedRoute,
     private userService: UserClientService,
+    private loaderService: LoaderService,
+    private notificationService: NotificationService,
     private authService: AuthService
   ){}
 
@@ -49,15 +53,18 @@ export class ProfilePageComponent implements OnInit{
   }
 
   fetchUserProfile(userId: string): void {
-    this.userService.getById(userId).subscribe(user => {
-      this.userData = user;
-      this.profileForm.patchValue({
-        firstName: user.firstName,
-        lastName: user.lastName,
-        employmentStatus: user.employmentStatus,
-        jobTypes: user.jobTypes
+    this.loaderService.show();
+    this.userService.getById(userId)
+      .pipe(finalize(() => this.loaderService.hide()))
+      .subscribe(user => {
+        this.userData = user;
+        this.profileForm.patchValue({
+          firstName: user.firstName,
+          lastName: user.lastName,
+          employmentStatus: user.employmentStatus,
+          jobTypes: user.jobTypes
+        });
       });
-    });
   }
 
   onSubmit() {
@@ -72,7 +79,15 @@ export class ProfilePageComponent implements OnInit{
       employmentStatus: employmentStatusValue,
       jobTypes: jobTypesValue
     };
-    if (this.userId)
-      this.userService.update(this.userId, updateData).subscribe();
+    if (this.userId){
+      this.loaderService.show();
+      this.userService.update(this.userId, updateData)
+      .pipe(finalize(() => this.loaderService.hide()))
+      .subscribe({
+        next: ()=>{
+          this.notificationService.showNotification('Profile updated successfully!');
+        }
+      });
+    }
   }
 }

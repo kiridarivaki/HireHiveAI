@@ -62,7 +62,7 @@ export class DragDropComponent {
   onFileSelect(event: Event): void {
     if (this.disabled) {
       const input = event.target as HTMLInputElement;
-      if (input) input.value = '';  // reset input so user can try again later
+      if (input) input.value = '';
       return;
     }
 
