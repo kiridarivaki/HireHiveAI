@@ -1,18 +1,35 @@
-:host {
-  display: flex;
-  flex-direction: column;
-  min-width: 300px;
-  overflow: hidden;
-  padding: 10px;
-}
-
 .dialog-header {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  padding-bottom: 8px;
+  justify-content: flex-start;
+  position: relative;
+  padding-left: 20px;
+  padding-top: 10px;
+  min-height: 40px;
 }
 
-h2 {
-  padding: 10px 20px 0px 20px;
+.dialog-header h2 {
+  margin: 0;
+  font-weight: 500;
+  flex-grow: 1;
+}
+
+.dialog-actions {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  margin-top: 10px;
+  padding-bottom: 10px;
+}
+
+.close-btn {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  background: transparent !important;
+  border: none !important;
+  outline: none !important;
+  width: 32px;
+  height: 32px;
+  padding: 4px;
 }
