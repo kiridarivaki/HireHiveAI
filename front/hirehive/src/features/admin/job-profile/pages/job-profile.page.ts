@@ -8,7 +8,6 @@ import { CriteriaSliderComponent } from '../components/criteria-slider/criteria-
 import { JobType } from '@shared/constants/job-types';
 import { AssessmentCriteria } from '@shared/constants/assessment-criteria';
 import { AssessmentDataPayload } from 'src/app/client/models/admin-client.model';
-import { AdminClientService } from 'src/app/client/services/admin-client.service';
 import { Router } from '@angular/router';
 import { JobStateService } from '@shared/services/job-state.service';
 
@@ -36,7 +35,6 @@ export class JobProfileComponent {
   criteria = Object.entries(AssessmentCriteria).map(([key, label]) => ({ key, label }));
 
   constructor(
-    private adminService: AdminClientService, 
     private stateService: JobStateService,
     private router: Router
   ){}
@@ -50,15 +48,16 @@ export class JobProfileComponent {
         return typeof value === 'number' ? value : 0;
       });
 
+      const jobTypeValue = Number(jobForm.jobType) as unknown as JobType;
+
       const assessmentData: AssessmentDataPayload = {
         criteriaWeights,
         jobDescription: jobForm.jobDescription!,
-        jobType: jobForm.jobType! as JobType, 
+        jobType: jobTypeValue, 
         cursor: 0
       };
-      console.log(assessmentData)
       this.stateService.setAssessmentData(assessmentData);
-      // this.router.navigate(['/admin/results']);
+      this.router.navigate(['/admin/results']);
     }
   }
 }
