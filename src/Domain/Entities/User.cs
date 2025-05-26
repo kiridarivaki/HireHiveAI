@@ -25,18 +25,12 @@ namespace HireHive.Domain.Entities
             JobTypes = jobTypes;
         }
 
-        public void UpdateUser(string? firstName, string? lastName)
+        public void UpdateUser(string? firstName, string? lastName, EmploymentStatus? employmentStatus, List<JobType>? jobTypes)
         {
             FirstName = firstName ?? FirstName;
             LastName = lastName ?? LastName;
-        }
-        public void UpdateEmploymentStatus(EmploymentStatus employmentStatus)
-        {
-            EmploymentStatus = employmentStatus;
-        }
-        public void UpdateJobTypes(List<JobType>? jobTypes)
-        {
-            JobTypes = jobTypes;
+            EmploymentStatus = employmentStatus ?? EmploymentStatus;
+            JobTypes = jobTypes ?? JobTypes;
         }
     }
 }
