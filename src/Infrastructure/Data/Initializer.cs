@@ -62,7 +62,7 @@ namespace HireHive.Infrastructure.Data
 
             if (await userManager.FindByEmailAsync(adminEmail) == null)
             {
-                var admin = new User(adminEmail, "Kyriaki", "Darivaki", EmploymentStatus.Intern, [JobType.Undefined]);
+                var admin = new User(adminEmail, "Kyriaki", "Darivaki", EmploymentStatus.Intern, null);
 
                 var result = await userManager.CreateAsync(admin, "Password1!@#");
                 if (!result.Succeeded)

@@ -12,7 +12,7 @@ namespace HireHive.Infrastructure.Services
         private readonly ILogger<AdminService> _logger;
         private readonly IUserRepository _userRepository;
         private readonly IResumeRepository _resumeRepository;
-        private readonly TokenCountingService _tokenCountingService;
+        private readonly TokenCounterService _tokenCountingService;
         private readonly AiAssessmentService _aiAssessmentService;
         private readonly IUserService _userService;
         public AdminService(
@@ -20,7 +20,7 @@ namespace HireHive.Infrastructure.Services
             ILogger<AdminService> logger,
             IUserRepository userRepository,
             IResumeRepository resumeRepository,
-            TokenCountingService tokenCountingService,
+            TokenCounterService tokenCountingService,
             AiAssessmentService aiAssessmentService,
             IUserService userService)
         {
@@ -38,13 +38,24 @@ namespace HireHive.Infrastructure.Services
             {
                 var usersToAssess = GetResumeBatch(assessmentDto);
 
-                var assessmentResult = _aiAssessmentService.AssessUsers(usersToAssess, assessmentDto);
+                if (usersToAssess == null || !usersToAssess.Any())
+                {
+                    return new List<AssessmentResultDto>();
+                }
 
-                var userIds = usersToAssess.Select(u => u.UserId).ToList();
+                var matchPercentages = _aiAssessmentService.AssessUsers(usersToAssess, assessmentDto);
 
-                var userInfo = await _userService.GetByIds(userIds);
+                var users = await _userRepository.GetByIds(matchPercentages.Keys.ToList());
 
-                _mapper.Map(userInfo, assessmentResult);
+                var assessmentResult = users.Select(u => new AssessmentResultDto
+                {
+                    UserId = u.Id,
+                    Email = u.Email!,
+                    FirstName = u.FirstName,
+                    LastName = u.LastName,
+                    EmploymentStatus = u.EmploymentStatus,
+                    MatchPercentage = matchPercentages[u.Id]
+                }).ToList();
 
                 return assessmentResult;
             }
@@ -89,6 +100,11 @@ namespace HireHive.Infrastructure.Services
             }
 
             return resumeBatch;
+        }
+
+        public async Task<SortDataDto> SortResults(SortDataDto sortDataModel)
+        {
+            throw new NotImplementedException();
         }
     }
 }

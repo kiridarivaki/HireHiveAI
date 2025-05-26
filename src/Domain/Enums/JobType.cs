@@ -2,7 +2,6 @@
 {
     public enum JobType
     {
-        Undefined,
         SoftwareEngineer,
         FullStackDeveloper,
         DataScientist,
