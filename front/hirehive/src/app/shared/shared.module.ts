@@ -7,12 +7,14 @@ import {AppSelectComponent} from './components/select/select.component';
 import { AppButtonComponent } from './components/button/button.component';
 import { AppNavBarComponent } from './components/navbar/navbar.component';
 import { AppDialogComponent } from './components/dialog/dialog.component';
+import { AppChipListComponent } from './components/chip-list/chip-list.component';
 
 @NgModule({
     imports: [
         AppInputComponent,
         AppPasswordInputComponent,
         AppSelectComponent,
+        AppChipListComponent,
         AppButtonComponent,
         AppNavBarComponent,
         AppDialogComponent,
@@ -23,6 +25,7 @@ import { AppDialogComponent } from './components/dialog/dialog.component';
         AppInputComponent,
         AppPasswordInputComponent,
         AppSelectComponent,
+        AppChipListComponent,
         AppButtonComponent,
         AppNavBarComponent,
         AppDialogComponent,

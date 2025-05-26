@@ -1,10 +1,12 @@
-<div class="form-group">
 <mat-form-field appearance="outline" class="full-width">
-    <mat-label>{{label}}</mat-label>
-    <mat-select (selectionChange)="onValueChange($event.value)" [disabled]="disabled" [value]="value">
-      <mat-option *ngFor="let option of options" [value]="option.value">
-        {{ option.label }}
-      </mat-option>
-    </mat-select>
-  </mat-form-field>
-</div>
+  <mat-label>{{label}}</mat-label>
+  <mat-select
+    [value]="value"
+    [compareWith]="compareFn"
+    (selectionChange)="onValueChange($event.value)"
+    [disabled]="disabled">
+    <mat-option *ngFor="let option of options" [value]="option.value">
+      {{ option.label }}
+    </mat-option>
+  </mat-select>
+</mat-form-field>

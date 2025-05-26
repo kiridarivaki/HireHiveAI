@@ -1,0 +1,32 @@
+<mat-form-field class="chip-list-form-field" appearance="outline">
+  <mat-label>{{ label }}</mat-label>
+  <mat-chip-grid #chipGrid aria-label="label" [disabled]="disabled">
+    <mat-chip-row
+      *ngFor="let selectedValue of value"
+      (removed)="remove(selectedValue)"
+    >
+      {{ getLabel(selectedValue) }}
+      <button matChipRemove [attr.aria-label]="'Remove ' + getLabel(selectedValue)">
+        <mat-icon>cancel</mat-icon>
+      </button>
+    </mat-chip-row>
+  </mat-chip-grid>
+
+  <input
+    #inputElement
+    [formControl]="inputControl"
+    [matAutocomplete]="auto"
+    [matChipInputFor]="chipGrid"
+    [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+    (matChipInputTokenEnd)="add($event)"
+    [placeholder]="'Add ' + label + '...'"
+    aria-label="Add label"
+    [disabled]="disabled"
+  />
+
+  <mat-autocomplete #auto="matAutocomplete" (optionSelected)="selected($event, inputElement)">
+    <mat-option *ngFor="let option of filteredOptions()" [value]="option.value">
+      {{ option.label }}
+    </mat-option>
+  </mat-autocomplete>
+</mat-form-field>

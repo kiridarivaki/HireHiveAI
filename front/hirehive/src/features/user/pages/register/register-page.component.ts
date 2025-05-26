@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { EmploymentStatus } from '@shared/constants/employment-options';
+import { JobType } from '@shared/constants/job-types';
 import { AuthService } from '@shared/services/auth.service';
 import { fieldsMatchValidator } from '@shared/validators/fields-match.validator';
 import { passwordValidator } from '@shared/validators/password.validator';
@@ -14,13 +15,19 @@ import { RegisterPayload } from 'src/app/client/models/auth-client.model';
   styleUrl: './register-page.component.scss',
 })
 export class RegisterPageComponent implements OnInit {
-
   constructor(
     private authService: AuthService,
     private router: Router
   ) {}
 
-  employmentOptions: { value: string, label: string }[] = [];
+  employmentOptions = Object.entries(EmploymentStatus).map(([key, label], index) => ({
+    value: index.toString(),  
+    label: label as string
+  }));
+  jobTypes = Object.entries(JobType).map(([key, label], index) => ({
+    value: index.toString(),  
+    label: label as string
+  }));
 
   registerForm = new FormGroup(
     {
@@ -29,27 +36,28 @@ export class RegisterPageComponent implements OnInit {
       confirmPassword: new FormControl('', [Validators.required]),
       firstName: new FormControl('', Validators.required),
       lastName: new FormControl('', Validators.required),
-      employmentStatus: new FormControl('Employed', Validators.required)
+      employmentStatus: new FormControl<EmploymentStatus>(EmploymentStatus.full_time, [Validators.required]),
+      jobTypes: new FormControl<JobType[] | null>([], Validators.required) 
     },
     { validators: fieldsMatchValidator('password', 'confirmPassword') }
   );
 
   ngOnInit(): void {
-    this.employmentOptions = Object.values(EmploymentStatus).map(status => ({
-      value: status,
-      label: status
-    }));
   }
 
   onRegister(){
     if (this.registerForm.valid) {
       const registerForm = this.registerForm.value;
+
+      const employmentStatusValue = Number(registerForm.employmentStatus) as unknown as EmploymentStatus;
+      const jobTypesValue = (registerForm.jobTypes || []).map((x: string) => Number(x)) as unknown as JobType[];
       
       const registerData: RegisterPayload = {
         email: registerForm.email!,
         firstName: registerForm.firstName!,
         lastName: registerForm.lastName!,
-        employmentStatus: registerForm.employmentStatus!,
+        employmentStatus: employmentStatusValue!,
+        jobTypes: jobTypesValue!,
         password: registerForm.password!,
         confirmPassword: registerForm.confirmPassword!
       };

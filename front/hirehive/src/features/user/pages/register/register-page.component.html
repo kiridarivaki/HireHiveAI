@@ -76,6 +76,15 @@
     </app-select>
   </div>
 
+  <div class="form-field">
+    <app-chip-list
+      [label]="'Job Types'"
+      [options]="jobTypes"
+      formControlName="jobTypes"
+    >
+    </app-chip-list>
+  </div>
+
   <div >
   <app-button
     class="form-field"
