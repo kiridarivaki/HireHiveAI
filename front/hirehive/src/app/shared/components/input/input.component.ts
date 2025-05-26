@@ -25,7 +25,7 @@ export class AppInputComponent implements ControlValueAccessor {
   @Input() placeholder: string = '';
   @Input() disabled = false;
   @Input() label: string = '';
-  value: any = '';
+  @Input() value: any = '';
 
   onChange = (_: any) => {};
 

@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, Input } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
@@ -9,25 +9,26 @@ import { MatSelectModule } from '@angular/material/select';
   standalone: true,
   templateUrl: './select.component.html',
   providers: [{ provide: NG_VALUE_ACCESSOR, useExisting: AppSelectComponent, multi: true }],
-  imports: [
-    MatSelectModule, 
-    MatFormFieldModule,
-    CommonModule
-  ]
+  imports: [MatSelectModule, MatFormFieldModule, CommonModule]
 })
-export class AppSelectComponent implements ControlValueAccessor {
+export class AppSelectComponent implements ControlValueAccessor, OnInit {
   @Input() selectId = '';
   @Input() options: { value: string, label: string }[] = [];
   @Input() class: string = '';
   @Input() disabled = false;
   @Input() label = '';
-  value: any = '';
+
+  value: string = '';
+  private _hasValueSet = false;
 
   onChange = (_: any) => {};
   onTouched = () => {};
 
   writeValue(value: any): void {
-      this.value = value;
+    if (value != null) {
+      this.value = value.toString();
+      this._hasValueSet = true;
+    }
   }
 
   registerOnChange(fn: any): void {
@@ -38,10 +39,21 @@ export class AppSelectComponent implements ControlValueAccessor {
     this.onTouched = fn;
   }
 
-  onValueChange(value: string | number): void {
-    const numericValue = typeof value === 'string' ? parseInt(value, 10) : value;
-    this.value = numericValue;
-    this.onChange(numericValue);
-    this.onTouched();
+  ngOnInit(): void {
+    if (this._hasValueSet && this.options.length > 0) {
+      const match = this.options.find(opt => opt.value === this.value);
+      if (!match) {
+        console.warn(`AppSelectComponent: Initial value "${this.value}" not found in options.`);
+      }
+    }
   }
+
+  onValueChange(value: any): void {
+    this.value = value;
+    this.onChange(value);
+  }
+
+  compareFn = (a: any, b: any): boolean => {
+    return a?.toString() === b?.toString();
+  };
 }
