@@ -32,6 +32,8 @@ export class JobStateService {
   }
 
   incrementCursor(by: number): void {
-    this.cursor += by;
+    const current = this.getCursor();
+    const newCursor = current + by;
+    this.setCursor(newCursor);
   }
 }

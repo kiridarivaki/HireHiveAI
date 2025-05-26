@@ -13,13 +13,13 @@ import { RouterModule } from "@angular/router";
       MatIconModule,
       RouterModule
     ],
-    templateUrl: './button.component.html'
+    templateUrl: './button.component.html',
   })
   export class AppButtonComponent{
     @Input() btnId: string = '';
     @Input() btnClass: string = '';
     @Input() type: string = 'button'
-    @Input() text: string = '';
+    @Input() text?: string = '';
     @Input() icon: string = '';
     @Input() disabled: boolean = false;
     @Input() routerLink?: string | any[];
