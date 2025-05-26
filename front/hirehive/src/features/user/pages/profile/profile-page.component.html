@@ -6,12 +6,11 @@
         type="email"
         label="Email"
         inputId="email"
-        [placeholder]="userData?.email ?? 'Email Address'"
+        [value]="userData?.email"
         [disabled]="true"
     ></app-input>
     </div>  
-    
-  <form [formGroup]="profileForm">
+  <form [formGroup]="profileForm" (ngSubmit)="onSubmit()">
   <div class="form-field">
     <app-input
         type="text"
@@ -19,7 +18,6 @@
         inputId="firstName"
         formControlName="firstName"
         [placeholder]="userData?.firstName ?? 'First Name'"
-        [disabled]="!isEditMode"
     ></app-input>
     <mat-error *ngIf="profileForm.controls.firstName.invalid && (profileForm.controls.firstName.dirty || profileForm.controls.firstName.touched)">
       {{ profileForm.controls.firstName.errors | validationError }}
@@ -32,7 +30,6 @@
         inputId="lastName"
         formControlName="lastName"
         [placeholder]="userData?.lastName ?? 'Last Name'"
-        [disabled]="!isEditMode"
     ></app-input>
     <mat-error *ngIf="profileForm.controls.lastName.invalid && (profileForm.controls.lastName.dirty || profileForm.controls.lastName.touched)">
       {{ profileForm.controls.lastName.errors | validationError }}
@@ -41,35 +38,28 @@
   <div class="form-field">
     <app-select
       selectId="statusSelect"
-      [label]="userData?.employmentStatus ?? 'Employment Status'"
+      label="Employment Status"
       [options]="employmentOptions"
-      [disabled]="!isEditMode"
       formControlName="employmentStatus">
     </app-select>
     </div>
-    <div *ngIf="isEditMode">
-    <app-button
-        class="form-field"
-        text="Save Changes"
-        type="submit"
-        (onClick)="onSubmit()"
-        [disabled]="!isEditMode">
-    </app-button>
-    <app-button
-        class="form-field"
-        text="Cancel"
-        (onClick)="toggleEdit()"
-        [disabled]="!isEditMode">
-    </app-button>
-    </div>
-  </form>
-    <app-button *ngIf="!isEditMode"
+  <div class="form-field">
+  <app-chip-list *ngIf="(isAdmin$ | async) === false"
+    [label]="'Job Types'"
+    [options]="jobTypes"
+    formControlName="jobTypes"
+  >
+  </app-chip-list>
+  </div>
+  <app-button
       class="form-field"
-      text="Edit Profile"
-      (onClick)="toggleEdit()">
-    </app-button>
+      text="Save Changes"
+      type="submit"
+      [disabled]="!profileForm.valid">
+  </app-button>
+  </form>
   </section>
-  <section class="resume-upload">
+  <section class="resume-upload" *ngIf="(isAdmin$ | async) === false">
     <app-resume-upload [userId]="userId"></app-resume-upload>
   </section>
 </div>

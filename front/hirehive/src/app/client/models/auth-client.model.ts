@@ -1,10 +1,13 @@
+import { EmploymentStatus } from "@shared/constants/employment-options";
+import { JobType } from "@shared/constants/job-types";
 import { UserRole } from "@shared/models/auth.model";
 
 export interface RegisterPayload{
     email: string,
     firstName: string,
     lastName: string,
-    employmentStatus: string,
+    employmentStatus: EmploymentStatus,
+    jobTypes: Array<JobType>,
     password: string;
     confirmPassword: string;
 }

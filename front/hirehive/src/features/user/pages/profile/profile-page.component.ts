@@ -4,6 +4,9 @@ import { ActivatedRoute } from "@angular/router";
 import { EmploymentStatus } from "@shared/constants/employment-options";
 import { UserClientService } from "src/app/client/services/user-client.service";
 import { GetUserInfoPayload, UpdateUserPayload } from "src/app/client/models/user-client.model";
+import { JobType } from "@shared/constants/job-types";
+import { AuthService } from "@shared/services/auth.service";
+import { Observable } from "rxjs";
 
 @Component({
     selector: 'app-profile-page',
@@ -11,57 +14,65 @@ import { GetUserInfoPayload, UpdateUserPayload } from "src/app/client/models/use
     templateUrl: './profile-page.component.html',
     styleUrl: './profile-page.component.scss'
   })
-  export class ProfilePageComponent implements OnInit{
-    isEditMode: boolean= false;
-    userData: GetUserInfoPayload | null = null; 
-    userId: string | null = null;
+export class ProfilePageComponent implements OnInit{
+  userData: GetUserInfoPayload | null = null; 
+  userId: string | null = null;
+  isAdmin$!: Observable<boolean>; 
 
-    readonly employmentOptions = Object.values(EmploymentStatus).map(status => ({
-      value: status,
-      label: status
-    }));
+  employmentOptions = Object.entries(EmploymentStatus).map(([key, label], index) => ({
+    value: index.toString(),  
+    label: label as string
+  }));
+  jobTypes = Object.entries(JobType).map(([key, label], index) => ({
+    value: index.toString(),  
+    label: label as string
+  }));
 
-    profileForm = new FormGroup ({
-      firstName: new FormControl('', [Validators.required]),
-      lastName: new FormControl('', [Validators.required]),
-      employmentStatus: new FormControl('', [Validators.required]),
-    });
+  constructor(
+    private activatedRoute: ActivatedRoute,
+    private userService: UserClientService,
+    private authService: AuthService
+  ){}
 
-    constructor(
-      private activatedRoute: ActivatedRoute,
-      private userService: UserClientService
-    ){}
+  profileForm = new FormGroup ({
+    firstName: new FormControl('', [Validators.required]),
+    lastName: new FormControl('', [Validators.required]),
+    employmentStatus: new FormControl<EmploymentStatus>(EmploymentStatus.full_time, [Validators.required]),
+    jobTypes: new FormControl<JobType[] | null>([], Validators.required) 
+  });
 
-    ngOnInit(): void {
-      this.userId = this.activatedRoute.snapshot.paramMap.get('userId');
-      if (this.userId)
-        this.fetchUserProfile(this.userId);
-    }
+  ngOnInit(): void {
+    this.isAdmin$ = this.authService.isAdmin$();
+    this.userId = this.activatedRoute.snapshot.paramMap.get('userId');
+    if (this.userId)
+      this.fetchUserProfile(this.userId);
+  }
 
-    fetchUserProfile(userId: string): void {
-      this.userService.getById(userId).subscribe(user => {
-        this.userData = user;
-        this.profileForm.patchValue({
-          firstName: user.firstName,
-          lastName: user.lastName,
-          employmentStatus: user.employmentStatus,
-        });
+  fetchUserProfile(userId: string): void {
+    this.userService.getById(userId).subscribe(user => {
+      this.userData = user;
+      this.profileForm.patchValue({
+        firstName: user.firstName,
+        lastName: user.lastName,
+        employmentStatus: user.employmentStatus,
+        jobTypes: user.jobTypes
       });
-    }
+    });
+  }
 
-    toggleEdit() {
-      this.isEditMode = !this.isEditMode;
-    }
+  onSubmit() {
+    const updateForm = this.profileForm.value;
+    
+    const employmentStatusValue = Number(updateForm.employmentStatus) as unknown as EmploymentStatus;
+    const jobTypesValue = (updateForm.jobTypes || []).map((x: string) => Number(x)) as unknown as JobType[];
 
-    onSubmit() {
-      const updateForm = this.profileForm.value;
-      const updateData: UpdateUserPayload = {
-        firstName: updateForm.firstName,
-        lastName: updateForm.lastName,
-        employmentStatus: updateForm.employmentStatus,
-      };
-      if (this.userId)
-        this.userService.update(this.userId, updateData).subscribe();
-      this.toggleEdit();
-    }
+    const updateData: UpdateUserPayload = {
+      firstName: updateForm.firstName,
+      lastName: updateForm.lastName,
+      employmentStatus: employmentStatusValue,
+      jobTypes: jobTypesValue
+    };
+    if (this.userId)
+      this.userService.update(this.userId, updateData).subscribe();
+  }
 }
