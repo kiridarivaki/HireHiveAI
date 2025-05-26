@@ -10,7 +10,7 @@ import { AppButtonComponent } from '@shared/components/button/button.component';
   imports: [AppButtonComponent]
 })
 export class ResumePreviewComponent {
-  @Input() userId: string = '0196acea-5488-709c-8c8a-5d7d9b02fd40';
+  @Input() userId: string = '';
   fileUrl: string | null = null;
 
   constructor(

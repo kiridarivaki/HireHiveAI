@@ -6,8 +6,8 @@
       <p>Match: {{ assessedUserInfo.matchPercentage }}%</p>
     </div>
     <div class="action-buttons">
-      <app-resume-preview></app-resume-preview>
-      <app-button text="Download" icon="download"></app-button>
+      <app-resume-preview [userId]="assessedUserInfo.userId"></app-resume-preview>
+      <app-button text="Download" class="download-button" icon="download" (click)="onDownload()"></app-button>
     </div>
   </div>
 </mat-card>

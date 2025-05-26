@@ -7,4 +7,21 @@
       [assessedUserInfo]="user"
     ></app-candidate-card>
   </div>
+
+  <div class="load-more-container" *ngIf="usersList.length > 0 && !(noMoreResults)">
+    <app-button 
+      (click)="fetchNextBatch()" 
+      [disabled]="loading$ | async" 
+      class="load-more-button">
+      {{ (loading$ | async) ? 'Loading...' : 'Load More' }}
+    </app-button>
+  </div>
+
+  <div *ngIf="!loading$ && usersList.length === 0 && noMoreResults" class="empty-state">
+    <p>No candidates were matched.</p>
+  </div>
+
+  <div *ngIf="noMoreResults && usersList.length > 0" class="end-of-results">
+    <p>No more results.</p>
+  </div>
 </div>

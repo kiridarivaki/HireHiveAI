@@ -1,0 +1,19 @@
+
+button.btn {
+    margin: 5px;
+    display: inline-flex;
+    align-items: center;
+}
+
+.btn-text {
+    margin-left: 6px;   
+}
+
+mat-icon + .btn-text {
+    margin-left: 6px;
+}
+
+mat-icon:only-child {
+    margin-right: 0;
+}
+
