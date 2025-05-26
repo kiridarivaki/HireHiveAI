@@ -1,4 +1,4 @@
-import { Component, Output, EventEmitter, Input, ElementRef, ViewChild, SimpleChanges } from '@angular/core';
+import { Component, Output, EventEmitter, Input, ElementRef, ViewChild } from '@angular/core';
 import { GetResumeInfoPayload } from 'src/app/client/models/resume-client.model';
 
 @Component({
@@ -16,16 +16,32 @@ export class DragDropComponent {
   @ViewChild('fileInput') fileInputRef!: ElementRef<HTMLInputElement>;
 
   onDragOver(event: DragEvent): void {
+    if (this.disabled) {
+      event.preventDefault();
+      event.stopPropagation();
+      return;
+    }
     event.preventDefault();
     event.stopPropagation();
   }
 
   onDragLeave(event: DragEvent): void {
+    if (this.disabled) {
+      event.preventDefault();
+      event.stopPropagation();
+      return;
+    }
     event.preventDefault();
     event.stopPropagation();
   }
 
   onFileDrop(event: DragEvent): void {
+    if (this.disabled) {
+      event.preventDefault();
+      event.stopPropagation();
+      return;
+    }
+  
     event.preventDefault();
     event.stopPropagation();
   
@@ -44,6 +60,12 @@ export class DragDropComponent {
   } 
 
   onFileSelect(event: Event): void {
+    if (this.disabled) {
+      const input = event.target as HTMLInputElement;
+      if (input) input.value = '';  // reset input so user can try again later
+      return;
+    }
+
     const input = event.target as HTMLInputElement;
     const file = input?.files?.[0];
   
