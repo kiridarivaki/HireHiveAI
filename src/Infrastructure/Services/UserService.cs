@@ -60,7 +60,7 @@ namespace HireHive.Infrastructure.Services
                 var userToUpdate = await _userRepository.GetById(id)
                     ?? throw new UserNotFoundException();
 
-                userToUpdate.UpdateUser(userModel.FirstName, userModel.LastName);
+                userToUpdate.UpdateUser(userModel.FirstName, userModel.LastName, userModel.EmploymentStatus, userModel.JobTypes);
 
                 await _userRepository.Update(userToUpdate);
 

@@ -54,12 +54,14 @@ namespace HireHive.Infrastructure.Services
             var token = tokenHandler.CreateToken(tokenDescriptor);
             var accessToken = tokenHandler.WriteToken(token);
 
-            return new AccessTokenResponse
+            var tokenResponse = new AccessTokenResponse
             {
                 AccessToken = accessToken,
                 RefreshToken = GenerateRefreshToken(),
                 ExpiresIn = (int)(token.ValidTo - DateTime.UtcNow).TotalSeconds,
             };
+
+            return tokenResponse;
         }
 
         public string GenerateRefreshToken()
