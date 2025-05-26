@@ -42,5 +42,22 @@ namespace HireHive.Api.Areas.Admin.Controllers
                 throw;
             }
         }
+
+        [HttpPost]
+        [Route("sort")]
+        public async Task<IActionResult> Sort([FromBody] SortDataBm sortDataModel)
+        {
+            try
+            {
+                _logger.LogInformation("Sorting of results done.");
+
+                return Ok();
+            }
+            catch (Exception e)
+            {
+                _logger.LogError("Sorting of results failed. With exception: {message}", e.Message);
+                throw;
+            }
+        }
     }
 }
