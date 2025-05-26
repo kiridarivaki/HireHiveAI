@@ -17,7 +17,10 @@ export class ErrorComponent {
     ngOnInit(): void {
     this.errorService.error$.subscribe(message => {
       if (message) {
-        this.snackBar.open(message, 'Close', { duration: 3000 });
+        this.snackBar.open(message, 'Close', {
+          duration: 3000,
+          panelClass: ['snackbar-error'] 
+        });
       }
     });
   }
