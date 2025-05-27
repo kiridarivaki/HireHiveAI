@@ -1,6 +1,6 @@
 <div class="profile-container">
 <section class="profile-details">
-  <h1>User Profile</h1>
+  <h2>User Profile</h2>
   <div class="form-field">
     <app-input
         type="email"
@@ -52,12 +52,19 @@
   </app-chip-list>
   </div>
   <app-button
-      class="form-field"
-      text="Save Changes"
-      type="submit"
-      [disabled]="!profileForm.valid">
+    class="btn-group"
+    text="Save Changes"
+    variant="flat"
+    type="submit"
+    [disabled]="!profileForm.valid">
   </app-button>
   </form>
+  <app-button
+    class="btn-group"
+    text="Delete Profile"
+    variant="flat"
+    (onClick)="onDelete()">
+  </app-button>
   </section>
   <section class="resume-upload" *ngIf="(isAdmin$ | async) === false">
     <app-resume-upload [userId]="userId"></app-resume-upload>

@@ -1,6 +1,6 @@
 import { Component, OnInit } from "@angular/core";
 import { FormControl, FormGroup, Validators } from "@angular/forms";
-import { ActivatedRoute } from "@angular/router";
+import { ActivatedRoute, Router } from "@angular/router";
 import { EmploymentStatus } from "@shared/constants/employment-options";
 import { UserClientService } from "src/app/client/services/user-client.service";
 import { GetUserInfoPayload, UpdateUserPayload } from "src/app/client/models/user-client.model";
@@ -35,7 +35,8 @@ export class ProfilePageComponent implements OnInit{
     private userService: UserClientService,
     private loaderService: LoaderService,
     private notificationService: NotificationService,
-    private authService: AuthService
+    private authService: AuthService,
+    private router: Router
   ){}
 
   profileForm = new FormGroup ({
@@ -89,5 +90,21 @@ export class ProfilePageComponent implements OnInit{
         }
       });
     }
+  }
+
+  onDelete() {
+    this.loaderService.show();
+    if (this.userId){
+      this.userService.delete(this.userId)
+      .pipe(finalize(() => this.loaderService.hide()))
+      .subscribe({
+        next: ()=>{
+          this.userData = null;
+          this.notificationService.showNotification('Profile deleted successfully!');
+          this.authService.logout();
+        }
+      });
+    }
+
   }
 }
