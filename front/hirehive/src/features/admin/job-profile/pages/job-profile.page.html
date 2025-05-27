@@ -4,23 +4,25 @@
       Job Description
     </h2>
     <textarea formControlName="jobDescription" rows="6" class="textarea-input"></textarea>
+    <div class="btn-group">
+      <app-select
+        [options]="jobTypes"
+        label="Job Type"
+        formControlName="jobType"
+        class="select-input"
+      ></app-select>
 
-    <app-select
-      [options]="jobTypes"
-      label="Job Type"
-      formControlName="jobType"
-      class="select-input"
-    ></app-select>
-
-    <app-button
-      type="button"
-      text="Submit"
-      [disabled]="!jobForm.get('jobDescription')?.value && !jobForm.get('jobType')?.value"
-      (onClick)="onSubmit()"
-      class="submit-button"
-    ></app-button>
+      <app-button
+        type="button"
+        variant="stroked"
+        size="large"
+        text="Submit"
+        [disabled]="!jobForm.get('jobDescription')?.value && !jobForm.get('jobType')?.value"
+        (onClick)="onSubmit()"
+        class="submit-button"
+      ></app-button>
+    </div>
   </div>
-
   <div class="right-panel">
     <h3>Assessment Criteria</h3>
 

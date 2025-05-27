@@ -12,7 +12,7 @@ $my-typography: (
 $my-theme: mat.define-theme((
   color: (
     primary: colorTheme.$primary-palette,
-    tertiary: colorTheme.$tertiary-palette,
+    tertiary: colorTheme.$tertiary-palette
   ),
   typography: $my-typography,
 ));

@@ -1,5 +1,4 @@
 export enum JobType {
-  Undefined = 'No Preference',
   SoftwareEngineer = 'Software Engineer',
   FullStackDeveloper = 'Full Stack Developer',
   DataScientist = 'Data Scientist',

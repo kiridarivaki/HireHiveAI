@@ -67,7 +67,6 @@ export class AppChipListComponent implements ControlValueAccessor, OnInit {
   private onTouched = () => {};
 
   ngOnInit() {
-    // Only emit initial value if one was provided by parent
     if (this.hasInitialValue && this._value.length > 0) {
       const validValues = this._value.filter(val =>
         this.options.some(opt => opt.value === val)
@@ -77,11 +76,10 @@ export class AppChipListComponent implements ControlValueAccessor, OnInit {
     }
   }
 
-writeValue(value: (string | number)[] | null): void {
-  this._value = (value ?? []).map((v) => v.toString());
-  this.emitSelection();
-}
-
+  writeValue(value: (string | number)[] | null): void {
+    this._value = (value ?? []).map((v) => v.toString());
+    this.emitSelection();
+  }
 
   registerOnChange(fn: (value: string[]) => void): void {
     this.onChange = fn;
@@ -89,15 +87,6 @@ writeValue(value: (string | number)[] | null): void {
 
   registerOnTouched(fn: () => void): void {
     this.onTouched = fn;
-  }
-
-  setDisabledState(isDisabled: boolean): void {
-    this.disabled = isDisabled;
-    if (isDisabled) {
-      this.inputControl.disable();
-    } else {
-      this.inputControl.enable();
-    }
   }
 
   get value() {

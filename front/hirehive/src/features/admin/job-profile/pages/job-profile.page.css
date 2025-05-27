@@ -69,6 +69,22 @@
   width: 100%;
 }
 
+.btn-group {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-top: 1.25rem;
+  flex-wrap: wrap;
+  width: 100%;
+}
+
+.btn-group app-select {
+  flex: 2;
+}
+.btn-group app-button {
+  flex: 1;
+}
+
 .right-panel h3 {
   margin-top: 0;
   margin-bottom: 1.5rem;
@@ -80,10 +96,6 @@
 
 .criteria-slider {
   margin-bottom: 1.5rem;
-}
-
-.submit-button {
-  align-self: flex-start;
 }
 
 @media (max-width: 1024px) {
@@ -101,9 +113,5 @@
     margin-top: 2rem;
     padding: 1.5rem;
   }
-
-  .submit-button {
-    width: 100%;
-    text-align: center;
-  }
 }
+

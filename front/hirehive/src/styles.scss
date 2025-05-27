@@ -15,6 +15,26 @@ body{
   font-family: 'Inter', sans-serif;
 }
 
+// mat-toolbar {
+//   @include mat.toolbar-overrides((
+//     container-text-color: red,
+//   ));
+// }
+
+.warn{
+  @include mat.theme(
+    (color: mat.$red-palette)
+  )
+}
+
+.btn-group {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  align-items: center;
+  padding: 10px;
+}
+
 .mat-typography h1 {
   font-size: 35px;
   line-height: 2rem;
