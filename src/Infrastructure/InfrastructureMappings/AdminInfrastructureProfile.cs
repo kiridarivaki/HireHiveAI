@@ -3,11 +3,12 @@ using HireHive.Application.DTOs.User;
 
 namespace HireHive.Infrastructure.InfrastructureMappings
 {
-    public class AssessmentInfrastructureProfile : Profile
+    public class AdminInfrastructureProfile : Profile
     {
-        public AssessmentInfrastructureProfile()
+        public AdminInfrastructureProfile()
         {
             CreateMap<UsersDto, AssessmentResultDto>();
+            CreateMap<AssessmentResultDto, SortResultDto>();
         }
     }
 }

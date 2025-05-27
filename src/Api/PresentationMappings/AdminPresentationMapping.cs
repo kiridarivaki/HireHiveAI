@@ -4,12 +4,14 @@ using HireHive.Application.DTOs.Admin;
 
 namespace HireHive.Api.PresentationMappings
 {
-    public class AssessmentPresentationMapping : Profile
+    public class AdminPresentationMapping : Profile
     {
-        public AssessmentPresentationMapping()
+        public AdminPresentationMapping()
         {
             CreateMap<AssessmentParamsBm, AssessmentParamsDto>().ReverseMap();
             CreateMap<AssessmentResultDto, AssessmentResultVm>().ReverseMap();
+            CreateMap<SortDataBm, SortDataDto>().ReverseMap();
+            CreateMap<SortResultDto, SortResultVm>().ReverseMap();
         }
     }
 }
