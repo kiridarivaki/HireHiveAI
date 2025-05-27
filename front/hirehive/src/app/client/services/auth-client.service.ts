@@ -3,7 +3,6 @@ import { Injectable } from "@angular/core";
 import { UrlService } from "../../shared/services/url.service";
 import { EmailConfirmationPayload, EmailConfirmationResendPayload, GetInfoResponse, LoginPayload, LoginResponse, RefreshTokenResponse, RegisterPayload } from "../models/auth-client.model";
 import { Observable } from "rxjs";
-import { observableToBeFn } from "rxjs/internal/testing/TestScheduler";
 
 @Injectable({
     providedIn : 'root'
