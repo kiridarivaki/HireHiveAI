@@ -12,7 +12,7 @@ namespace HireHive.Infrastructure.Startup
         {
             services.AddHangfire(config =>
                 config.UsePostgreSqlStorage(c =>
-                c.UseNpgsqlConnection(configuration["PostgresConString"])))
+                c.UseNpgsqlConnection(configuration["HireHivePostgresConnectionString"])))
             .AddHangfireServer();
         }
         public static void EnableHangfire(this WebApplication app)

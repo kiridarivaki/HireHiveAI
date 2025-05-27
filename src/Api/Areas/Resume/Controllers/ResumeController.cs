@@ -6,10 +6,12 @@ using HireHive.Api.Areas.Resume.Models.ViewModels;
 using HireHive.Application.DTOs.Resume;
 using HireHive.Application.Interfaces;
 using HireHive.Domain.Exceptions.Resume;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace HireHive.Api.Areas.Resume.Controllers
 {
+    [Authorize]
     public class ResumeController : ApiController
     {
         private readonly IResumeService _resumeService;
