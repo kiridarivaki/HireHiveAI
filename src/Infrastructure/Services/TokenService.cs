@@ -1,6 +1,5 @@
 ﻿using HireHive.Application.Interfaces;
 using HireHive.Domain.Entities;
-using Microsoft.AspNetCore.Authentication.BearerToken;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Configuration;
@@ -22,7 +21,7 @@ namespace HireHive.Infrastructure.Services
             _userManager = userManager;
             _configuration = configuration;
         }
-        public async Task<AccessTokenResponse> GenerateToken(User user)
+        public async Task<string> GenerateToken(User user)
         {
             var tokenHandler = new JwtSecurityTokenHandler();
 
@@ -54,14 +53,7 @@ namespace HireHive.Infrastructure.Services
             var token = tokenHandler.CreateToken(tokenDescriptor);
             var accessToken = tokenHandler.WriteToken(token);
 
-            var tokenResponse = new AccessTokenResponse
-            {
-                AccessToken = accessToken,
-                RefreshToken = GenerateRefreshToken(),
-                ExpiresIn = (int)(token.ValidTo - DateTime.UtcNow).TotalSeconds,
-            };
-
-            return tokenResponse;
+            return accessToken;
         }
 
         public string GenerateRefreshToken()

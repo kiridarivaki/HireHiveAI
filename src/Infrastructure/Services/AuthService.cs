@@ -2,6 +2,7 @@
 using HireHive.Application.Interfaces;
 using HireHive.Domain.Entities;
 using HireHive.Domain.Exceptions;
+using HireHive.Domain.Exceptions.Account;
 using HireHive.Domain.Exceptions.User;
 using HireHive.Domain.Interfaces;
 using Microsoft.AspNetCore.Identity;
@@ -16,7 +17,6 @@ namespace HireHive.Infrastructure.Services
     {
         private readonly IUserRepository _userRepository;
         private readonly UserManager<User> _userManager;
-        private readonly SignInManager<User> _signInManager;
         private readonly IEmailService _emailService;
         private readonly ITokenService _tokenService;
         private readonly IMapper _mapper;
@@ -25,7 +25,6 @@ namespace HireHive.Infrastructure.Services
         public AuthService(
             IUserRepository userRepository,
             UserManager<User> userManager,
-            SignInManager<User> signInManager,
             IEmailService emailService,
             ITokenService tokenService,
             IMapper mapper,
@@ -33,7 +32,6 @@ namespace HireHive.Infrastructure.Services
         {
             _userRepository = userRepository;
             _userManager = userManager;
-            _signInManager = signInManager;
             _emailService = emailService;
             _tokenService = tokenService;
             _mapper = mapper;
@@ -109,7 +107,7 @@ namespace HireHive.Infrastructure.Services
             }
         }
 
-        public async Task<LoginDto> Login(LoginDto loginDto)
+        public async Task<AuthenticatedUserDto> Login(LoginDto loginDto)
         {
             try
             {
@@ -124,21 +122,52 @@ namespace HireHive.Infrastructure.Services
                 if (!isPasswordValid)
                     throw new UnauthorizedAccessException("Invalid credentials.");
 
-                var accessTokenResponse = await _tokenService.GenerateToken(user);
+                var accessToken = await _tokenService.GenerateToken(user);
+                var refreshToken = _tokenService.GenerateRefreshToken();
 
-                _mapper.Map(accessTokenResponse, loginDto);
-                loginDto.UserId = user.Id;
+                var authUser = new AuthenticatedUserDto
+                {
+                    AccessToken = accessToken,
+                    RefreshToken = refreshToken
+                };
 
                 _logger.LogInformation("Login succeeded for user {email}.", loginDto.Email);
 
-                return loginDto;
+                return authUser;
             }
-            catch (BaseException e)
+            catch (Exception e)
             {
                 _logger.LogWarning("Login failed for user {email}. With exception: {message}", loginDto.Email, e.Message);
                 throw;
             }
         }
+
+        public async Task<AuthenticatedUserDto> RefreshAsync(string refreshToken)
+        {
+            if (string.IsNullOrWhiteSpace(refreshToken))
+                throw new InvalidRefreshTokenException();
+
+            var user = await _userManager.Users
+                .FirstOrDefaultAsync(u => u.RefreshToken == refreshToken);
+
+            if (user == null || user.RefreshTokenExpiryTime <= DateTime.UtcNow)
+                throw new InvalidRefreshTokenException();
+
+            var newAccessToken = await _tokenService.GenerateToken(user);
+            var newRefreshToken = _tokenService.GenerateRefreshToken();
+
+            user.RefreshToken = newRefreshToken;
+            user.RefreshTokenExpiryTime = DateTime.UtcNow.AddDays(7);
+
+            await _userManager.UpdateAsync(user);
+
+            return new AuthenticatedUserDto
+            {
+                AccessToken = newAccessToken,
+                RefreshToken = newRefreshToken
+            };
+        }
+
 
         public async Task<UserInfoDto> GetInfo(Guid userId)
         {

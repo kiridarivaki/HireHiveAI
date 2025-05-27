@@ -29,7 +29,7 @@ namespace HireHive.Infrastructure.Services
             return tokenCount > MAX_TOKENS;
         }
 
-        public Dictionary<Guid, int> AssessUsers(List<UserResumeDto> usersToAssess, AssessmentParamsDto assessmentDto)
+        public Dictionary<Guid, int>? AssessUsers(List<UserResumeDto> usersToAssess, AssessmentParamsDto assessmentDto)
         {
             var experienceWeight = assessmentDto.CriteriaWeights[0];
             var educationWeight = assessmentDto.CriteriaWeights[1];

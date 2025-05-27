@@ -117,8 +117,8 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="BlobUploadFailedException" xml:space="preserve">
-    <value>Resume failed to upload to blob storage.</value>
+  <data name="InvalidRefreshTokenException" xml:space="preserve">
+    <value>Invalid refresh token format</value>
   </data>
   <data name="ResumeNotFoundException" xml:space="preserve">
     <value>The resume was not found.</value>

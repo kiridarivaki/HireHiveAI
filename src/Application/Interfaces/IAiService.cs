@@ -6,6 +6,6 @@ namespace HireHive.Application.Interfaces
     {
         public int CountTokens(string? text);
         public bool isTokenLimitReached(int tokenCount);
-        Dictionary<Guid, int> AssessUsers(List<UserResumeDto> usersToAssess, AssessmentParamsDto assessmentDto);
+        Dictionary<Guid, int>? AssessUsers(List<UserResumeDto> usersToAssess, AssessmentParamsDto assessmentDto);
     }
 }

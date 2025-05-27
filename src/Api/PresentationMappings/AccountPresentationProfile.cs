@@ -10,7 +10,8 @@ namespace HireHive.Api.PresentationMappings
         {
             CreateMap<RegisterBm, RegisterDto>().ReverseMap();
             CreateMap<LoginBm, LoginDto>().ReverseMap();
-            CreateMap<LoginVm, LoginDto>().ReverseMap();
+            CreateMap<RefreshBm, RefreshDto>().ReverseMap();
+            CreateMap<AuthenticatedUserVm, AuthenticatedUserDto>().ReverseMap();
             CreateMap<UserInfoVm, UserInfoDto>().ReverseMap();
         }
     }

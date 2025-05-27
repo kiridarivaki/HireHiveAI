@@ -4,6 +4,7 @@ using HireHive.Api.Areas.Account.Models.ViewModels;
 using HireHive.Api.Areas.Common.Controllers;
 using HireHive.Application.DTOs.Account;
 using HireHive.Application.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace HireHive.Api.Areas.Account.Controllers;
@@ -27,6 +28,7 @@ public class AuthController : ApiController
         _logger = logger;
     }
 
+    [AllowAnonymous]
     [HttpPost]
     [Route("register")]
     public async Task<IActionResult> Register([FromBody] RegisterBm registerModel)
@@ -54,6 +56,7 @@ public class AuthController : ApiController
         }
     }
 
+    [AllowAnonymous]
     [HttpPost]
     [Route("login")]
     public async Task<IActionResult> Login(LoginBm loginModel)
@@ -64,7 +67,7 @@ public class AuthController : ApiController
 
             _logger.LogInformation("User with email {email} logged in.", loginModel.Email);
 
-            return Ok(_mapper.Map<LoginVm>(authenticatedUser));
+            return Ok(_mapper.Map<AuthenticatedUserVm>(authenticatedUser));
         }
         catch (Exception e)
         {
@@ -74,6 +77,27 @@ public class AuthController : ApiController
         }
     }
 
+    [HttpPost]
+    [Route("refresh-token")]
+    public async Task<IActionResult> Refresh(RefreshBm refreshModel)
+    {
+        try
+        {
+            var authUser = await _authService.RefreshToken(_mapper.Map<RefreshDto>(refreshModel));
+
+            _logger.LogInformation("Token refreshed sucessfully.");
+
+            return Ok(_mapper.Map<AuthenticatedUserVm>(authUser));
+        }
+        catch (Exception e)
+        {
+            _logger.LogError("Failed to refresh token. With exception: {message}", e.Message);
+
+            return Unauthorized(new { message = e.Message });
+        }
+    }
+
+    [AllowAnonymous]
     [HttpPost]
     [Route("confirm-email")]
     public async Task<IActionResult> ConfirmEmail([FromBody] ConfirmEmailBm confirmEmailModel)
@@ -93,6 +117,7 @@ public class AuthController : ApiController
         }
     }
 
+    [AllowAnonymous]
     [HttpPost]
     [Route("resend-confirmation")]
     public async Task<IActionResult> ResendConfirmation([FromBody] EmailConfirmationBm emailConfirmationBm)
@@ -112,6 +137,7 @@ public class AuthController : ApiController
         }
     }
 
+    [Authorize]
     [HttpGet]
     [Route("get-info/{userId}")]
     public async Task<IActionResult> GetUserInfo([FromRoute] Guid userId)
