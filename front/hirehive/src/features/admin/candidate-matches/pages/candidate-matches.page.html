@@ -1,6 +1,23 @@
-<div class="candidate-list-container">
-  <h2 class="page-title">Candidate Matches</h2>
+<h2 class="page-title">Candidate Matches</h2>
+<div class="sort-bar">
+  <app-select
+    [options]="sortOptions"
+    [(ngModel)]="sortField"
+    label="Select a field"
+    class="full-width"
+    (ngModelChange)="onSortFieldChange()"
+  ></app-select>
 
+  <app-button
+    icon="{{ sortOrder === 'asc' ? 'arrow_upward' : 'arrow_downward' }}"
+    (click)="toggleSortOrder()"
+    matTooltip="Toggle sort order"
+    text="{{ sortOrder === 'asc' ? 'Ascending order' : 'Descending order' }}"
+  >
+  </app-button>
+</div>
+
+<div class="candidate-list-container">
   <div class="candidate-cards-wrapper">
     <app-candidate-card
       *ngFor="let user of usersList"
@@ -12,8 +29,9 @@
     <app-button 
       (click)="fetchNextBatch()" 
       [disabled]="!!(loading$ | async)" 
-      class="load-more-button">
-      {{ (loading$ | async) ? 'Loading...' : 'Load More' }}
+      class="load-more-button"
+      [text]="(loading$ | async) ? 'Loading...' : 'Load More'"
+      >
     </app-button>
   </div>
 
