@@ -1,7 +1,42 @@
 
 @use '@angular/material' as mat;
-@use './scss/custom-theme.scss';
-@import url('https://fonts.googleapis.com/icon?family=Material+Icons');
+@use './scss/custom-theme.scss' as custom;
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap');
+
+@include mat.typography-hierarchy(custom.$my-theme);
+@include mat.core();
+
+:root {
+  @include mat.all-component-themes(custom.$my-theme);
+}
+
+body{
+  font-family: 'Inter', sans-serif;
+}
+
+.mat-typography h1 {
+  font-size: 35px;
+  line-height: 2rem;
+  font-weight: 400;
+  letter-spacing: normal;
+  margin-bottom: 0.5em;
+}
+
+
+.mat-typography h2 {
+  font-size: 25px;
+  font-weight: 300;
+  line-height: 60px;
+  letter-spacing: 0;
+}
+
+.mat-typography p {
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 24px;
+  letter-spacing: 0;
+}
 
 .snackbar-success {
   background-color: #4caf50 !important; 

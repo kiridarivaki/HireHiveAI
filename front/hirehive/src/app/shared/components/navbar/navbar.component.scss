@@ -1,15 +1,13 @@
-/* navbar.component.css */
-
+@use '../../../../scss/custom-theme.scss' as *;
 .navbar {
   display: flex;
   align-items: center;
-  height: 56px;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-  font-family: 'Roboto', sans-serif;
+  height: 60px;
+  background-color: $primary-10;
 }
 
 .logo {
-  height: 40px;
+  height: 60px;
   margin-right: 1rem;
   cursor: pointer;
 }
@@ -22,21 +20,19 @@ app-button {
   margin-left: 0.75rem;
 }
 
-/* Style the welcome message nicely */
 .welcome-msg {
   margin-left: 1rem;
   font-weight: 500;
   font-size: 0.9rem;
   white-space: nowrap;
+  color: white;
 }
 
-/* Optional: add a hover effect on buttons */
 app-button:hover {
   opacity: 0.9;
   cursor: pointer;
 }
 
-/* Responsive adjustments */
 @media (max-width: 600px) {
   .navbar {
     flex-wrap: wrap;

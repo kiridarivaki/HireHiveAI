@@ -3,13 +3,13 @@
   flex-direction: column;
   align-items: center;
   gap: 16px;
-  width: 400px; /* Fixed width for the form container */
+  width: 400px;
   margin: 0 auto;
   padding: 20px;
   background-color: white;
   border-radius: 8px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  position: relative; /* To keep form fields inside the form container */
+  position: relative;
 }
 
 .form-field {
