@@ -2,16 +2,31 @@
 using Azure.AI.Inference;
 using HireHive.Application.DTOs.Admin;
 using HireHive.Application.Interfaces;
+using SharpToken;
 using System.Text.Json;
 
 namespace HireHive.Infrastructure.Services
 {
-    public class AiAssessmentService : IAiAssessmentService
+    public class AiAssessmentService : IAiService
     {
+        const int MAX_TOKENS = 8000;
         private readonly ChatCompletionsClient _client;
         public AiAssessmentService(ChatCompletionsClient client)
         {
             _client = client;
+        }
+        public int CountTokens(string? text)
+        {
+            var encoding = GptEncoding.GetEncodingForModel("gpt-4");
+            int count = 0;
+            if (text != null)
+                count = encoding.CountTokens(text);
+
+            return count;
+        }
+        public bool isTokenLimitReached(int tokenCount)
+        {
+            return tokenCount > MAX_TOKENS;
         }
 
         public Dictionary<Guid, int> AssessUsers(List<UserResumeDto> usersToAssess, AssessmentParamsDto assessmentDto)
