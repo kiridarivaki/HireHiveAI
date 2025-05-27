@@ -23,6 +23,7 @@ import { RouterModule } from "@angular/router";
     @Input() text?: string = '';
     @Input() icon: string = '';
     @Input() disabled: boolean = false;
+    @Input() variant?: 'flat' | 'raised' | 'stroked' | 'icon' | 'fab' | 'mini-fab' | null = null;
     @Input() routerLink?: string | any[];
     @Output() onClick = new EventEmitter<string>();
 

@@ -1,12 +1,60 @@
-<button
-  mat-button
-  class="btn"
-  [color]="color"
-  [type]="type"
-  [ngClass]="btnClass"
-  [disabled]="disabled"
-  [routerLink]="routerLink"
-  (click)="emitEvent()">
-  <mat-icon *ngIf="icon">{{ icon }}</mat-icon>
-  <span *ngIf="text">{{ text }}</span>
-</button>
+<ng-container [ngSwitch]="variant">
+  <button *ngSwitchCase="'raised'" mat-raised-button
+    [color]="color"
+    [type]="type"
+    [ngClass]="btnClass"
+    [disabled]="disabled"
+    [routerLink]="routerLink"
+    (click)="emitEvent()"
+  >
+    <mat-icon *ngIf="icon">{{ icon }}</mat-icon>
+    <span *ngIf="text">{{ text }}</span>
+  </button>
+
+  <button *ngSwitchCase="'stroked'" mat-stroked-button
+    [color]="color"
+    [type]="type"
+    [ngClass]="btnClass"
+    [disabled]="disabled"
+    [routerLink]="routerLink"
+    (click)="emitEvent()"
+  >
+    <mat-icon *ngIf="icon">{{ icon }}</mat-icon>
+    <span *ngIf="text">{{ text }}</span>
+  </button>
+
+  <button *ngSwitchCase="'flat'" mat-flat-button
+    [color]="color"
+    [type]="type"
+    [ngClass]="btnClass"
+    [disabled]="disabled"
+    [routerLink]="routerLink"
+    (click)="emitEvent()"
+  >
+    <mat-icon *ngIf="icon">{{ icon }}</mat-icon>
+    <span *ngIf="text">{{ text }}</span>
+  </button>
+
+  <button *ngSwitchCase="'icon'" mat-icon-button
+    [color]="color"
+    [type]="type"
+    [ngClass]="btnClass"
+    [disabled]="disabled"
+    [routerLink]="routerLink"
+    (click)="emitEvent()"
+  >
+    <mat-icon *ngIf="icon">{{ icon }}</mat-icon>
+  </button>
+
+  <button *ngSwitchDefault mat-button
+    [color]="color"
+    [type]="type"
+    [ngClass]="btnClass"
+    [disabled]="disabled"
+    [routerLink]="routerLink"
+    (click)="emitEvent()"
+  >
+    <mat-icon *ngIf="icon">{{ icon }}</mat-icon>
+    <span *ngIf="text">{{ text }}</span>
+  </button>
+</ng-container>
