@@ -13,21 +13,18 @@ namespace HireHive.Infrastructure.Services
         private readonly IUserRepository _userRepository;
         private readonly IResumeRepository _resumeRepository;
         private readonly IAiService _aiService;
-        private readonly IUserService _userService;
         public AdminService(
             IMapper mapper,
             ILogger<AdminService> logger,
             IUserRepository userRepository,
             IResumeRepository resumeRepository,
-            IAiService aiService,
-            IUserService userService)
+            IAiService aiService)
         {
             _mapper = mapper;
             _logger = logger;
             _userRepository = userRepository;
             _resumeRepository = resumeRepository;
             _aiService = aiService;
-            _userService = userService;
         }
         public async Task<List<AssessmentResultDto>> AssessBatch(AssessmentParamsDto assessmentDto)
         {
@@ -54,54 +51,86 @@ namespace HireHive.Infrastructure.Services
                     MatchPercentage = matchPercentages[u.Id]
                 }).ToList();
 
+                _logger.LogInformation("Resume batch assessed successfully.");
+
                 return assessmentResult;
             }
             catch (BaseException e)
             {
-                _logger.LogWarning("Assessment of resume batch failed. With message: {message}", e.Message);
+                _logger.LogWarning("Assessment of resume batch failed. With exception: {message}", e.Message);
                 throw;
             }
 
         }
         public List<UserResumeDto> GetResumeBatch(AssessmentParamsDto assessmentDto)
         {
-            int usersAssessed = assessmentDto.Cursor ?? 0;
-            int usersToAssess = _userRepository.CountFiltered(assessmentDto.JobType);
-
-            var resumeBatch = new List<UserResumeDto>();
-            var totalTokens = _aiService.CountTokens(assessmentDto.JobDescription);
-            int assessmentStart = usersAssessed;
-
-            while (assessmentStart < usersToAssess)
+            try
             {
-                var userWithResume = _resumeRepository
-                    .GetResumesToAssess(assessmentDto.JobType, assessmentStart, 1)
-                    .FirstOrDefault();
+                int usersAssessed = assessmentDto.Cursor ?? 0;
+                int usersToAssess = _userRepository.CountFiltered(assessmentDto.JobType);
 
-                if (userWithResume == null)
-                    break;
+                var resumeBatch = new List<UserResumeDto>();
+                var totalTokens = _aiService.CountTokens(assessmentDto.JobDescription);
+                int assessmentStart = usersAssessed;
 
-                var resumeTokens = _aiService.CountTokens(userWithResume.Text);
-
-                if (_aiService.isTokenLimitReached(totalTokens + resumeTokens))
-                    break;
-
-                resumeBatch.Add(new UserResumeDto
+                while (assessmentStart < usersToAssess)
                 {
-                    UserId = userWithResume.UserId,
-                    ResumeText = userWithResume.Text
-                });
+                    var userWithResume = _resumeRepository
+                        .GetResumesToAssess(assessmentDto.JobType, assessmentStart, 1)
+                        .FirstOrDefault();
 
-                totalTokens += resumeTokens;
-                assessmentStart++;
+                    if (userWithResume == null)
+                        break;
+
+                    var resumeTokens = _aiService.CountTokens(userWithResume.Text);
+
+                    if (_aiService.isTokenLimitReached(totalTokens + resumeTokens))
+                        break;
+
+                    resumeBatch.Add(new UserResumeDto
+                    {
+                        UserId = userWithResume.UserId,
+                        ResumeText = userWithResume.Text
+                    });
+
+                    totalTokens += resumeTokens;
+                    assessmentStart++;
+                }
+                _logger.LogInformation("Batch created successfully.");
+
+                return resumeBatch;
             }
-
-            return resumeBatch;
+            catch (BaseException e)
+            {
+                _logger.LogWarning("Batch failed to create. With exception: {message}", e.Message);
+                throw;
+            }
         }
 
-        public async Task<SortDataDto> SortResults(SortDataDto sortDataModel)
+        public List<SortResultDto> SortResults(SortDataDto sortDataModel)
         {
-            throw new NotImplementedException();
+            try
+            {
+                if (sortDataModel.AssessmentData == null || string.IsNullOrEmpty(sortDataModel.OrderByField))
+                    return new List<SortResultDto>();
+
+                var property = typeof(AssessmentResultDto).GetProperty(sortDataModel.OrderByField);
+                if (property == null)
+                    return new List<SortResultDto>();
+
+                var sortedData = sortDataModel.SortOrder?.ToLower() == "asc"
+                    ? sortDataModel.AssessmentData.OrderBy(x => property.GetValue(x, null)).ToList()
+                    : sortDataModel.AssessmentData.OrderByDescending(x => property.GetValue(x, null)).ToList();
+
+                _logger.LogInformation("Results sorted successfully.");
+
+                return _mapper.Map<List<SortResultDto>>(sortedData);
+            }
+            catch (BaseException e)
+            {
+                _logger.LogWarning("Results failed to sort. With exception: {message}", e.Message);
+                throw;
+            }
         }
     }
 }
