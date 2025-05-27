@@ -11,7 +11,7 @@
   <div class="load-more-container" *ngIf="usersList.length > 0 && !(noMoreResults)">
     <app-button 
       (click)="fetchNextBatch()" 
-      [disabled]="loading$ | async" 
+      [disabled]="!!(loading$ | async)" 
       class="load-more-button">
       {{ (loading$ | async) ? 'Loading...' : 'Load More' }}
     </app-button>

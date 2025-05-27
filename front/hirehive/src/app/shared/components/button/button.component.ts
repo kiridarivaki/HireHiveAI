@@ -18,6 +18,7 @@ import { RouterModule } from "@angular/router";
   export class AppButtonComponent{
     @Input() btnId: string = '';
     @Input() btnClass: string = '';
+    @Input() color: string = '';
     @Input() type: string = 'button'
     @Input() text?: string = '';
     @Input() icon: string = '';

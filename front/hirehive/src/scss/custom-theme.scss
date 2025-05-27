@@ -1,69 +1,46 @@
+@use 'sass:map';
 @use '@angular/material' as mat;
-@use './font.scss' as hirehiveTypography;
-@use "sass:map";
+@use './scss_theme-colors' as colorTheme;
 
-@include mat.core();
+$my-typography: (
+  plain-family: 'Inter',
+  regular-weight: 400,
+  medium-weight: 500,
+  bold-weight: 700,
+);
 
-$hirehive-primary: mat.m2-define-palette((
-  50: #e4eaf3,
-  100: #bccadf,
-  200: #91a7c9,
-  300: #6583b2,
-  400: #4569a2,
-  500: #02152e,
-  600: #011227,
-  700: #010f20,
-  800: #010b1a,
-  900: #00070f,
-  contrast: (
-    50: black,
-    100: black,
-    200: black,
-    300: white,
-    400: white,
-    500: white,
-    600: white,
-    700: white,
-    800: white,
-    900: white,
-  )
-));
-
-
-$hirehive-accent: mat.m2-define-palette((
-  50: #fff8e1,
-  100: #ffecb3,
-  200: #ffe082,
-  300: #ffd54f,
-  400: #ffca28,
-  500: #f9b000,
-  600: #f1a000,
-  700: #e68d00,
-  800: #db7b00,
-  900: #c46100,
-  contrast: (
-    50: black,
-    100: black,
-    200: black,
-    300: black,
-    400: black,
-    500: black,
-    600: black,
-    700: black,
-    800: white,
-    900: white,
-  )
-));
-
-$hirehive-warn: mat.$m2-red-palette;
-
-$hirehive-theme: mat.m2-define-light-theme((
+$my-theme: mat.define-theme((
   color: (
-    primary: mat.m2-define-palette($hirehive-primary, 500),
-    accent: mat.m2-define-palette($hirehive-accent, 500),
-    warn: mat.m2-define-palette($hirehive-warn, 500)
+    primary: colorTheme.$primary-palette,
+    tertiary: colorTheme.$tertiary-palette,
   ),
-  typography: hirehiveTypography.$custom-typography-config,
+  typography: $my-typography,
 ));
 
-@include mat.all-component-themes($hirehive-theme);
+$primary-10: mat.get-theme-color($my-theme, primary, 10);
+$primary-20: mat.get-theme-color($my-theme, primary, 20);
+$primary-30: mat.get-theme-color($my-theme, primary, 30);
+$primary-40: mat.get-theme-color($my-theme, primary, 40);
+$primary-50: mat.get-theme-color($my-theme, primary, 50);
+$primary-60: mat.get-theme-color($my-theme, primary, 60);
+$primary-70: mat.get-theme-color($my-theme, primary, 70);
+$primary-80: mat.get-theme-color($my-theme, primary, 80);
+$primary-90: mat.get-theme-color($my-theme, primary, 90);
+$primary-95: mat.get-theme-color($my-theme, primary, 95);
+$primary-98: mat.get-theme-color($my-theme, primary, 98);
+$primary-99: mat.get-theme-color($my-theme, primary, 99);
+$primary-100: mat.get-theme-color($my-theme, primary, 100);
+
+$tertiary-10: mat.get-theme-color($my-theme, tertiary, 10);
+$tertiary-20: mat.get-theme-color($my-theme, tertiary, 20);
+$tertiary-30: mat.get-theme-color($my-theme, tertiary, 30);
+$tertiary-40: mat.get-theme-color($my-theme, tertiary, 40);
+$tertiary-50: mat.get-theme-color($my-theme, tertiary, 50);
+$tertiary-60: mat.get-theme-color($my-theme, tertiary, 60);
+$tertiary-70: mat.get-theme-color($my-theme, tertiary, 70);
+$tertiary-80: mat.get-theme-color($my-theme, tertiary, 80);
+$tertiary-90: mat.get-theme-color($my-theme, tertiary, 90);
+$tertiary-95: mat.get-theme-color($my-theme, tertiary, 95);
+$tertiary-98: mat.get-theme-color($my-theme, tertiary, 98);
+$tertiary-99: mat.get-theme-color($my-theme, tertiary, 99);
+$tertiary-100: mat.get-theme-color($my-theme, tertiary, 100);
