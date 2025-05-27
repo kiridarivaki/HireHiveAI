@@ -6,6 +6,7 @@ import { StorageService } from "./storage.service";
 import { Router } from "@angular/router";
 import { User } from "@shared/models/user.model";
 import { UserRole } from "@shared/models/auth.model";
+import { JobStateService } from "./job-state.service";
 
 @Injectable({
   providedIn: 'root'
@@ -17,6 +18,7 @@ export class AuthService {
     constructor(
         private authClientService: AuthClientService,
         private storageService: StorageService,
+        private jobStateService: JobStateService,
         private router : Router 
     ){
         this.initializeUser()
@@ -71,6 +73,10 @@ export class AuthService {
     }
 
     logout(){
+        if (this.isAdmin$()){
+            this.jobStateService.clearAssessmentData();
+            this.jobStateService.clearCursor();
+        }
         this.storageService.removeAuth();
         this.storageService.removeUser();
         this.currentUserSubject.next(null);
