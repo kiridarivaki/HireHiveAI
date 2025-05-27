@@ -12,18 +12,15 @@ namespace HireHive.Infrastructure.Services
         private readonly IUserRepository _userRepository;
         private readonly ILogger<UserService> _logger;
         private readonly IMapper _mapper;
-        private readonly AiAssessmentService _aiService;
 
         public UserService(
             IUserRepository userRepository,
             ILogger<UserService> logger,
-            IMapper mapper,
-            AiAssessmentService aiService)
+            IMapper mapper)
         {
             _userRepository = userRepository;
             _logger = logger;
             _mapper = mapper;
-            _aiService = aiService;
         }
 
         public async Task<List<UserDto>> GetAll()

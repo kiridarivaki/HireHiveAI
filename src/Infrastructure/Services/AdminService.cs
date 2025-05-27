@@ -12,24 +12,21 @@ namespace HireHive.Infrastructure.Services
         private readonly ILogger<AdminService> _logger;
         private readonly IUserRepository _userRepository;
         private readonly IResumeRepository _resumeRepository;
-        private readonly TokenCounterService _tokenCountingService;
-        private readonly AiAssessmentService _aiAssessmentService;
+        private readonly IAiService _aiService;
         private readonly IUserService _userService;
         public AdminService(
             IMapper mapper,
             ILogger<AdminService> logger,
             IUserRepository userRepository,
             IResumeRepository resumeRepository,
-            TokenCounterService tokenCountingService,
-            AiAssessmentService aiAssessmentService,
+            IAiService aiService,
             IUserService userService)
         {
             _mapper = mapper;
             _logger = logger;
             _userRepository = userRepository;
             _resumeRepository = resumeRepository;
-            _tokenCountingService = tokenCountingService;
-            _aiAssessmentService = aiAssessmentService;
+            _aiService = aiService;
             _userService = userService;
         }
         public async Task<List<AssessmentResultDto>> AssessBatch(AssessmentParamsDto assessmentDto)
@@ -43,7 +40,7 @@ namespace HireHive.Infrastructure.Services
                     return new List<AssessmentResultDto>();
                 }
 
-                var matchPercentages = _aiAssessmentService.AssessUsers(usersToAssess, assessmentDto);
+                var matchPercentages = _aiService.AssessUsers(usersToAssess, assessmentDto);
 
                 var users = await _userRepository.GetByIds(matchPercentages.Keys.ToList());
 
@@ -72,7 +69,7 @@ namespace HireHive.Infrastructure.Services
             int usersToAssess = _userRepository.CountFiltered(assessmentDto.JobType);
 
             var resumeBatch = new List<UserResumeDto>();
-            var totalTokens = _tokenCountingService.CountTokens(assessmentDto.JobDescription);
+            var totalTokens = _aiService.CountTokens(assessmentDto.JobDescription);
             int assessmentStart = usersAssessed;
 
             while (assessmentStart < usersToAssess)
@@ -84,9 +81,9 @@ namespace HireHive.Infrastructure.Services
                 if (userWithResume == null)
                     break;
 
-                var resumeTokens = _tokenCountingService.CountTokens(userWithResume.Text);
+                var resumeTokens = _aiService.CountTokens(userWithResume.Text);
 
-                if (_tokenCountingService.isTokenLimitReached(totalTokens + resumeTokens))
+                if (_aiService.isTokenLimitReached(totalTokens + resumeTokens))
                     break;
 
                 resumeBatch.Add(new UserResumeDto

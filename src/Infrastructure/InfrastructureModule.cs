@@ -72,8 +72,7 @@ namespace HireHive.Infrastructure
             var aiClient = new ChatCompletionsClient(githubEndpoint, credential, new AzureAIInferenceClientOptions());
 
             services.AddSingleton(aiClient);
-            services.AddScoped<IAiAssessmentService, AiAssessmentService>();
-            services.AddScoped<TokenCounterService>();
+            services.AddScoped<IAiService, AiAssessmentService>();
 
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IResumeRepository, ResumeRepository>();
