@@ -1,4 +1,4 @@
-<h1>Add your CV</h1>
+<h2>Add your CV</h2>
 
 <form [formGroup]="uploadForm" (ngSubmit)="onSubmit()">
   <app-drag-drop
@@ -10,8 +10,8 @@
     (downloadRequested)="onDownload()"
   ></app-drag-drop>
 
-  <div class="button-group" *ngIf="selectedFile || fileMetadata">
-    <app-button text="Upload" (click)="onSubmit()" *ngIf="selectedFile && !fileMetadata"></app-button>
-    <app-button text="Remove" (click)="onFileRemoved()"></app-button>
+  <div class="btn-group" *ngIf="selectedFile || fileMetadata">
+    <app-button variant="flat" text="Upload" (click)="onSubmit()" [disabled]="uploadDisabled"></app-button>
+    <app-button variant="flat" text="Remove" (click)="onFileRemoved()"></app-button>
   </div>
 </form>
