@@ -10,6 +10,7 @@ import { ConfirmDialogComponent } from "@shared/components/dialog/confirm-dialog
 import { finalize } from "rxjs";
 import { LoaderService } from "@shared/services/loader.service";
 import { NotificationService } from "@shared/services/notification.service";
+import { ErrorService } from "@shared/services/error.service";
 
 @Component({
     selector: 'app-resume-upload',
@@ -21,6 +22,7 @@ export class ResumeUploadComponent implements OnInit{
   @Input() userId?: string | null;
   fileMetadata: GetResumeInfoPayload | null = null;
   fileUrl: string | null = null;
+  uploadDisabled = false;
   @ViewChild(DragDropComponent) dragDropComponent!: DragDropComponent;
 
   constructor(
@@ -28,7 +30,8 @@ export class ResumeUploadComponent implements OnInit{
     private fileService: FileService,
     private loaderService: LoaderService,
     private dialogService: DialogService,
-    private notificationService: NotificationService
+    private notificationService: NotificationService,
+    private errorService: ErrorService
   ){}
 
   ngOnInit(): void {
@@ -63,12 +66,27 @@ export class ResumeUploadComponent implements OnInit{
   }
 
   uploadForm = new FormGroup({
-    selectedFile: new FormControl<File | null>(null, [Validators.required, fileValidator])
+    selectedFile: new FormControl<File | null>(null, [fileValidator])
   });
 
   onFileReceived(file: File): void {
     this.uploadForm.patchValue({ selectedFile: file });
     this.uploadForm.markAsDirty();
+
+    const errors = this.uploadForm.get('selectedFile')?.errors;
+    if (errors){
+      this.uploadForm.reset();
+    }
+
+    if (errors?.['required']) {
+      this.errorService.showError('No file was provided.');
+    }
+    if (errors?.['invalidType']) {
+      this.errorService.showError('Invalid file type. Only PDFs are allowed.');
+    }
+    if (errors?.['maxSizeExceeded']) {
+      this.errorService.showError('File is too large. Maximum size is 5MB.');
+    }
   }
 
   onFileRemoved(): void {
@@ -95,6 +113,7 @@ export class ResumeUploadComponent implements OnInit{
       if (this.fileMetadata && this.userId) {
         this.resumeService.delete(this.userId).subscribe({
           next: () => {
+            this.uploadDisabled= false;
             this.fileMetadata = null;
             this.fileUrl = null;
             this.notificationService.showNotification('File removed successfully!');
@@ -112,6 +131,7 @@ export class ResumeUploadComponent implements OnInit{
       uploadData.append('file', file);
       this.resumeService.upload(this.userId, uploadData).subscribe({
         next: () => {
+          this.uploadDisabled= true;
           this.uploadForm.get('selectedFile')?.setValue(file);
           this.notificationService.showNotification('File uploaded successfully!');
         }
