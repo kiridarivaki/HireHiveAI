@@ -1,4 +1,5 @@
 ﻿using HireHive.Application.Interfaces;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using SendGrid;
 using SendGrid.Helpers.Mail;
@@ -9,10 +10,12 @@ namespace HireHive.Infrastructure.Services
     {
         private readonly EmailSettings _emailSettings;
         private readonly ILogger<EmailService> _logger;
-        public EmailService(EmailSettings emailSettings, ILogger<EmailService> logger)
+        private readonly IConfiguration _configuration;
+        public EmailService(EmailSettings emailSettings, ILogger<EmailService> logger, IConfiguration configuration)
         {
             _emailSettings = emailSettings;
             _logger = logger;
+            _configuration = configuration;
         }
 
         public async Task SendEmail(string toEmail, string subject, string plainTextMessage, string htmlMessage)
@@ -48,7 +51,8 @@ namespace HireHive.Infrastructure.Services
 
         public async Task SendConfirmationEmail(string toEmail, string token)
         {
-            var confirmationUrl = $"https://localhost:4700/confirm-email?token={Uri.EscapeDataString(token)}";
+            var baseUrl = _configuration["FrontEndBaseUrl"];
+            var confirmationUrl = $"{baseUrl}confirm-email?token={Uri.EscapeDataString(token)}";
 
             var subject = "HireHive: Email address confirmation";
             var plainTextMessage = "Click the link below to confirm your email address:";

@@ -4,9 +4,10 @@ using HireHive.Api.Areas.Account.Models.ViewModels;
 using HireHive.Api.Areas.Common.Controllers;
 using HireHive.Application.DTOs.Account;
 using HireHive.Application.Interfaces;
+using HireHive.Domain.Exceptions.Account;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
 
 namespace HireHive.Api.Areas.Account.Controllers;
 
@@ -50,9 +51,15 @@ public class AuthController : ApiController
 
             return Ok();
         }
+        catch (EmailAlreadyExistsException e)
+        {
+            _logger.LogError("User with {email} already exists. With exception: {message}", registerModel.Email, e.Message);
+
+            return Conflict();
+        }
         catch (Exception e)
         {
-            _logger.LogError("Failed to register user {email}, With exception: {message}", registerModel.Email, e.Message);
+            _logger.LogError("Failed to register user {email}. With exception: {message}", registerModel.Email, e.Message);
             throw;
         }
     }
@@ -105,16 +112,13 @@ public class AuthController : ApiController
     {
         try
         {
-            var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == JwtRegisteredClaimNames.Sub);
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-            if (userIdClaim == null || string.IsNullOrEmpty(userIdClaim.Value))
+            if (string.IsNullOrEmpty(userId))
             {
                 _logger.LogWarning("User ID claim not found in token.");
-
                 return Unauthorized("Invalid token: User ID claim missing.");
             }
-
-            var userId = userIdClaim.Value;
 
             await _authService.RevokeToken(userId);
 

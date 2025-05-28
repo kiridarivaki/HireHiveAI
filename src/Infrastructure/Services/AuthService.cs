@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using System.Security.Claims;
 using System.Text;
 using System.Transactions;
 
@@ -48,7 +49,7 @@ namespace HireHive.Infrastructure.Services
                 {
                     var user = await _userManager.FindByEmailAsync(registerDto.Email);
                     if (user != null)
-                        throw new ArgumentException("A user with email {email} already exists.", registerDto.Email);
+                        throw new EmailAlreadyExistsException();
 
                     var newUser = new User(registerDto.Email, registerDto.FirstName, registerDto.LastName, registerDto.EmploymentStatus, registerDto.JobTypes);
 
@@ -135,10 +136,10 @@ namespace HireHive.Infrastructure.Services
                 {
                     AccessToken = accessToken,
                     RefreshToken = refreshToken,
-                    ExpiresIn = (int)TimeSpan.FromMinutes(1).TotalSeconds,
+                    ExpiresIn = (int)TimeSpan.FromMinutes(60).TotalSeconds,
                     UserId = user.Id
                 };
-
+                _logger.LogInformation("Expires in", authUser.ExpiresIn);
                 _logger.LogInformation("Login succeeded for user {email}.", loginDto.Email);
 
                 return authUser;
@@ -161,8 +162,12 @@ namespace HireHive.Infrastructure.Services
             if (user == null || user.RefreshTokenExpiry <= DateTime.UtcNow)
                 throw new InvalidRefreshTokenException();
 
-            var principal = _tokenService.GetPrincipalFromExpiredToken(refreshModel.AccessToken);
-            var username = principal.Identity.Name;
+            var principal = _tokenService.GetPrincipalFromExpiredToken(refreshModel.AccessToken!);
+
+            var userId = principal.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+            if (string.IsNullOrEmpty(userId))
+                throw new InvalidRefreshTokenException();
 
             var newAccessToken = await _tokenService.GenerateToken(user);
             var newRefreshToken = _tokenService.GenerateRefreshToken();
@@ -176,7 +181,7 @@ namespace HireHive.Infrastructure.Services
             {
                 AccessToken = newAccessToken,
                 RefreshToken = newRefreshToken,
-                ExpiresIn = (int)TimeSpan.FromMinutes(1).TotalSeconds,
+                ExpiresIn = (int)TimeSpan.FromMinutes(60).TotalSeconds,
                 UserId = user.Id
             };
         }
