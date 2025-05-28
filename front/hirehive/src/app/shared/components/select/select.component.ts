@@ -24,12 +24,15 @@ export class AppSelectComponent implements ControlValueAccessor, OnInit {
   onChange = (_: any) => {};
   onTouched = () => {};
 
-  writeValue(value: any): void {
-    if (value != null) {
-      this.value = value.toString();
-      this._hasValueSet = true;
+    writeValue(value: any): void {
+      if (value != null) {
+        this.value = value.toString();
+        this._hasValueSet = true;
+      } else {
+        this.value = '';
+        this._hasValueSet = false;
+      }
     }
-  }
 
   registerOnChange(fn: any): void {
     this.onChange = fn;
@@ -42,9 +45,6 @@ export class AppSelectComponent implements ControlValueAccessor, OnInit {
   ngOnInit(): void {
     if (this._hasValueSet && this.options.length > 0) {
       const match = this.options.find(opt => opt.value === this.value);
-      if (!match) {
-        console.warn(`AppSelectComponent: Initial value "${this.value}" not found in options.`);
-      }
     }
   }
 
@@ -52,8 +52,4 @@ export class AppSelectComponent implements ControlValueAccessor, OnInit {
     this.value = value;
     this.onChange(value);
   }
-
-  compareFn = (a: any, b: any): boolean => {
-    return a?.toString() === b?.toString();
-  };
 }

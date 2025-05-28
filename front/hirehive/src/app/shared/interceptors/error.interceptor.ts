@@ -30,6 +30,9 @@ export class ErrorInterceptor implements HttpInterceptor{
           case 403:
             message = 'Forbidden. You don’t have permission.';
             break;
+          case 409:
+            message = 'This resource already exists.';
+            break;
           case 500:
             message = 'Server error. Try again later.';
             break;

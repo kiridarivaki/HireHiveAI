@@ -65,7 +65,8 @@ export class AuthService {
 
         const now = Date.now();
         return now >= expiration;
-    }
+        }
+
 
     refreshToken(refreshTokenData: RefreshTokenPayload): Observable<RefreshTokenResponse>{
         return this.authClientService.refreshToken(refreshTokenData);
