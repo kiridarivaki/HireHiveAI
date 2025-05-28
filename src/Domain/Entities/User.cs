@@ -10,6 +10,8 @@ namespace HireHive.Domain.Entities
         public string LastName { get; set; } = null!;
         public EmploymentStatus EmploymentStatus { get; set; }
         public List<JobType>? JobTypes { get; set; }
+        public string? RefreshToken { get; set; }
+        public DateTime RefreshTokenExpiry { get; set; }
 
         #region references
         public Resume? Resume { get; private set; }

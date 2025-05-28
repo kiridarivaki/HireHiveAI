@@ -66,6 +66,29 @@ namespace HireHive.Infrastructure.Services
             return Convert.ToBase64String(randomNumber);
         }
 
+        public ClaimsPrincipal GetPrincipalFromExpiredToken(string token)
+        {
+            var signingKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(_configuration["JwtKey"]!.PadRight((512 / 8), '\0')));
+
+            var tokenValidationParameters = new TokenValidationParameters
+            {
+                ValidateAudience = false,
+                ValidateIssuer = false,
+                ValidateIssuerSigningKey = true,
+                IssuerSigningKey = signingKey,
+                ValidateLifetime = false
+            };
+
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var principal = tokenHandler.ValidateToken(token, tokenValidationParameters, out SecurityToken securityToken);
+
+            var jwtSecurityToken = securityToken as JwtSecurityToken;
+            if (jwtSecurityToken == null || !jwtSecurityToken.Header.Alg.Equals(SecurityAlgorithms.HmacSha256, StringComparison.InvariantCultureIgnoreCase))
+                throw new SecurityTokenException("Invalid token");
+
+            return principal;
+        }
+
         public async Task<string> GenerateEmailConfirmationToken(User user)
         {
             var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
