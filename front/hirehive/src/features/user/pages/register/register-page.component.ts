@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import { EmploymentStatus } from '@shared/constants/employment-options';
 import { JobType } from '@shared/constants/job-types';
 import { AuthService } from '@shared/services/auth.service';
+import { ErrorService } from '@shared/services/error.service';
 import { fieldsMatchValidator } from '@shared/validators/fields-match.validator';
 import { passwordValidator } from '@shared/validators/password.validator';
 import { RegisterPayload } from 'src/app/client/models/auth-client.model';
@@ -17,6 +18,7 @@ import { RegisterPayload } from 'src/app/client/models/auth-client.model';
 export class RegisterPageComponent implements OnInit {
   constructor(
     private authService: AuthService,
+    private errorService: ErrorService,
     private router: Router
   ) {}
 
@@ -47,7 +49,7 @@ export class RegisterPageComponent implements OnInit {
 
   onRegister(){
     if (this.registerForm.valid) {
-      const registerForm = this.registerForm.value;
+    const registerForm = this.registerForm.value;
 
       const employmentStatusValue = Number(registerForm.employmentStatus) as unknown as EmploymentStatus;
       const jobTypesValue = (registerForm.jobTypes || []).map((x: string) => Number(x)) as unknown as JobType[];
@@ -67,7 +69,10 @@ export class RegisterPageComponent implements OnInit {
           this.router.navigate(['/check-email'], { queryParams: { email: registerData.email } });
         },
         error: (err) => {
-          console.error('Registration failed', err);
+          if (err.status === 409){
+            this.errorService.showError('A user with this email exists.');
+            this.registerForm.reset({ jobTypes: [] });
+          }
         }
       });
     };

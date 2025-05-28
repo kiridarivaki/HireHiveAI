@@ -6,11 +6,12 @@ import {
   HttpRequest
 } from '@angular/common/http';
 import { Observable, BehaviorSubject, throwError } from 'rxjs';
-import { catchError, filter, switchMap, take } from 'rxjs/operators';
+import { catchError, filter, switchMap, take, tap } from 'rxjs/operators';
 
 import { AuthService } from '@shared/services/auth.service';
 import { StorageService } from '@shared/services/storage.service';
 import { RefreshTokenPayload } from 'src/app/client/models/auth-client.model';
+import { ErrorService } from '@shared/services/error.service';
 
 @Injectable()
 export class TokenInterceptor implements HttpInterceptor {
@@ -19,7 +20,8 @@ export class TokenInterceptor implements HttpInterceptor {
 
   constructor(
     private storageService: StorageService,
-    private authService: AuthService
+    private authService: AuthService,
+    private errorService: ErrorService 
   ) {}
 
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
@@ -27,7 +29,8 @@ export class TokenInterceptor implements HttpInterceptor {
       return next.handle(req);
     }
 
-    if (this.authService.isTokenExpired()) {
+    const tokenExpired = this.authService.isTokenExpired();
+    if (tokenExpired) {
       return this.handleTokenRefresh(req, next);
     }
 
@@ -41,16 +44,27 @@ export class TokenInterceptor implements HttpInterceptor {
       this.refreshTokenSubject.next(null);
 
       const storedAuth = this.storageService.getAuth();
-      const currentRefreshToken: RefreshTokenPayload = {
-        accessToken: storedAuth?.refreshToken || '',
-        refreshToken: storedAuth?.refreshToken || ''
-      };
 
-      if (this.authService.isLoggedIn() && currentRefreshToken.refreshToken) {
-        return this.authService.refreshToken(currentRefreshToken).pipe(
-          switchMap(newAuth => {
+      const accessToken = storedAuth?.accessToken;
+      const refreshToken = storedAuth?.refreshToken;
+
+      if (this.authService.isLoggedIn() && refreshToken) {
+        const refreshData: RefreshTokenPayload = { 
+          accessToken: accessToken,
+          refreshToken: refreshToken 
+        };
+
+        return this.authService.refreshToken(refreshData).pipe(
+          tap((newAuth) => {
+            const expiresAt = Date.now() + newAuth.expiresIn * 1000;
+            this.storageService.storeAuth({
+              accessToken: newAuth.accessToken,
+              refreshToken: newAuth.refreshToken,
+              expiresIn: expiresAt
+            });
+          }),
+          switchMap((newAuth) => {
             this.isRefreshing = false;
-            this.storageService.storeAuth(newAuth);
             this.refreshTokenSubject.next(newAuth.accessToken);
 
             const authRequest = this.addTokenToRequest(request);
@@ -58,8 +72,9 @@ export class TokenInterceptor implements HttpInterceptor {
           }),
           catchError(err => {
             this.isRefreshing = false;
-            this.storageService.removeAuth();
             this.refreshTokenSubject.next(null);
+            this.authService.logout();
+            this.errorService.showError('Your session has expired. Please log in again.');
 
             return throwError(() => err);
           })

@@ -64,6 +64,7 @@ export class LoginPageComponent {
                 this.router.navigate(['/check-email'], { queryParams: { email: loginData.email } });
               }else{
                 this.errorService.showError('Invalid credentials.');
+                this.loginForm.reset();
               }
             }
           }

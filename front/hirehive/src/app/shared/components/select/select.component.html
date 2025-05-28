@@ -2,7 +2,6 @@
   <mat-label>{{label}}</mat-label>
   <mat-select
     [value]="value"
-    [compareWith]="compareFn"
     (selectionChange)="onValueChange($event.value)"
     [disabled]="disabled">
     <mat-option *ngFor="let option of options" [value]="option.value">
