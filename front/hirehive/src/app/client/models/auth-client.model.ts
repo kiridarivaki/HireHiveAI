@@ -32,9 +32,14 @@ export interface LoginResponse{
 }
 
 export interface RefreshTokenResponse{
-    acessToken: string,
+    accessToken: string,
     refreshToken: string,
     expiresIn: number
+}
+
+export interface RefreshTokenPayload{
+    accessToken?: string,
+    refreshToken?: string
 }
 
 export interface GetInfoResponse{

@@ -1,56 +1,101 @@
-import { HttpEvent, HttpHandler, HttpInterceptor, HttpRequest } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import {
+  HttpEvent,
+  HttpHandler,
+  HttpInterceptor,
+  HttpRequest
+} from '@angular/common/http';
+import { Observable, BehaviorSubject, throwError } from 'rxjs';
+import { catchError, filter, switchMap, take } from 'rxjs/operators';
+
 import { AuthService } from '@shared/services/auth.service';
 import { StorageService } from '@shared/services/storage.service';
-import { Observable, switchMap } from 'rxjs';
+import { RefreshTokenPayload } from 'src/app/client/models/auth-client.model';
 
 @Injectable()
-export class TokenInterceptor implements HttpInterceptor{
+export class TokenInterceptor implements HttpInterceptor {
   private isRefreshing = false;
+  private refreshTokenSubject: BehaviorSubject<string | null> = new BehaviorSubject<string | null>(null);
+
   constructor(
     private storageService: StorageService,
     private authService: AuthService
-  ){}
+  ) {}
 
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-    if (this.shouldNotIntercept(req.url)){
+    if (this.shouldNotIntercept(req.url)) {
       return next.handle(req);
     }
-    const isExpired = this.authService.isTokenExpired();
-    if (isExpired){
+
+    if (this.authService.isTokenExpired()) {
       return this.handleTokenRefresh(req, next);
     }
+
     const authRequest = this.addTokenToRequest(req);
     return next.handle(authRequest);
   }
 
-  handleTokenRefresh(request: HttpRequest<any>, next: HttpHandler){
-    if (!this.isRefreshing){
+  private handleTokenRefresh(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
+    if (!this.isRefreshing) {
       this.isRefreshing = true;
-      if (this.authService.isLoggedIn()){
-          return this.authService.refreshToken().pipe(
-          switchMap(() => {
+      this.refreshTokenSubject.next(null);
+
+      const storedAuth = this.storageService.getAuth();
+      const currentRefreshToken: RefreshTokenPayload = {
+        accessToken: storedAuth?.refreshToken || '',
+        refreshToken: storedAuth?.refreshToken || ''
+      };
+
+      if (this.authService.isLoggedIn() && currentRefreshToken.refreshToken) {
+        return this.authService.refreshToken(currentRefreshToken).pipe(
+          switchMap(newAuth => {
             this.isRefreshing = false;
-            return next.handle(request);
-          }))
+            this.storageService.storeAuth(newAuth);
+            this.refreshTokenSubject.next(newAuth.accessToken);
+
+            const authRequest = this.addTokenToRequest(request);
+            return next.handle(authRequest);
+          }),
+          catchError(err => {
+            this.isRefreshing = false;
+            this.storageService.removeAuth();
+            this.refreshTokenSubject.next(null);
+
+            return throwError(() => err);
+          })
+        );
+      } else {
+        this.isRefreshing = false;
+        this.storageService.removeAuth();
       }
     }
-    return next.handle(request);
+
+    return this.refreshTokenSubject.pipe(
+      filter(token => token != null),
+      take(1),
+      switchMap(() => {
+        const authRequest = this.addTokenToRequest(request);
+        return next.handle(authRequest);
+      })
+    );
   }
 
-  addTokenToRequest(request: HttpRequest<any>): HttpRequest<any>{
+  private addTokenToRequest(request: HttpRequest<any>): HttpRequest<any> {
     const token = this.storageService.getAuth()?.accessToken;
-    const authRequest = request.clone({
-      setHeaders: {Authorization: `Bearer ${token}`}
+    if (!token) return request;
+
+    return request.clone({
+      setHeaders: {
+        Authorization: `Bearer ${token}`
+      }
     });
-    return authRequest;
   }
 
-  shouldNotIntercept(url: string) {
-      return (
-          url.includes('/login') ||
-          url.includes('/refreshToken') ||
-          url.includes('/register')
-      );
+  private shouldNotIntercept(url: string): boolean {
+    return (
+      url.includes('/login') ||
+      url.includes('/refresh') ||
+      url.includes('/register')
+    );
   }
 }
