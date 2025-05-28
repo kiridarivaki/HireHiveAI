@@ -14,7 +14,7 @@ namespace HireHive.Infrastructure.Startup
             {
                 options.SignIn.RequireConfirmedEmail = true;
             })
-            .AddEntityFrameworkStores<AppDbContext>()
+            .AddEntityFrameworkStores<HireHiveDbContext>()
             .AddDefaultTokenProviders();
 
             services.AddOptions<IdentityOptions>().Configure(x =>

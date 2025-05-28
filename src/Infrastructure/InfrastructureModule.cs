@@ -23,7 +23,7 @@ namespace HireHive.Infrastructure
         {
             var connectionString = configuration["HireHivePostgresConnectionString"];
 
-            services.AddDbContext<AppDbContext>(options =>
+            services.AddDbContext<HireHiveDbContext>(options =>
                 options.UseNpgsql(connectionString));
 
             services.AddAutoMapper(Assembly.GetExecutingAssembly());
@@ -31,7 +31,7 @@ namespace HireHive.Infrastructure
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IAuthService, AuthService>();
             services.AddScoped<ITokenService, TokenService>();
-            services.AddScoped<Application.Interfaces.IResumeService, ResumeService>();
+            services.AddScoped<IResumeService, ResumeService>();
             services.AddScoped<IAdminService, AdminService>();
 
             var blobConnectionString = configuration["AzureBlobStorageConnection"];

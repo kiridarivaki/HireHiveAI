@@ -11,11 +11,11 @@ namespace HireHive.Infrastructure.Data.Repositories;
 public class UserRepository : IUserRepository
 {
     private readonly UserManager<User> _userManager;
-    private readonly AppDbContext _context;
+    private readonly HireHiveDbContext _context;
 
     public UserRepository(
         UserManager<User> userManager,
-        AppDbContext context)
+        HireHiveDbContext context)
     {
         _userManager = userManager;
         _context = context;

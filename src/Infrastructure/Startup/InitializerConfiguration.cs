@@ -16,7 +16,7 @@ namespace HireHive.Infrastructure.Startup
             var provider = scope.ServiceProvider;
 
             var userManager = provider.GetRequiredService<UserManager<User>>();
-            var context = provider.GetRequiredService<AppDbContext>();
+            var context = provider.GetRequiredService<HireHiveDbContext>();
             await Initializer.Seed(context, userManager, configuration);
         }
     }
