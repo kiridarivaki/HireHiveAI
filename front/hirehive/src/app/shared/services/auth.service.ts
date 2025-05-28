@@ -1,6 +1,6 @@
 import { Injectable } from "@angular/core";
 import { BehaviorSubject, map, Observable } from "rxjs";
-import { EmailConfirmationPayload, EmailConfirmationResendPayload, GetInfoResponse, LoginPayload, LoginResponse, RefreshTokenResponse, RegisterPayload } from "src/app/client/models/auth-client.model";
+import { EmailConfirmationPayload, EmailConfirmationResendPayload, GetInfoResponse, LoginPayload, LoginResponse, RefreshTokenPayload, RefreshTokenResponse, RegisterPayload } from "src/app/client/models/auth-client.model";
 import { AuthClientService } from "src/app/client/services/auth-client.service";
 import { StorageService } from "./storage.service";
 import { Router } from "@angular/router";
@@ -59,24 +59,26 @@ export class AuthService {
     }
 
     isTokenExpired(): boolean {
-        const expiration = this.storageService.getAuth()?.expiresIn;
+        const storedAuth = this.storageService.getAuth();
+        const expiration = storedAuth?.expiresIn;
         if (!expiration) return true;
 
-        const expiryTime = Number(expiration);
         const now = Date.now();
-        
-        return expiryTime < now;
+        return now >= expiration;
     }
 
-    refreshToken(): Observable<RefreshTokenResponse>{
-        return this.authClientService.refreshToken();
+    refreshToken(refreshTokenData: RefreshTokenPayload): Observable<RefreshTokenResponse>{
+        return this.authClientService.refreshToken(refreshTokenData);
     }
 
     logout(){
+        this.authClientService.revokeRefreshToken().subscribe();
+
         if (this.isAdmin$()){
             this.jobStateService.clearAssessmentData();
             this.jobStateService.clearCursor();
         }
+        
         this.storageService.removeAuth();
         this.storageService.removeUser();
         this.currentUserSubject.next(null);

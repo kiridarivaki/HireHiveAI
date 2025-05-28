@@ -1,7 +1,7 @@
 import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { UrlService } from "../../shared/services/url.service";
-import { EmailConfirmationPayload, EmailConfirmationResendPayload, GetInfoResponse, LoginPayload, LoginResponse, RefreshTokenResponse, RegisterPayload } from "../models/auth-client.model";
+import { EmailConfirmationPayload, EmailConfirmationResendPayload, GetInfoResponse, LoginPayload, LoginResponse, RefreshTokenPayload, RefreshTokenResponse, RegisterPayload } from "../models/auth-client.model";
 import { Observable } from "rxjs";
 
 @Injectable({
@@ -20,9 +20,14 @@ export class AuthClientService{
         return this.http.post<LoginResponse>(loginUrl, loginData)
     }
 
-    refreshToken(): Observable<RefreshTokenResponse>{
-        const refreshTokenUrl = this.urlService.urlFor('auth', 'refresh-token', undefined)
-        return this.http.get<RefreshTokenResponse>(refreshTokenUrl)
+    refreshToken(refreshTokenData: RefreshTokenPayload): Observable<RefreshTokenResponse>{
+        const refreshTokenUrl = this.urlService.urlFor('auth', 'refresh', undefined)
+        return this.http.post<RefreshTokenResponse>(refreshTokenUrl, refreshTokenData)
+    }
+
+    revokeRefreshToken(): Observable<void>{
+        const revokeRefreshTokenUrl = this.urlService.urlFor('auth', 'revoke', undefined)
+        return this.http.post<void>(revokeRefreshTokenUrl, {})
     }
 
     getUserInfo(userId: string) : Observable<GetInfoResponse>{
