@@ -11,10 +11,8 @@ namespace HireHive.Infrastructure.Data
 {
     public static class Initializer
     {
-        public static async Task Seed(AppDbContext context, UserManager<User> userManager, IConfiguration configuration)
+        public static async Task Seed(HireHiveDbContext context, UserManager<User> userManager, IConfiguration configuration)
         {
-            if (await context.Roles.AnyAsync()) return;
-
             var connectionString = configuration["HireHivePostgresConnectionString"];
             var dataSource = NpgsqlDataSource.Create(connectionString!);
             var postgresConnection = await dataSource.OpenConnectionAsync();
@@ -23,16 +21,18 @@ namespace HireHive.Infrastructure.Data
 
             try
             {
-                var script = await LoadScript("InsertRoles");
+                if (!await context.Roles.AnyAsync())
+                {
+                    var script = await LoadScript("InsertRoles");
 
-                await using var command = new NpgsqlCommand(script, postgresConnection, transaction);
+                    await using var command = new NpgsqlCommand(script, postgresConnection, transaction);
 
-                //todo : fix using roles in sql script
-                string[] roles = Enum.GetNames(typeof(Roles));
-                command.Parameters.AddWithValue("roles", roles);
-                await command.ExecuteNonQueryAsync();
+                    string[] roles = Enum.GetNames(typeof(Roles));
+                    command.Parameters.AddWithValue("roles", roles);
+                    await command.ExecuteNonQueryAsync();
 
-                await transaction.CommitAsync();
+                    await transaction.CommitAsync();
+                }
 
                 await SeedAdmin(userManager, context);
             }
@@ -55,7 +55,7 @@ namespace HireHive.Infrastructure.Data
             return await reader.ReadToEndAsync();
         }
 
-        public static async Task SeedAdmin(UserManager<User> userManager, AppDbContext context)
+        public static async Task SeedAdmin(UserManager<User> userManager, HireHiveDbContext context)
         {
             // seed admin
             string adminEmail = "t8210030@aueb.gr";

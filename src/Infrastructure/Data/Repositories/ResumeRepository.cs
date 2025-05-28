@@ -7,8 +7,8 @@ namespace HireHive.Infrastructure.Data.Repositories
 {
     internal class ResumeRepository : IResumeRepository
     {
-        private readonly AppDbContext _context;
-        public ResumeRepository(AppDbContext context)
+        private readonly HireHiveDbContext _context;
+        public ResumeRepository(HireHiveDbContext context)
         {
             _context = context;
         }
