@@ -2,8 +2,9 @@
 {
     public class AuthenticatedUserVm
     {
-        public string? AccessToken { get; set; }
-        public string? RefreshToken { get; set; }
-        public long ExpiresIn { get; set; }
+        public string? AccessToken { get; set; } = null!;
+        public string? RefreshToken { get; set; } = null!;
+        public int ExpiresIn { get; set; }
+        public Guid? UserId { get; set; } = null!;
     }
 }

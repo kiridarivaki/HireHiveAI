@@ -6,6 +6,7 @@ using HireHive.Application.DTOs.Account;
 using HireHive.Application.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.IdentityModel.Tokens.Jwt;
 
 namespace HireHive.Api.Areas.Account.Controllers;
 
@@ -77,8 +78,9 @@ public class AuthController : ApiController
         }
     }
 
+    [AllowAnonymous]
     [HttpPost]
-    [Route("refresh-token")]
+    [Route("refresh")]
     public async Task<IActionResult> Refresh(RefreshBm refreshModel)
     {
         try
@@ -86,7 +88,6 @@ public class AuthController : ApiController
             var authUser = await _authService.RefreshToken(_mapper.Map<RefreshDto>(refreshModel));
 
             _logger.LogInformation("Token refreshed sucessfully.");
-
             return Ok(_mapper.Map<AuthenticatedUserVm>(authUser));
         }
         catch (Exception e)
@@ -94,6 +95,37 @@ public class AuthController : ApiController
             _logger.LogError("Failed to refresh token. With exception: {message}", e.Message);
 
             return Unauthorized(new { message = e.Message });
+        }
+    }
+
+    [Authorize]
+    [HttpPost]
+    [Route("revoke")]
+    public async Task<IActionResult> Revoke()
+    {
+        try
+        {
+            var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == JwtRegisteredClaimNames.Sub);
+
+            if (userIdClaim == null || string.IsNullOrEmpty(userIdClaim.Value))
+            {
+                _logger.LogWarning("User ID claim not found in token.");
+
+                return Unauthorized("Invalid token: User ID claim missing.");
+            }
+
+            var userId = userIdClaim.Value;
+
+            await _authService.RevokeToken(userId);
+
+            _logger.LogInformation("Token revoked for user {userId}.", userId);
+
+            return NoContent();
+        }
+        catch (Exception e)
+        {
+            _logger.LogError("Failed to revoke token. With exception: {message}", e.Message);
+            throw;
         }
     }
 

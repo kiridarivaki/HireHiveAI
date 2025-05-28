@@ -10,5 +10,6 @@ namespace HireHive.Application.Interfaces
         Task SendEmailConfirmation(string email);
         Task<AuthenticatedUserDto> Login(LoginDto user);
         Task<AuthenticatedUserDto> RefreshToken(RefreshDto refreshModel);
+        Task RevokeToken(string userId);
     }
 }

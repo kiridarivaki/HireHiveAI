@@ -7,6 +7,7 @@ using HireHive.Domain.Exceptions.User;
 using HireHive.Domain.Interfaces;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.WebUtilities;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System.Text;
 using System.Transactions;
@@ -125,10 +126,17 @@ namespace HireHive.Infrastructure.Services
                 var accessToken = await _tokenService.GenerateToken(user);
                 var refreshToken = _tokenService.GenerateRefreshToken();
 
+                user.RefreshToken = refreshToken;
+                user.RefreshTokenExpiry = DateTime.UtcNow.AddDays(7);
+
+                await _userManager.UpdateAsync(user);
+
                 var authUser = new AuthenticatedUserDto
                 {
                     AccessToken = accessToken,
-                    RefreshToken = refreshToken
+                    RefreshToken = refreshToken,
+                    ExpiresIn = (int)TimeSpan.FromMinutes(1).TotalSeconds,
+                    UserId = user.Id
                 };
 
                 _logger.LogInformation("Login succeeded for user {email}.", loginDto.Email);
@@ -142,32 +150,57 @@ namespace HireHive.Infrastructure.Services
             }
         }
 
-        public async Task<AuthenticatedUserDto> RefreshAsync(string refreshToken)
+        public async Task<AuthenticatedUserDto> RefreshToken(RefreshDto refreshModel)
         {
-            if (string.IsNullOrWhiteSpace(refreshToken))
+            if (string.IsNullOrWhiteSpace(refreshModel.RefreshToken))
                 throw new InvalidRefreshTokenException();
 
             var user = await _userManager.Users
-                .FirstOrDefaultAsync(u => u.RefreshToken == refreshToken);
+                .FirstOrDefaultAsync(u => u.RefreshToken == refreshModel.RefreshToken);
 
-            if (user == null || user.RefreshTokenExpiryTime <= DateTime.UtcNow)
+            if (user == null || user.RefreshTokenExpiry <= DateTime.UtcNow)
                 throw new InvalidRefreshTokenException();
+
+            var principal = _tokenService.GetPrincipalFromExpiredToken(refreshModel.AccessToken);
+            var username = principal.Identity.Name;
 
             var newAccessToken = await _tokenService.GenerateToken(user);
             var newRefreshToken = _tokenService.GenerateRefreshToken();
 
             user.RefreshToken = newRefreshToken;
-            user.RefreshTokenExpiryTime = DateTime.UtcNow.AddDays(7);
+            user.RefreshTokenExpiry = DateTime.UtcNow.AddDays(7);
 
             await _userManager.UpdateAsync(user);
 
             return new AuthenticatedUserDto
             {
                 AccessToken = newAccessToken,
-                RefreshToken = newRefreshToken
+                RefreshToken = newRefreshToken,
+                ExpiresIn = (int)TimeSpan.FromMinutes(1).TotalSeconds,
+                UserId = user.Id
             };
         }
 
+        public async Task RevokeToken(string userId)
+        {
+            try
+            {
+                var user = await _userManager.FindByIdAsync(userId)
+                    ?? throw new UserNotFoundException();
+
+                user.RefreshToken = null;
+                user.RefreshTokenExpiry = DateTime.MinValue;
+
+                var result = await _userManager.UpdateAsync(user);
+
+                _logger.LogInformation("Token successfully revoked for user {userId}.", userId);
+            }
+            catch (Exception e)
+            {
+                _logger.LogWarning("Failed to revoke token for user {userId}. With exception: {message}", userId, e.Message);
+                throw;
+            }
+        }
 
         public async Task<UserInfoDto> GetInfo(Guid userId)
         {
@@ -181,7 +214,7 @@ namespace HireHive.Infrastructure.Services
                 var authUser = _mapper.Map<UserInfoDto>(user);
                 authUser.Roles = roles.ToList();
 
-                _logger.LogWarning("Info for user {userId} successfully fetched.", userId);
+                _logger.LogInformation("Info for user {userId} successfully fetched.", userId);
 
                 return authUser;
             }
