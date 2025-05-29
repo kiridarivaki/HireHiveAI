@@ -46,8 +46,8 @@ namespace HireHive.Infrastructure.Services
             {
                 Subject = new ClaimsIdentity(claims),
                 Expires = DateTime.UtcNow.AddMinutes(60),
-                Issuer = _configuration["JwtSettings:Issuer"],
-                Audience = _configuration["JwtSettings:Audience"],
+                Issuer = _configuration["TokenIssuer"],
+                Audience = _configuration["TokenAudience"],
                 SigningCredentials = new SigningCredentials(signingKey, SecurityAlgorithms.HmacSha256)
             };
             var token = tokenHandler.CreateToken(tokenDescriptor);
