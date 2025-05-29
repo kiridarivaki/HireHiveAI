@@ -16,32 +16,35 @@
   width: 100%;
   display: flex;
   flex-direction: column;
-  position: relative; /* Keeps form fields and error messages aligned */
+  position: relative;
+  margin-bottom: 15px;
 }
 
 mat-error {
-  display: block; /* Ensures error message is displayed below the input */
-  width: 100%; /* Makes sure the error message takes the full width available */
-  box-sizing: border-box;
-  margin-top: 5px; /* Adds spacing between the field and error message */
+  display: block;
+  min-height: 1.5em;
+  margin-top: -10px;
+  margin-bottom: 10px;
+  font-size: 0.75rem;
+  color: #f44336;
 }
 
-mat-error ul {
-  padding: 0;
-  margin: 0;
-  width: 100%;
+.mat-error-list {
+  padding-left: 1.2rem;
+  margin-top: -5px;
+  font-size: 0.75rem;
+  color: #f44336;
+  list-style-type: disc;
+
+  li {
+    margin: 2px 0;
+    word-wrap: break-word;
+  }
 }
 
-mat-error .error-message {
-  color: red; /* Error message color */
-  font-size: 12px; /* Optional: font size for error messages */
-  word-wrap: break-word; /* Ensure long error messages wrap to the next line */
-  white-space: normal; /* Make sure text wraps within the form container */
-  word-break: break-word; /* Break long words if necessary */
-}
-
-.form-field .error-list {
-  list-style-type: none;
-  padding: 0;
-  margin: 0;
+.button-container {
+  display: flex;
+  justify-content: center;
+  margin-top: 5px; 
+  margin-bottom: 7px;
 }

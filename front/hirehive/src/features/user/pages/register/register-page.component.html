@@ -1,5 +1,5 @@
 <div class="register-container">
-<h1>Register</h1>
+<h2>Register</h2>
 <form [formGroup]="registerForm" (ngSubmit)="onRegister()">
   <div class="form-field">
   <app-input
@@ -8,6 +8,7 @@
     inputId="email"
     label="Email Address"
     formControlName="email"
+    inputIcon="email"
   ></app-input>
     <mat-error *ngIf="registerForm.controls.email.invalid && (registerForm.controls.email.dirty || registerForm.controls.email.touched)">
       {{ registerForm.controls.email.errors | validationError }}
@@ -46,17 +47,18 @@
     placeholder="Password"
     inputId="password"
     label="Password"
-    hint="Min 8 characters"
     [withToggle]="true"
     formControlName="password"
   ></app-password-input>
-    <ul class="password-error-list" *ngIf="registerForm.controls.password.invalid && (registerForm.controls.password.dirty || registerForm.controls.password.touched)">
-      <li *ngIf="registerForm.controls.password.errors?.['required']">Password is required.</li>
-      <li *ngIf="registerForm.controls.password.errors?.['minlength']">Password must be at least 8 characters.</li>
-      <li *ngIf="registerForm.controls.password.errors?.['uppercase']">Password must contain at least one uppercase letter.</li>
-      <li *ngIf="registerForm.controls.password.errors?.['lowercase']">Password must contain at least one lowercase letter.</li>
-      <li *ngIf="registerForm.controls.password.errors?.['digit']">Password must contain at least one digit.</li>
+  <mat-error *ngIf="registerForm.controls.password.invalid && (registerForm.controls.password.dirty || registerForm.controls.password.touched)">
+    <ul class="mat-error-list">
+      <li *ngIf="passwordControl?.errors?.['required']">Password is required.</li>
+      <li *ngIf="passwordControl?.errors?.['minlength']">At least 8 characters.</li>
+      <li *ngIf="passwordControl?.errors?.['uppercase']">Must contain an uppercase letter.</li>
+      <li *ngIf="passwordControl?.errors?.['lowercase']">Must contain a lowercase letter.</li>
+      <li *ngIf="passwordControl?.errors?.['digit']">Must contain a number.</li>
     </ul>
+  </mat-error>
   </div>
 
   <div class="form-field">
@@ -68,8 +70,15 @@
     formControlName="confirmPassword"
   ></app-password-input>
     <mat-error *ngIf="registerForm.controls.confirmPassword.invalid && (registerForm.controls.confirmPassword.dirty || registerForm.controls.confirmPassword.touched)">
-      {{ registerForm.controls.confirmPassword.errors | validationError }}
-    </mat-error>
+    <ul class="mat-error-list">
+      <li *ngIf="confirmPasswordControl?.errors?.['required']">Password is required.</li>
+      <li *ngIf="confirmPasswordControl?.errors?.['minlength']">At least 8 characters.</li>
+      <li *ngIf="confirmPasswordControl?.errors?.['uppercase']">Must contain an uppercase letter.</li>
+      <li *ngIf="confirmPasswordControl?.errors?.['lowercase']">Must contain a lowercase letter.</li>
+      <li *ngIf="confirmPasswordControl?.errors?.['digit']">Must contain a number.</li>
+      <li *ngIf="confirmPasswordControl?.errors?.['fieldsMismatch']">Password and confirmation<br> should match.</li>
+    </ul>
+  </mat-error>
   </div>
 
   <div class="form-field">
@@ -93,11 +102,10 @@
 
   <div >
   <app-button
-    class="form-field"
+    class="register-button"
     type="submit"
     text="Register"
-    [disabled]="!registerForm.valid"
-    (onClick)="onRegister()">
+    >
   </app-button>
   </div>
 </form>

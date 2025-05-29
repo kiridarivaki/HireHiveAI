@@ -1,5 +1,6 @@
 <mat-form-field appearance="outline" floatLabel="auto" class="form-group">
   <mat-label>{{ label }}</mat-label>
+  
   <input matInput
     [id]="inputId"
     [type]="type"
@@ -8,5 +9,5 @@
     [value]="value"
     (input)="onInputChange($event)"
   />
-  
+  <mat-icon *ngIf="inputIcon">{{ inputIcon }}</mat-icon>
 </mat-form-field>

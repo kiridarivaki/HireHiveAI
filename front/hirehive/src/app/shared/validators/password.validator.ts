@@ -6,6 +6,7 @@ export function passwordValidator(control: AbstractControl): ValidationErrors | 
   const hasUppercase = /[A-Z]/.test(value);
   const hasLowercase = /[a-z]/.test(value);
   const hasDigit = /\d/.test(value);
+  const isLongEnough = value.length >= 8;
 
   const errors: ValidationErrors = {};
 
@@ -17,6 +18,9 @@ export function passwordValidator(control: AbstractControl): ValidationErrors | 
   }
   if (!hasDigit) {
     errors['digit'] = true;
+  }
+  if (!isLongEnough) {
+    errors['minlength'] = { requiredLength: 8, actualLength: value.length };
   }
 
   return Object.keys(errors).length ? errors : null;

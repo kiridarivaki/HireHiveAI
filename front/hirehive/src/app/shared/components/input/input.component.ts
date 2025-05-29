@@ -1,7 +1,8 @@
 import { Component, Input, forwardRef } from '@angular/core';
-import { ControlValueAccessor, FormControl, NG_VALUE_ACCESSOR } from '@angular/forms';
+import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
 
 @Component({
   selector: 'app-input',
@@ -16,7 +17,8 @@ import { MatFormFieldModule } from '@angular/material/form-field';
   ],
   imports: [
     MatInputModule,
-    MatFormFieldModule
+    MatFormFieldModule,
+    MatIconModule
   ]
 })
 export class AppInputComponent implements ControlValueAccessor {
@@ -26,13 +28,13 @@ export class AppInputComponent implements ControlValueAccessor {
   @Input() disabled = false;
   @Input() label: string = '';
   @Input() value: any = '';
+  @Input() inputIcon: string = '';
 
   onChange = (_: any) => {};
-
   onTouched: () => void = () => {};
 
   writeValue(value: any): void {
-      this.value = value; 
+    this.value = value; 
   }
 
   registerOnChange(fn: (value: any) => void): void {

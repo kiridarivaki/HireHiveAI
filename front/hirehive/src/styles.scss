@@ -15,11 +15,13 @@ body{
   font-family: 'Inter', sans-serif;
 }
 
-// mat-toolbar {
-//   @include mat.toolbar-overrides((
-//     container-text-color: red,
-//   ));
-// }
+mat-form-field {
+  width: 230px;
+
+  @media (max-width: 600px) {
+    width: 100%;
+  }
+}
 
 .warn{
   @include mat.theme(

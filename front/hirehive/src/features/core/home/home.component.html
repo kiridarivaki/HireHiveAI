@@ -1,0 +1,38 @@
+<div class="hero">
+  <div class="hero-content">
+    <h1>Bringing recruiters closer to the perfect hire</h1>
+    <p>Find the best-fit candidates on demand.</p>
+    <app-button class="cta-button" text="Get Started" variant="raised" routerLink="/register"></app-button>
+  </div>
+</div>
+
+<div class="how-it-works">
+  <h2>How Hire Hive Works</h2>
+  <div class="steps">
+    <div
+      class="step"
+      *ngFor="let step of ['Add a Job Description', 'AI Assesses CVs', 'Review & Hire']; let i = index"
+      [@fadeInUp]="cardStates[i]"
+    >
+      <span class="number">{{ i + 1 }}</span>
+      <h3>
+        {{
+          i === 0
+            ? 'Add a Job Description'
+            : i === 1
+            ? 'AI Assesses CVs'
+            : 'Review & Hire'
+        }}
+      </h3>
+      <p>
+        {{
+          i === 0
+            ? 'Specify what matters, from skills to experience, with custom weights.'
+            : i === 1
+            ? 'HireHive evaluates each candidate’s CV, ensuring unbiased matches.'
+            : 'Get a ranked list of ideal candidates, ready for your decision.'
+        }}
+      </p>
+    </div>
+  </div>
+</div>
