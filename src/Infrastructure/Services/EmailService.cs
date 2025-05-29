@@ -18,7 +18,7 @@ namespace HireHive.Infrastructure.Services
             _configuration = configuration;
         }
 
-        public async Task SendEmail(string toEmail, string subject, string plainTextMessage, string htmlMessage)
+        public async Task SendEmail(string toEmail, string subject, string plainTextMessage, string? htmlMessage = null)
         {
             try
             {
@@ -51,19 +51,10 @@ namespace HireHive.Infrastructure.Services
 
         public async Task SendConfirmationEmail(string toEmail, string token)
         {
-            var baseUrl = _configuration["FrontEndBaseUrl"];
-            var confirmationUrl = $"{baseUrl}confirm-email?token={Uri.EscapeDataString(token)}";
-
             var subject = "HireHive: Email address confirmation";
-            var plainTextMessage = "Click the link below to confirm your email address:";
-            var htmlMessage = $"<br /><a href=\"{confirmationUrl}\">Confirm Email</a>";
+            var plainTextMessage = $"Copy this token and add it to the confirmation page to confirm your email address: {token}";
 
-            await SendEmail(toEmail, subject, plainTextMessage, htmlMessage);
-        }
-
-        public Task SendPasswordResetEmailAsync(string toEmail, string subject, string message)
-        {
-            throw new NotImplementedException();
+            await SendEmail(toEmail, subject, plainTextMessage, null);
         }
     }
 }
