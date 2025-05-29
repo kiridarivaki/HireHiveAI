@@ -1,14 +1,15 @@
-@use '../../../../scss/custom-theme.scss' as *;
 .navbar {
   display: flex;
   align-items: center;
-  height: 60px;
-  background-color: $primary-10;
+  height: 70px;
+  background-color: #02152e;
+  padding: 0 2rem;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.3);
 }
 
 .logo {
   height: 60px;
-  margin-right: 1rem;
+  margin-right: 2rem;
   cursor: pointer;
 }
 
@@ -16,32 +17,46 @@
   flex: 1 1 auto;
 }
 
-app-button {
-  margin-left: 0.75rem;
+.nav-button {
+  background: transparent;
+  border: 2px solid transparent;
+  color: white;
+  font-size: 1rem;
+  font-weight: 50;
+  margin-left: 1.25rem;
+  padding: 0.5rem 1.2rem;
+  cursor: pointer;
+  border-radius: 6px;
+  transition: color 0.3s ease, transform 0.25s ease, border-color 0.3s ease;
+  user-select: none;
+  position: relative;
+
+  &:hover {
+    color: #f5c12f; 
+    transform: translateY(-4px);
+  }
 }
 
 .welcome-msg {
-  margin-left: 1rem;
+  margin-left: 2rem;
   font-weight: 500;
-  font-size: 0.9rem;
-  white-space: nowrap;
+  font-size: 0.95rem;
   color: white;
+  white-space: nowrap;
 }
 
-app-button:hover {
-  opacity: 0.9;
-  cursor: pointer;
-}
-
-@media (max-width: 600px) {
+@media (max-width: 700px) {
   .navbar {
     flex-wrap: wrap;
     height: auto;
-    padding: 0.5rem;
+    padding: 1rem;
   }
 
-  app-button {
-    margin: 0.5rem 0.5rem 0 0;
+  .nav-button {
+    margin-left: 0;
+    margin-top: 0.5rem;
+    width: 100%;
+    text-align: center;
   }
 
   .welcome-msg {

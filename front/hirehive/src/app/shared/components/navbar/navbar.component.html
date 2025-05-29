@@ -1,20 +1,20 @@
-<mat-toolbar class="navbar" color="tertiary">
-  <img src="assets/logo.png" alt="Logo" class="logo" (click)="goHome()" style="cursor: pointer" />
+<mat-toolbar class="navbar">
+  <img src="assets/logo.png" alt="Logo" class="logo" (click)="goHome()" />
+
   <span class="spacer"></span>
-  <app-button [color]="'primary'" routerLink="/" text="Home"></app-button>
-  <app-button [color]="'primary'" routerLink="/about" text="About Us"></app-button>
+
+  <button class="nav-button" (click)="goHome()">Home</button>
+  <button class="nav-button" routerLink="/about">About Us</button>
 
   <ng-container *ngIf="!isLoggedIn">
-    <app-button [color]="'primary'" routerLink="/register" text="Register"></app-button>
-    <app-button [color]="'primary'" routerLink="/login" text="Login"></app-button>
+    <button class="nav-button" routerLink="/register">Register</button>
+    <button class="nav-button" routerLink="/login">Login</button>
   </ng-container>
 
   <ng-container *ngIf="isLoggedIn">
-    <app-button [color]="'primary'" btnClass="btn-tertiary"[routerLink]="['/user', currentUser?.id]" text="Profile"></app-button>
-
-    <app-button [color]="'primary'" *ngIf="isAdmin$ | async" routerLink="/admin/job-profile" text="Find Matches"></app-button>
-
-    <app-button [color]="'primary'" (onClick)="onLogout()" text="Logout"></app-button>
+    <button class="nav-button" [routerLink]="['/user', currentUser?.id]">Profile</button>
+    <button class="nav-button" *ngIf="isAdmin$ | async" routerLink="/admin/job-profile">Find Matches</button>
+    <button class="nav-button" (click)="onLogout()">Logout</button>
 
     <span class="welcome-msg">Welcome {{ currentUser?.firstName }}!</span>
   </ng-container>

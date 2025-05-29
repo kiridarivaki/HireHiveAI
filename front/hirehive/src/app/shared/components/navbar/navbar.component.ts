@@ -5,7 +5,7 @@ import { AuthService } from '@shared/services/auth.service';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { AppButtonComponent } from '../button/button.component';
 import { CommonModule } from '@angular/common';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { Observable } from 'rxjs';
 import { DialogService } from '@shared/services/dialog.service';
 import { ConfirmDialogComponent } from '../dialog/confirm-dialog/confirm-dialog.component';
@@ -19,7 +19,7 @@ interface MenuOption {
   selector: 'app-navbar',
   templateUrl: './navbar.component.html',
   styleUrls: ['./navbar.component.scss'],
-  imports: [MatToolbarModule, AppButtonComponent, CommonModule]
+  imports: [MatToolbarModule, RouterLink, CommonModule]
 })
 export class AppNavBarComponent implements OnInit {
   UserRole = UserRole;
@@ -67,7 +67,7 @@ export class AppNavBarComponent implements OnInit {
   }
 
   goHome() {
-    this.router.navigate(['/']);
+    this.router.navigate(['/home']);
   }
 
   onLogout() {

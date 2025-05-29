@@ -35,7 +35,7 @@ export class RegisterPageComponent implements OnInit {
     {
       email: new FormControl('', [Validators.required, Validators.email]),
       password: new FormControl('', [Validators.required, passwordValidator]),
-      confirmPassword: new FormControl('', [Validators.required]),
+      confirmPassword: new FormControl('', [Validators.required, passwordValidator]),
       firstName: new FormControl('', Validators.required),
       lastName: new FormControl('', Validators.required),
       employmentStatus: new FormControl<EmploymentStatus>(EmploymentStatus.full_time, [Validators.required]),
@@ -45,6 +45,14 @@ export class RegisterPageComponent implements OnInit {
   );
 
   ngOnInit(): void {
+  }
+
+  get passwordControl() {
+    return this.registerForm.get('password');
+  }
+
+  get confirmPasswordControl() {
+    return this.registerForm.get('confirmPassword');
   }
 
   onRegister(){

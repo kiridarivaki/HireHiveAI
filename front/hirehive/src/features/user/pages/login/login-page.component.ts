@@ -4,12 +4,13 @@ import { Router } from '@angular/router';
 import { StorageService } from '@shared/services/storage.service';
 import { passwordValidator } from '@shared/validators/password.validator';
 import { tap } from 'rxjs';
-import { EmailConfirmationResendPayload, LoginPayload } from 'src/app/client/models/auth-client.model';
+import { LoginPayload } from 'src/app/client/models/auth-client.model';
 import { StoredAuth, UserRole } from '@shared/models/auth.model';
 import { User } from '@shared/models/user.model';
 import { AuthService } from '@shared/services/auth.service';
 import { ErrorService } from '@shared/services/error.service';
 import { EmailResendService } from '@shared/services/email-resend.service';
+import { NotificationService } from '@shared/services/notification.service';
 
 
 @Component({
@@ -23,6 +24,7 @@ export class LoginPageComponent {
       private authService: AuthService,
       private storageService: StorageService,
       private emailResendService: EmailResendService,
+      private notificationService: NotificationService,
       private errorService: ErrorService,
       private router: Router
     ) {}
@@ -97,6 +99,7 @@ export class LoginPageComponent {
             queryParams: { email: user.email }
           });
         } else {
+          this.notificationService.showNotification('Successful login. Welcome!')
           this.router.navigate([`/user/${userId}`]);
         }
       }

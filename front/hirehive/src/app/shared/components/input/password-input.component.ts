@@ -25,7 +25,6 @@ import { CommonModule } from '@angular/common';
   ]
 })
 export class AppPasswordInputComponent implements ControlValueAccessor {
-  // @Input() control?: FormControl;
   @Input() inputId = 'password';
   @Input() type: string = 'password';
   @Input() placeholder: string = 'Enter the password';

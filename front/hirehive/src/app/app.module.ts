@@ -10,6 +10,7 @@ import { TokenInterceptor } from './shared/interceptors/token.interceptor';
 import { ErrorComponent } from '@shared/components/error/error.component';
 import { LoaderComponent } from '@shared/components/loader/loader.component';
 import { AppNotificationComponent } from '@shared/components/notification/notification.component';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 @NgModule({
   declarations: [
@@ -17,9 +18,9 @@ import { AppNotificationComponent } from '@shared/components/notification/notifi
   ],
   imports: [
     BrowserModule,
+    BrowserAnimationsModule,
     AppRoutingModule,
     UserModule,
-    HomeModule,
     ErrorComponent, 
     AppNotificationComponent,
     LoaderComponent
