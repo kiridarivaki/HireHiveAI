@@ -54,7 +54,7 @@ export class AuthService {
         return this.authClientService.confirmEmail(confirmEmailData);
     }
 
-    resendConfirmation(emailResendData: EmailConfirmationResendPayload): Observable<any>{
+    resendConfirmation(emailResendData: EmailConfirmationResendPayload): Observable<void>{
         return this.authClientService.resendConfirmation(emailResendData);
     }
 
@@ -65,8 +65,7 @@ export class AuthService {
 
         const now = Date.now();
         return now >= expiration;
-        }
-
+    }
 
     refreshToken(refreshTokenData: RefreshTokenPayload): Observable<RefreshTokenResponse>{
         return this.authClientService.refreshToken(refreshTokenData);

@@ -1,6 +1,5 @@
 <ng-container [ngSwitch]="variant">
-  <button *ngSwitchCase="'raised'" mat-raised-button
-    [color]="color"
+  <button [ngStyle]="{ 'background-color': 'var(--button-background)', 'color': 'var(--button-color)' }" *ngSwitchCase="'raised'" mat-raised-button
     [type]="type"
     [ngClass]="btnClass"
     [disabled]="disabled"
@@ -11,8 +10,7 @@
     <span *ngIf="text">{{ text }}</span>
   </button>
 
-  <button *ngSwitchCase="'stroked'" mat-stroked-button
-    [color]="color"
+  <button [ngStyle]="{ 'border-color': 'var(--button-color)', 'color': 'var(--button-color)' }" *ngSwitchCase="'stroked'" mat-stroked-button
     [type]="type"
     [ngClass]="btnClass"
     [disabled]="disabled"
@@ -23,8 +21,7 @@
     <span *ngIf="text">{{ text }}</span>
   </button>
 
-  <button *ngSwitchCase="'flat'" mat-flat-button
-    [color]="color"
+  <button [ngStyle]="{ 'background-color': 'var(--button-background)', 'color': 'var(--button-color)' }" *ngSwitchCase="'flat'" mat-flat-button
     [type]="type"
     [ngClass]="btnClass"
     [disabled]="disabled"
@@ -35,8 +32,7 @@
     <span *ngIf="text">{{ text }}</span>
   </button>
 
-  <button *ngSwitchCase="'icon'" mat-icon-button
-    [color]="color"
+  <button [ngStyle]="{ color: 'var(--button-color)' }" *ngSwitchCase="'icon'" mat-icon-button
     [type]="type"
     [ngClass]="btnClass"
     [disabled]="disabled"
@@ -46,8 +42,7 @@
     <mat-icon *ngIf="icon">{{ icon }}</mat-icon>
   </button>
 
-  <button *ngSwitchDefault mat-button
-    [color]="color"
+  <button [ngStyle]="{ color: 'var(--button-color)' }" *ngSwitchDefault mat-button
     [type]="type"
     [ngClass]="btnClass"
     [disabled]="disabled"

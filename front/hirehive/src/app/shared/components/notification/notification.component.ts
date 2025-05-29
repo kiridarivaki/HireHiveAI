@@ -18,8 +18,7 @@ export class AppNotificationComponent {
     this.notificationService.notification$.subscribe(message => {
       if (message) {
         this.snackBar.open(message, 'Close', {
-          duration: 3000,
-          panelClass: ['snackbar-success'] 
+          duration: 3000
         });
       }
     });

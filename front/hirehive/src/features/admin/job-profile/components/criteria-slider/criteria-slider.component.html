@@ -1,4 +1,4 @@
-<label>{{ label }}</label>
+<label>{{ label }} <mat-icon *ngIf="icon" class="slider-icon" matIconPrefix>{{icon}}</mat-icon></label>
 <mat-slider
   [disabled]="disabled"
   (blur)="onBlur()"
