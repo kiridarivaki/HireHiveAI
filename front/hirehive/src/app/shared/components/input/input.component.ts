@@ -3,6 +3,7 @@ import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-input',
@@ -18,7 +19,8 @@ import { MatIconModule } from '@angular/material/icon';
   imports: [
     MatInputModule,
     MatFormFieldModule,
-    MatIconModule
+    MatIconModule,
+    CommonModule
   ]
 })
 export class AppInputComponent implements ControlValueAccessor {

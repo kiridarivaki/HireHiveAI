@@ -35,15 +35,14 @@ export class ProfilePageComponent implements OnInit{
     private userService: UserClientService,
     private loaderService: LoaderService,
     private notificationService: NotificationService,
-    private authService: AuthService,
-    private router: Router
+    private authService: AuthService
   ){}
 
   profileForm = new FormGroup ({
     firstName: new FormControl('', [Validators.required]),
     lastName: new FormControl('', [Validators.required]),
     employmentStatus: new FormControl<EmploymentStatus>(EmploymentStatus.full_time, [Validators.required]),
-    jobTypes: new FormControl<JobType[] | null>([], Validators.required) 
+    jobTypes: new FormControl<JobType[] | null>([]) 
   });
 
   ngOnInit(): void {

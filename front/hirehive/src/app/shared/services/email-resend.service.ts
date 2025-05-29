@@ -17,8 +17,10 @@ export class EmailResendService {
       email: email
     }
     this.authService.resendConfirmation(emailResendData).subscribe({
-      next: () => this.resendStatus$.next('sent'),
-      error: () => this.resendStatus$.next('error'),
+      next: () => {
+        this.resendStatus$.next('sent')},
+      error: () => {
+        this.resendStatus$.next('error')}
     });
   }
 }

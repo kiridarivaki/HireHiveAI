@@ -40,7 +40,7 @@ export class AuthClientService{
         return this.http.post<void>(confirmEmailUrl, confirmEmailData);
     }
     
-    resendConfirmation(emailResendData: EmailConfirmationResendPayload): Observable<any> {
+    resendConfirmation(emailResendData: EmailConfirmationResendPayload): Observable<void> {
         const resendConfirmationUrl = this.urlService.urlFor('auth', 'resend-confirmation', undefined);
         return this.http.post<void>(resendConfirmationUrl, emailResendData);
     }

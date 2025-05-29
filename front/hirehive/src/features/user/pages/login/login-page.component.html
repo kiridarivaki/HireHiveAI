@@ -8,7 +8,6 @@
         inputId="email"
         label="Email Address"
         formControlName="email"
-        inputIcon="email"
       ></app-input>
       <mat-error *ngIf="loginForm.controls.email.invalid && (loginForm.controls.email.dirty || loginForm.controls.email.touched)">
         {{ loginForm.controls.email.errors | validationError }}
@@ -34,9 +33,10 @@
         </ul>
       </mat-error>
     </div>
-
     <div class="button-container">
       <app-button
+        class="login-button"
+        variant="raised"
         type="submit"
         text="Login"
         [disabled]="!loginForm.valid">

@@ -3,11 +3,16 @@
 @use './scss/custom-theme.scss' as custom;
 
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@700&display=swap');
 
 @include mat.typography-hierarchy(custom.$my-theme);
 @include mat.core();
 
 :root {
+  --app-yellow: #f5c12f;
+  --app-dark-blue: #02152e;
+  --app-blue: #6e91cd;
+
   @include mat.all-component-themes(custom.$my-theme);
 }
 
@@ -58,14 +63,4 @@ mat-form-field {
   font-weight: 400;
   line-height: 24px;
   letter-spacing: 0;
-}
-
-.snackbar-success {
-  background-color: #4caf50 !important; 
-  color: white !important;
-}
-
-.snackbar-error {
-  background-color: #f44336 !important; 
-  color: white !important;
 }

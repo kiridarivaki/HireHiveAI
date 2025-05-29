@@ -13,14 +13,12 @@
       ></app-select>
 
       <app-button
-        type="button"
-        variant="stroked"
-        size="large"
-        text="Submit"
-        [disabled]="!jobForm.get('jobDescription')?.value && !jobForm.get('jobType')?.value"
-        (onClick)="onSubmit()"
+        variant="flat"
         class="submit-button"
-      ></app-button>
+        type="submit"
+        text="Assess"
+        [disabled]="!jobForm.valid">
+      </app-button>
     </div>
   </div>
   <div class="right-panel">
@@ -29,6 +27,7 @@
     <ng-container *ngFor="let c of criteria">
       <app-criteria-slider
         [label]="c.label"
+        [icon]="c.icon"
         [formControlName]="c.key"
         class="criteria-slider"
       ></app-criteria-slider>

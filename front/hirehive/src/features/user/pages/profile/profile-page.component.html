@@ -1,16 +1,18 @@
+<div class="profile-wrapper">
 <div class="profile-container">
-<section class="profile-details">
+<section class="profile-details" [ngClass]="{ 'admin-layout': (isAdmin$ | async) }">
   <h2>User Profile</h2>
-  <div class="form-field">
+  <form [formGroup]="profileForm" (ngSubmit)="onSubmit()">
+    <div class="form-field">
     <app-input
         type="email"
         label="Email"
         inputId="email"
         [value]="userData?.email"
         [disabled]="true"
+        inputIcon="email"
     ></app-input>
-    </div>  
-  <form [formGroup]="profileForm" (ngSubmit)="onSubmit()">
+  </div> 
   <div class="form-field">
     <app-input
         type="text"
@@ -18,6 +20,7 @@
         inputId="firstName"
         formControlName="firstName"
         [placeholder]="userData?.firstName ?? 'First Name'"
+        inputIcon="person"
     ></app-input>
     <mat-error *ngIf="profileForm.controls.firstName.invalid && (profileForm.controls.firstName.dirty || profileForm.controls.firstName.touched)">
       {{ profileForm.controls.firstName.errors | validationError }}
@@ -25,11 +28,12 @@
 </div>
   <div class="form-field">
     <app-input
-        type="text"
-        label="Last Name"
-        inputId="lastName"
-        formControlName="lastName"
-        [placeholder]="userData?.lastName ?? 'Last Name'"
+      type="text"
+      label="Last Name"
+      inputId="lastName"
+      formControlName="lastName"
+      [placeholder]="userData?.lastName ?? 'Last Name'"
+      inputIcon="person_outline"
     ></app-input>
     <mat-error *ngIf="profileForm.controls.lastName.invalid && (profileForm.controls.lastName.dirty || profileForm.controls.lastName.touched)">
       {{ profileForm.controls.lastName.errors | validationError }}
@@ -40,33 +44,37 @@
       selectId="statusSelect"
       label="Employment Status"
       [options]="employmentOptions"
-      formControlName="employmentStatus">
+      formControlName="employmentStatus"
+      selectIcon="work">
     </app-select>
     </div>
   <div class="form-field">
   <app-chip-list *ngIf="(isAdmin$ | async) === false"
     [label]="'Job Types'"
     [options]="jobTypes"
-    formControlName="jobTypes"
-  >
+    formControlName="jobTypes">
   </app-chip-list>
   </div>
-  <app-button
-    class="btn-group"
-    text="Save Changes"
-    variant="flat"
-    type="submit"
-    [disabled]="!profileForm.valid">
-  </app-button>
+  <div class="btn-group">
+    <app-button
+      class="save-changes"
+      text="Save Changes"
+      variant="flat"
+      type="submit"
+      [disabled]="!profileForm.valid">
+    </app-button>
+    <app-button
+      text="Delete Profile"
+      class="warn"
+      variant="stroked"
+      (onClick)="onDelete()">
+    </app-button>
+  </div>
   </form>
-  <app-button
-    class="btn-group"
-    text="Delete Profile"
-    variant="flat"
-    (onClick)="onDelete()">
-  </app-button>
   </section>
+  
   <section class="resume-upload" *ngIf="(isAdmin$ | async) === false">
     <app-resume-upload [userId]="userId"></app-resume-upload>
   </section>
 </div>
+</div>  

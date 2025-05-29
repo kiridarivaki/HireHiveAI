@@ -11,12 +11,14 @@ import { AssessmentDataPayload } from 'src/app/client/models/admin-client.model'
 import { Router } from '@angular/router';
 import { JobStateService } from '@shared/services/job-state.service';
 
+const iconNames = ['star', 'thumb_up', 'favorite', 'check_circle']; 
+
 @Component({
   selector: 'app-job-profile',
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule, MatSliderModule, AppSelectComponent, AppButtonComponent, CriteriaSliderComponent],
   templateUrl: './job-profile.page.html',
-  styleUrl: './job-profile.page.css'
+  styleUrl: './job-profile.page.scss'
 })
 export class JobProfileComponent {
   jobForm = new FormGroup({
@@ -32,7 +34,11 @@ export class JobProfileComponent {
     label: label as string
   }));
 
-  criteria = Object.entries(AssessmentCriteria).map(([key, label]) => ({ key, label }));
+  criteria = Object.entries(AssessmentCriteria).map(([key, label], index) => ({
+    key,
+    label,
+    icon: iconNames[index] || 'help_outline', 
+  }));
 
   constructor(
     private stateService: JobStateService,

@@ -1,3 +1,8 @@
+:host .cta-button{
+  --button-color: var(--app-dark-blue);
+  --button-background: var(--app-yellow);
+}
+
 .hero {
   position: relative;
   background: url('../../../assets/company.jpg') no-repeat center center / cover;
@@ -32,7 +37,7 @@
     p {
       font-size: 1.125rem;
       margin-bottom: 2rem;
-      color: #f5c12f;
+      color: var(--app-yellow);
     }
 
     .cta-button {
@@ -45,8 +50,6 @@
   }
 }
 
-@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@700&display=swap');
-
 .how-it-works {
   background: #fff;
   padding: 4rem 1rem;
@@ -55,7 +58,7 @@
   h2 {
     font-size: 2rem;
     font-weight: 600;
-    color: #02152e;
+    color: var(--app-dark-blue);
     margin-bottom: 2.5rem;
   }
 
@@ -76,7 +79,7 @@
       border-radius: 0.75rem;
       box-shadow:
         0 6px 12px rgba(70, 130, 180, 0.3);
-      border-left: 6px solid #f5c12f;
+      border-left: 6px solid var(--app-yellow);
       text-align: left;
       user-select: none;
 
@@ -84,7 +87,7 @@
         font-family: 'Montserrat', sans-serif;
         font-size: 2.5rem;
         font-weight: 700;
-        color: #f5c12f;
+        color: var(--app-yellow);
         position: absolute;
         left: 1.5rem;
         top: 50%;
@@ -94,7 +97,7 @@
 
       h3 {
         font-size: 1.5rem;
-        color: #02152e;
+        color: var(--app-dark-blue);
         margin-bottom: 0.4rem;
         font-weight: 700;
         margin-left: 0;

@@ -11,7 +11,7 @@ const routes: Routes = [{
       children: [
         { path: 'home', component: HomeComponent }
       ]},
-    { path: 'confirm-email', component: EmailConfirmationComponent },
+    { path: 'confirm-email/:userEmail/:token', component: EmailConfirmationComponent },
     { path: 'check-email', component: CheckEmailComponent }
 ];
 

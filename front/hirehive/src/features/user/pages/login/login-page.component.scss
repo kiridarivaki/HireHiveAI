@@ -1,3 +1,15 @@
+:host .login-button {
+  --button-background: var(--app-dark-blue);
+  --button-color: white;
+  transition: background-color 0.4s, color 0.4s;
+}
+
+:host .login-button:hover {
+  cursor: pointer;
+  --button-background: var(--app-yellow);
+  --button-color: var(--app-dark-blue);
+}
+
 .login-container {
   display: flex;
   flex-direction: column;
@@ -18,15 +30,6 @@
   flex-direction: column;
   position: relative;
   margin-bottom: 15px;
-}
-
-mat-error {
-  display: block;
-  min-height: 1.5em;
-  margin-top: -10px;
-  margin-bottom: 10px;
-  font-size: 0.75rem;
-  color: #f44336;
 }
 
 .mat-error-list {

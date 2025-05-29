@@ -2,6 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, Input, OnInit } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
 import { MatSelectModule } from '@angular/material/select';
 
 @Component({
@@ -9,10 +10,11 @@ import { MatSelectModule } from '@angular/material/select';
   standalone: true,
   templateUrl: './select.component.html',
   providers: [{ provide: NG_VALUE_ACCESSOR, useExisting: AppSelectComponent, multi: true }],
-  imports: [MatSelectModule, MatFormFieldModule, CommonModule]
+  imports: [MatSelectModule, MatFormFieldModule, CommonModule, MatIconModule]
 })
 export class AppSelectComponent implements ControlValueAccessor, OnInit {
   @Input() selectId = '';
+  @Input() selectIcon: string = '';
   @Input() options: { value: string, label: string }[] = [];
   @Input() class: string = '';
   @Input() disabled = false;

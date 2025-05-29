@@ -2,11 +2,12 @@ import { Component, Input, forwardRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatSliderModule } from '@angular/material/slider';
 import { ReactiveFormsModule, ControlValueAccessor, NG_VALUE_ACCESSOR, FormsModule } from '@angular/forms';
+import { MatIconModule } from '@angular/material/icon';
 
 @Component({
   selector: 'app-criteria-slider',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, MatSliderModule, FormsModule],
+  imports: [CommonModule, ReactiveFormsModule, MatSliderModule, FormsModule, MatIconModule],
   templateUrl:'./criteria-slider.component.html',
   styleUrl: './criteria-slider.component.css',
   providers: [{
@@ -17,6 +18,7 @@ import { ReactiveFormsModule, ControlValueAccessor, NG_VALUE_ACCESSOR, FormsModu
 })
 export class CriteriaSliderComponent implements ControlValueAccessor {
   @Input() label = '';
+  @Input() icon = '';
 
   selectedValue = 50;
   disabled = false;

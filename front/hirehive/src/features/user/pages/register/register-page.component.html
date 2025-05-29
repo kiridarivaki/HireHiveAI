@@ -8,7 +8,6 @@
     inputId="email"
     label="Email Address"
     formControlName="email"
-    inputIcon="email"
   ></app-input>
     <mat-error *ngIf="registerForm.controls.email.invalid && (registerForm.controls.email.dirty || registerForm.controls.email.touched)">
       {{ registerForm.controls.email.errors | validationError }}
@@ -69,7 +68,7 @@
     label="Confirm Password"
     formControlName="confirmPassword"
   ></app-password-input>
-    <mat-error *ngIf="registerForm.controls.confirmPassword.invalid && (registerForm.controls.confirmPassword.dirty || registerForm.controls.confirmPassword.touched)">
+  <mat-error *ngIf="registerForm.controls.confirmPassword.invalid && (registerForm.controls.confirmPassword.dirty || registerForm.controls.confirmPassword.touched)">
     <ul class="mat-error-list">
       <li *ngIf="confirmPasswordControl?.errors?.['required']">Password is required.</li>
       <li *ngIf="confirmPasswordControl?.errors?.['minlength']">At least 8 characters.</li>
@@ -103,8 +102,10 @@
   <div >
   <app-button
     class="register-button"
+    variant="raised"
     type="submit"
     text="Register"
+    [disabled]="!registerForm.valid"
     >
   </app-button>
   </div>

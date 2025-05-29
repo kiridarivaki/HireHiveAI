@@ -2,4 +2,5 @@ label {
     font-weight: 600;
     margin-bottom: 0.25rem;
     display: block;
+    color: var(--app-dark-blue)
 }
