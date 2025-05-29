@@ -5,12 +5,26 @@
     Your email address <strong>{{ userEmail }}</strong> is not confirmed yet.
     Please check your inbox for the confirmation email.
   </p>
-  <app-button
-    *ngIf="resendStatus !== 'sent'"
-    (click)="resendEmailConfirmation()"
-    [text]="resendStatus === 'sending' ? 'Resending...' : 'Resend Email'"
-    [disabled]="resendStatus === 'sending'">
-  </app-button>
+  <app-input
+    text="Enter the verification token"
+    label="Confirmation token"
+    inputIcon="key"
+    [(ngModel)]="tokenInput"
+  >
+  </app-input>
+    <div class="btn-group">
+    <app-button
+      text="Confirm email"
+      (click)="goToConfirmation()"
+    >
+    </app-button>
+    <app-button
+      *ngIf="resendStatus !== 'sent'"
+      (click)="resendEmailConfirmation()"
+      [text]="resendStatus === 'sending' ? 'Resending...' : 'Resend Email'"
+      [disabled]="resendStatus === 'sending'">
+    </app-button>
+  </div>
   <p class="error-message" *ngIf="resendStatus === 'error'">
     Failed to resend confirmation email. Please try again later.
   </p>

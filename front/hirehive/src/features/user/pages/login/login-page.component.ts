@@ -62,7 +62,6 @@ export class LoginPageComponent {
               this.storageService.removeUser()
               if (err.status === 401 && err.error?.message === 'Email addresss is not confirmed.'){
                 this.errorService.showError('Email confirmation is required.');
-                this.emailResendService.resendEmailConfirmation(loginData.email);
                 this.router.navigate(['/check-email'], { queryParams: { email: loginData.email } });
               }else{
                 this.errorService.showError('Invalid credentials.');

@@ -25,42 +25,27 @@ export class EmailConfirmationComponent implements OnInit, OnDestroy {
   constructor(
     private route: ActivatedRoute,
     private authService: AuthService,
-    private resendService: EmailResendService,
-    private router: Router
+    private resendService: EmailResendService
   ) {}
 
   ngOnInit(): void {
     this.resendSub = this.resendService.resendStatus$.subscribe(status => {
       this.resendStatus = status;
-    });
+  });
 
-    const userId = this.route.snapshot.queryParamMap.get('userId');
-    const token = this.route.snapshot.queryParamMap.get('token');
+    const userEmail = this.route.snapshot.paramMap.get('userEmail');
+    const token = this.route.snapshot.paramMap.get('token');
 
-    if (userId && token) {
+    if (token && userEmail) {
       this.confirmationStatus = 'pending';
-
-      this.authService.getUserInfo(userId).subscribe({
-        next: (user) => {
-          this.userEmail = user.email;
-
-          if (user.emailConfirmed) {
-            this.confirmationStatus = 'alreadyConfirmed';
-          } else {
-            const emailConfirmationData: EmailConfirmationPayload = {
-              confirmationToken: token,
-              email: user.email
-            };
-
-            this.authService.confirmEmail(emailConfirmationData).subscribe({
-              next: () => {
-                this.confirmationStatus = 'success';
-              },
-              error: () => {
-                this.confirmationStatus = 'error';
-              }
-            });
-          }
+      const emailConfirmationData: EmailConfirmationPayload = {
+        confirmationToken: token,
+        email: userEmail
+      };
+      console.log('check', userEmail, token)
+      this.authService.confirmEmail(emailConfirmationData).subscribe({
+        next: () => {
+          this.confirmationStatus = 'success';
         },
         error: () => {
           this.confirmationStatus = 'error';
