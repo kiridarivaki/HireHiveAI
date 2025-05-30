@@ -1,21 +1,26 @@
-<h2 class="page-title">Candidate Matches</h2>
-<div class="sort-bar">
-  <app-select
-    [options]="sortOptions"
-    [(ngModel)]="sortField"
-    label="Select a field"
-    class="full-width"
-    (ngModelChange)="onSortFieldChange()"
-  ></app-select>
+<div class="candidate-results">
+  <div class="header-container">
+    <h1 class="page-title">Candidate Matches</h1>
+    <div class="sort-bar">
+      <app-select
+        [options]="sortOptions"
+        [(ngModel)]="sortField"
+        label="Select a field"
+        class="full-width"
+        (ngModelChange)="onSortFieldChange()"
+      ></app-select>
 
-  <app-button
-    icon="{{ sortOrder === 'asc' ? 'arrow_upward' : 'arrow_downward' }}"
-    (click)="toggleSortOrder()"
-    matTooltip="Toggle sort order"
-    text="{{ sortOrder === 'asc' ? 'Ascending order' : 'Descending order' }}"
-  >
-  </app-button>
-</div>
+      <app-button
+        icon="{{ sortOrder === 'asc' ? 'arrow_upward' : 'arrow_downward' }}"
+        (click)="toggleSortOrder()"
+        variant="raised"
+        class="sortToggle"
+        matTooltip="Toggle sort order"
+        text="{{ sortOrder === 'asc' ? 'Ascending' : 'Descending' }}"
+      >
+      </app-button>
+    </div>
+  </div>
 
 <div class="candidate-list-container">
   <div class="candidate-cards-wrapper">
@@ -27,6 +32,7 @@
 
   <div class="load-more-container" *ngIf="usersList.length > 0 && !(noMoreResults)">
     <app-button 
+      variant="flat"
       (click)="fetchNextBatch()" 
       [disabled]="!!(loading$ | async)" 
       class="load-more-button"
@@ -43,3 +49,4 @@
     <p>No more results.</p>
   </div>
 </div>
+</div>  

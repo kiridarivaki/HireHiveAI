@@ -1,2 +1,14 @@
-<app-button text="Preview" icon="description" (click)="openPreview()" >
-</app-button>
+<button 
+    mat-raised-button
+    (mouseenter)="hover=true"
+    (mouseleave)="hover=false"
+    [ngStyle]="{
+        'background-color': hover ? 'var(--app-dark-blue)' : 'var(--app-dark-blue)',
+        'color': hover ? 'var(--app-yellow)' : 'white'
+    }"
+    class="preview-button"
+    (click)="openPreview()"
+>
+<mat-icon >description</mat-icon>
+<span>Preview</span>
+</button>

@@ -7,6 +7,7 @@ import { CommonModule } from '@angular/common';
 @Component({
   selector: 'app-resume-preview-content',
   templateUrl: './resume-preview-content.html',
+  styleUrl: './resume-preview.component.scss',
   imports:[CommonModule]
 })
 export class ResumePreviewContentComponent implements OnInit, OnDestroy {

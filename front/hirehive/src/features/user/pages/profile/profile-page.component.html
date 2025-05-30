@@ -1,5 +1,5 @@
 <div class="profile-wrapper">
-<div class="profile-container">
+<div class="profile-container" [ngClass]="{ 'admin-layout': (isAdmin$ | async) }">
 <section class="profile-details" [ngClass]="{ 'admin-layout': (isAdmin$ | async) }">
   <h2>User Profile</h2>
   <form [formGroup]="profileForm" (ngSubmit)="onSubmit()">

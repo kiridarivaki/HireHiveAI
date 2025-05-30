@@ -1,0 +1,108 @@
+:host {
+  display: block;
+  width: 100%;
+  max-width: 800px;
+  margin: 0 auto;
+  box-sizing: border-box;
+}
+
+.user-card {
+  margin: 16px;
+  padding: 40px;
+  width: 100%;
+  max-width: 800px;
+  background-color: #eef4fc; 
+  color: var(--app-dark-blue);
+  border-radius: 8px;
+  box-sizing: border-box;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.card-content {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.card-content-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.user-name {
+  font-weight: 600;
+  font-size: 30px;
+  margin: 0;
+}
+
+.match-percentage {
+  color: var(--app-yellow);
+  font-weight: 800;
+  font-size: 2rem;
+  white-space: nowrap;
+  margin: 0;
+
+  span{
+    color: var(--app-dark-blue);
+    opacity: 0.8;
+    font-weight: 100;
+    font-size: 1rem;
+  }
+}
+
+.card-content-bottom {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 15px;
+}
+
+.user-email {
+  color: var(--app-dark-blue);
+  font-size: 16px;
+  opacity: 0.8;
+  margin: 0;
+  overflow-wrap: anywhere;
+  flex-grow: 1;
+}
+
+.action-buttons {
+  display: flex;
+  flex-direction: row;
+  gap: 8px;
+  white-space: nowrap;
+}
+
+:host .download-button {
+  --button-color: white;
+  --button-background: var(--app-dark-blue);
+}
+
+:host .download-button:hover {
+  --button-color: var(--app-yellow);
+  --button-background: var(--app-dark-blue);
+}
+
+@media (max-width: 768px) {
+  :host {
+    max-width: 100%;
+  }
+  
+  .user-card {
+    padding: 25px;
+  }
+  
+  .card-content-top, .card-content-bottom {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+  
+  .action-buttons {
+    margin-top: 8px;
+  }
+}

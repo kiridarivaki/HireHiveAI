@@ -14,10 +14,12 @@ import { FormsModule } from '@angular/forms';
 import { MatSelectModule } from '@angular/material/select';
 import { AppSelectComponent } from '@shared/components/select/select.component';
 import { Router } from '@angular/router';
+import { trigger, state, style, transition, animate } from '@angular/animations';
 
 @Component({
   selector: 'app-candidates-match',
   templateUrl: './candidate-matches.page.html',
+  styleUrl: './candidate-matches.page.scss',
   imports: [CandidateCardComponent, CommonModule, AppButtonComponent, MatIconModule, FormsModule, MatSelectModule, AppSelectComponent]
 })
 export class CandidateMatchesComponent implements OnInit {
@@ -29,7 +31,7 @@ export class CandidateMatchesComponent implements OnInit {
     value: key,
     label: label
   }));
-  sortField: string | null = null;
+  sortField: string = 'None';
   sortOrder: 'asc' | 'desc' = 'asc';
 
   constructor(
@@ -44,7 +46,7 @@ export class CandidateMatchesComponent implements OnInit {
     const assessmentData = this.stateService.getAssessmentData();
     if (!assessmentData) {
       this.errorService.showError('No information about the job was given.');
-      this.router.navigate(['/admin/job-profile'])
+      this.router.navigate(['/admin/job-profile']);
       return;
     }
 
@@ -54,8 +56,13 @@ export class CandidateMatchesComponent implements OnInit {
     this.fetchNextBatch();
   }
 
+  private updateUsersList(newUsers: AssessResponse[]) {
+    this.usersList = [...this.usersList, ...newUsers];
+    this.sortUsers();
+  }
+
   sortUsers() {
-    if (!this.sortField || !this.sortOrder) return;
+    if (this.sortField === 'None') return;
 
     const sortDataPayload: SortDataPayload = {
       assessmentData: this.usersList,
@@ -83,39 +90,6 @@ export class CandidateMatchesComponent implements OnInit {
     }
   }
 
-  fetchNextBatchMock() {
-    const assessmentData = this.stateService.getAssessmentData();
-    const cursor = this.stateService.getCursor() || 0;
-
-    if (!assessmentData) return;
-
-    this.loaderService.show();
-
-      const batchSize = 5;
-
-      const users: AssessResponse[] = [];
-
-    for (let i = 0; i < batchSize; i++) {
-      const id = cursor + i + 1;
-      users.push({
-        id,
-        firstName: `First${id}`,
-        lastName: `Last${id}`,
-        matchPercentage: Math.floor(Math.random() * 101),
-      } as unknown as AssessResponse);
-
-      if (users.length === 0) {
-        this.noMoreResults = true;
-      } else {
-        this.usersList = [...this.usersList, ...users];
-        this.stateService.setCursor(cursor + batchSize);
-      }
-
-      this.loaderService.hide();
-    }
-  }
-
-
   fetchNextBatch() {
     const assessmentData = this.stateService.getAssessmentData();
     const cursor = this.stateService.getCursor();
@@ -128,21 +102,18 @@ export class CandidateMatchesComponent implements OnInit {
       ...assessmentData,
       cursor
     };
+
     this.adminService.assess(requestPayload).pipe(
       finalize(() => this.loaderService.hide())
-      ).subscribe({
-        next: (users) => {
-          if (!users || users.length === 0) {
-            this.noMoreResults = true;
-            return;
-          }
-
-          this.usersList = [...this.usersList, ...users];
-          this.stateService.setCursor(cursor + users.length);
-
-          this.sortUsers();
+    ).subscribe({
+      next: (users) => {
+        if (!users || users.length === 0) {
+          this.noMoreResults = true;
+          return;
         }
+        this.stateService.setCursor(cursor + users.length);
+        this.updateUsersList(users);
+      }
     });
   }
 }
-

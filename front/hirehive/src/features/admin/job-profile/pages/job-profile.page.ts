@@ -11,8 +11,6 @@ import { AssessmentDataPayload } from 'src/app/client/models/admin-client.model'
 import { Router } from '@angular/router';
 import { JobStateService } from '@shared/services/job-state.service';
 
-const iconNames = ['school', 'psychology', 'menu_book', 'check_circle']; 
-
 @Component({
   selector: 'app-job-profile',
   standalone: true,
@@ -36,8 +34,7 @@ export class JobProfileComponent {
 
   criteria = Object.entries(AssessmentCriteria).map(([key, label], index) => ({
     key,
-    label,
-    icon: iconNames[index] || 'help_outline', 
+    label
   }));
 
   constructor(

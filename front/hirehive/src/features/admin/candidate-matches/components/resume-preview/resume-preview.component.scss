@@ -1,0 +1,13 @@
+:host {
+  --button-color: white;
+  --button-background: var(--app-dark-blue);
+}
+
+.preview-button {
+  background-color: var(--button-background);
+  color: var(--button-color);
+}
+
+.preview-button:hover {
+  --button-color: var(--app-yellow);
+}

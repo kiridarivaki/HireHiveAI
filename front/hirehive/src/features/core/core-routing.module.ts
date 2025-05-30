@@ -9,7 +9,8 @@ const routes: Routes = [{
       path: '',
       component: MainLayoutComponent,
       children: [
-        { path: 'home', component: HomeComponent }
+        { path: 'home', component: HomeComponent },
+        { path: '', component: HomeComponent }
       ]},
     { path: 'confirm-email/:userEmail/:token', component: EmailConfirmationComponent },
     { path: 'check-email', component: CheckEmailComponent }
