@@ -1,17 +1,19 @@
 import { Component, Input } from '@angular/core';
 import { ResumePreviewContentComponent } from './resume-preview-content.component';
 import { DialogService } from '@shared/services/dialog.service';
-import { FileService } from '@shared/services/file.service';
-import { AppButtonComponent } from '@shared/components/button/button.component';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-resume-preview',
   templateUrl: './resume-preview.component.html',
-  imports: [AppButtonComponent]
+  imports: [MatButtonModule, MatIconModule, CommonModule]
 })
 export class ResumePreviewComponent {
   @Input() userId: string = '';
   fileUrl: string | null = null;
+  hover: boolean = false;
 
   constructor(
     private dialogService: DialogService,

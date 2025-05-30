@@ -1,0 +1,83 @@
+
+.header-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;            
+  margin-bottom: 16px;
+  width: 100%;
+  gap: 20px;
+}
+
+.page-title {
+  font-weight: 200;
+  padding-bottom: 20px;
+  color: var(--app-dark-blue);
+}
+
+.sortToggle {
+  padding-left: 20px;
+  padding-bottom: 20px;
+}
+
+.candidate-results {
+  padding: 30px;
+  max-width: 900px;
+  margin: 0 auto;
+  box-sizing: border-box;
+}
+
+.candidate-list-container {
+  padding: 1rem;
+}
+
+.candidate-cards-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  max-width: 100%;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.load-more-container {
+  display: flex;
+  justify-content: center;
+  margin-top: 1.5rem;
+}
+
+:host .load-more-button {
+  --button-color: var(--app-dark-blue);
+  --button-background: var(--app-yellow);
+  cursor: pointer;
+}
+
+:host .load-more-button:hover{
+  --button-color: var(--app-yellow);
+  --button-background: var(--app-dark-blue);
+  cursor: pointer;
+}
+
+.load-more-button[disabled] {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.empty-state,
+.end-of-results {
+  text-align: center;
+  margin-top: 2rem;
+  color: #666;
+}
+
+.sort-bar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+@media (max-width: 768px) {
+  .candidate-results {
+    padding: 15px;
+  }
+}

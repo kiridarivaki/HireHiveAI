@@ -38,14 +38,16 @@
 }
 
 .welcome-msg {
-  margin-left: 2rem;
+  margin-left: 1rem;
   font-weight: 500;
   font-size: 0.95rem;
   color: #6e91cd;
   white-space: nowrap;
+  flex-shrink: 0; 
+  transition: opacity 0.3s ease, visibility 0.3s ease;
 }
 
-@media (max-width: 700px) {
+@media (max-width: 920px) {
   .navbar {
     flex-wrap: wrap;
     height: auto;
@@ -53,16 +55,26 @@
   }
 
   .nav-button {
-    margin-left: 0;
-    margin-top: 0.5rem;
+    margin: 0.5rem;
     width: 100%;
     text-align: center;
+    position: relative;
+  }
+
+  .nav-divider {
+    opacity: 0.8;
+    width: 15%;
+    height: 1px;
+    background-color: var(--app-blue);
+    margin: 0 auto 0.5rem auto;
   }
 
   .welcome-msg {
-    width: 100%;
+    opacity: 0;
+    visibility: hidden;
     margin-left: 0;
-    margin-top: 0.5rem;
-    text-align: center;
+    width: 0;
+    overflow: hidden;
+    pointer-events: none;
   }
 }

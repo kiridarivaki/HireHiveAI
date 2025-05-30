@@ -1,6 +1,6 @@
 :host .submit-button {
-  --button-background: var(--app-dark-blue);
-  --button-color: white;
+  --button-background: var(--app-yellow);
+  --button-color: var(--app-dark-blue);
   transition: background-color 0.4s, color 0.4s;
 }
 
@@ -8,6 +8,10 @@
   cursor: pointer;
   --button-background: var(--app-dark-blue);
   --button-color: var(--app-yellow);
+}
+
+:host .select-input{
+  --select-icon-color: var(--app-yellow);
 }
 
 .job-profile-form {
@@ -18,7 +22,7 @@
   padding: 2rem;
   box-sizing: border-box;
   max-width: 1000px;
-  margin: auto;
+  margin: 10rem auto;
   background: #fff;
   border-radius: 10px;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
@@ -50,7 +54,7 @@
   border-radius: 0.75rem;
   box-shadow:
     0 6px 12px rgba(70, 130, 180, 0.3);
-  border-left: 6px solid var(--app-yellow);
+  border-left: 6px solid var(--app-blue);
 }
 
 .field-label {
@@ -94,11 +98,8 @@
   width: 100%;
 }
 
-.btn-group app-select {
-  flex: 2;
-}
-.btn-group app-button {
-  flex: 1;
+.submit-button{
+  margin-top: 30px;
 }
 
 .right-panel h3 {

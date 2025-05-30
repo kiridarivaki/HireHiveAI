@@ -4,14 +4,23 @@
       Job Description
     </h2>
     <textarea formControlName="jobDescription" rows="6" class="textarea-input"></textarea>
-    <div class="btn-group">
       <app-select
+        selectIcon="work"
         [options]="jobTypes"
         label="Job Type"
         formControlName="jobType"
         class="select-input"
       ></app-select>
-
+  </div>
+  <div class="right-panel">
+    <h3>Assessment Criteria</h3>
+    <ng-container *ngFor="let c of criteria">
+      <app-criteria-slider
+        [label]="c.label"
+        [formControlName]="c.key"
+        class="criteria-slider"
+      ></app-criteria-slider>
+    </ng-container>
       <app-button
         variant="flat"
         class="submit-button"
@@ -19,18 +28,5 @@
         text="Assess"
         [disabled]="!jobForm.valid">
       </app-button>
-    </div>
-  </div>
-  <div class="right-panel">
-    <h3>Assessment Criteria</h3>
-
-    <ng-container *ngFor="let c of criteria">
-      <app-criteria-slider
-        [label]="c.label"
-        [icon]="c.icon"
-        [formControlName]="c.key"
-        class="criteria-slider"
-      ></app-criteria-slider>
-    </ng-container>
   </div>
 </form>

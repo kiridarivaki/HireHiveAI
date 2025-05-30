@@ -15,7 +15,8 @@ import { ErrorService } from "@shared/services/error.service";
 @Component({
     selector: 'app-resume-upload',
     standalone: false,
-    templateUrl: './resume-upload.component.html'
+    templateUrl: './resume-upload.component.html',
+    styleUrl: './resume-upload.component.scss'
   })
   
 export class ResumeUploadComponent implements OnInit{

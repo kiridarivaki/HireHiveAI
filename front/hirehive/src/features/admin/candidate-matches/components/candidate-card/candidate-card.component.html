@@ -1,13 +1,15 @@
-<mat-card class="user-card">
+<mat-card class="user-card" [@fadeSlideIn]="visible ? 'visible' : 'hidden'">
   <div class="card-content">
-    <div class="user-details">
-      <h3>{{ assessedUserInfo.firstName }} {{ assessedUserInfo.lastName }}</h3>
-      <p>Email: {{ assessedUserInfo.email }}</p>
-      <p>Match: {{ assessedUserInfo.matchPercentage }}%</p>
+    <div class="card-content-top">
+      <h3 class="user-name">{{ assessedUserInfo.firstName }} {{ assessedUserInfo.lastName }}</h3>
+      <p class="match-percentage">{{ assessedUserInfo.matchPercentage }}% <span>match</span></p>
     </div>
-    <div class="action-buttons">
-      <app-resume-preview [userId]="assessedUserInfo.userId"></app-resume-preview>
-      <app-button text="Download" class="download-button" icon="download" (click)="onDownload()"></app-button>
+    <div class="card-content-bottom">
+      <p class="user-email">Email: {{ assessedUserInfo.email }}</p>
+      <div class="action-buttons">
+        <app-resume-preview [userId]="assessedUserInfo.userId"></app-resume-preview>
+        <app-button variant="raised" text="Download" class="download-button" icon="download" (click)="onDownload()"></app-button>
+      </div>
     </div>
   </div>
 </mat-card>

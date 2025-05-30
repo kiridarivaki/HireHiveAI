@@ -4,7 +4,6 @@ export function fileValidator(control: AbstractControl): ValidationErrors | null
   const file = control.value as File | null;
 
   if (!file) {
-    console.log('No file provided');
     return { required: true };
   }
 
