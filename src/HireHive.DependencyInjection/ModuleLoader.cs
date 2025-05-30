@@ -12,7 +12,7 @@ public static class ModuleLoader
         //Filter out all third party assemblies.
         var assemblyNames = assemblyPaths
             .Select(Path.GetFileNameWithoutExtension)
-            .Where(n => n!.StartsWith("HireHive"))
+            .Where(n => n!.StartsWith("HireHive") && !n.Contains("Tests") && !n.Contains("Test"))
             .ToList();
 
         //Find all classes that implement IModule.
