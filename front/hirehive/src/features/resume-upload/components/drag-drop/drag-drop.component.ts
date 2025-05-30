@@ -5,7 +5,7 @@ import { GetResumeInfoPayload } from 'src/app/client/models/resume-client.model'
   selector: 'app-drag-drop',
   standalone: false,
   templateUrl: './drag-drop.component.html',
-  styleUrls: ['./drag-drop.component.css']
+  styleUrl: './drag-drop.component.scss'
 })
 export class DragDropComponent {
   @Input() file: File | null = null;

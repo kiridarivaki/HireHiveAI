@@ -11,7 +11,7 @@ import { AssessmentDataPayload } from 'src/app/client/models/admin-client.model'
 import { Router } from '@angular/router';
 import { JobStateService } from '@shared/services/job-state.service';
 
-const iconNames = ['star', 'thumb_up', 'favorite', 'check_circle']; 
+const iconNames = ['school', 'psychology', 'menu_book', 'check_circle']; 
 
 @Component({
   selector: 'app-job-profile',

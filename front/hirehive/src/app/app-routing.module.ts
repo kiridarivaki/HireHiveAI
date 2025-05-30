@@ -9,7 +9,7 @@ import { HomeComponent } from 'src/features/core/home/home.component';
 const routes: Routes = [
   { 
     path: 'admin',
-    canActivate: [AuthGuard, RoleGuard],
+    canActivate: [],
     loadChildren: () => import('../features/admin/admin.module').then(m => m.AdminModule)
   },
   { path: 'user', loadChildren: () => import('../features/user/user.module').then(m => m.UserModule) },

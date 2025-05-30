@@ -1,13 +1,89 @@
-:host .login-button {
-  --button-background: var(--app-dark-blue);
-  --button-color: white;
-  transition: background-color 0.4s, color 0.4s;
+.login-page {
+  display: flex;
+  height: 100vh;
+  justify-content: center;
+  align-items: center;
+  font-family: 'Segoe UI', sans-serif;
+  gap: 50px;
+  padding: 20px;
+  box-sizing: border-box;
+  flex-wrap: nowrap;
+  max-width: 1100px;
+  margin: 0 auto;
 }
 
-:host .login-button:hover {
-  cursor: pointer;
-  --button-background: var(--app-yellow);
-  --button-color: var(--app-dark-blue);
+.welcome-section {
+  flex: 3 1 0;
+  max-width: 650px;
+  color: var(--app-dark-blue);
+  padding: 110px 50px;
+  border-radius: 0.75rem;
+  text-align: left;
+  box-sizing: border-box;
+  animation: fadeSlideIn 1s ease-in-out both;
+
+  h1 {
+    font-size: 2.8rem;
+    margin-bottom: 20px;
+    line-height: 2;
+    font-weight: 500;
+  }
+
+  p {
+    font-family: 'Montserrat';
+    font-size: 1.1rem;
+    color: #e0e0e0;
+    margin-bottom: 32px;
+    line-height: 1.5;
+    font-weight: 100;
+  }
+
+  .cta-register {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 1rem;
+
+    span {
+      color: #ccc;
+    }
+
+    .register-link {
+      color: var(--app-yellow);
+      font-weight: bold;
+      text-decoration: none;
+      transition: color 0.3s ease;
+
+      &:hover {
+        color: var(--app-yellow);
+        text-decoration: underline;
+      }
+    }
+  }
+
+  @media (max-width: 900px) {
+    text-align: center;
+    max-width: 100%;
+    padding: 100px 80px;
+
+    h1 {
+      font-size: 2rem;
+    }
+
+    p {
+      font-size: 1rem;
+    }
+  }
+}
+
+.login-side {
+  flex: 2 1 0;
+  max-width: 500px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 0 20px;
+  box-sizing: border-box;
 }
 
 .login-container {
@@ -32,10 +108,22 @@
   margin-bottom: 15px;
 }
 
+.button-container {
+  display: flex;
+  justify-content: center;
+  margin-top: 5px;
+  margin-bottom: 15px;
+}
+
+mat-error{
+  font-size: 0.9rem;
+  color: #f44336;
+}
+
 .mat-error-list {
   padding-left: 1.2rem;
   margin-top: -5px;
-  font-size: 0.75rem;
+  font-size: 0.9rem;
   color: #f44336;
   list-style-type: disc;
 
@@ -45,9 +133,75 @@
   }
 }
 
-.button-container {
-  display: flex;
-  justify-content: center;
-  margin-top: 5px; 
-  margin-bottom: 7px;
+:host .login-button {
+  --button-background: var(--app-dark-blue);
+  --button-color: white;
+  transition: background-color 0.4s, color 0.4s;
+}
+
+:host .login-button:hover {
+  cursor: pointer;
+  --button-background: var(--app-yellow);
+  --button-color: var(--app-dark-blue);
+}
+
+@media (max-width: 900px) {
+  .login-page {
+    flex-direction: column;
+    align-items: center;
+    gap: 30px;
+    height: auto;
+    padding: 40px 16px;
+  }
+
+  .welcome-section {
+    max-width: 600px;
+    width: 100%;
+    padding: 50px 24px;
+
+    h1 {
+      font-size: 2.2rem;
+    }
+
+    p {
+      font-size: 1rem;
+    }
+
+    .cta-register {
+      justify-content: center;
+    }
+  }
+
+  .login-side {
+    max-width: 600px;
+    width: 100%;
+    justify-content: center;
+    padding: 0;
+  }
+
+  .login-container {
+    width: 100%;
+    max-width: 500px;
+    padding: 24px;
+  }
+}
+
+@media (max-width: 600px) {
+  .welcome-section {
+    max-width: 100%;
+    padding: 40px 20px;
+
+    h1 {
+      font-size: 1.8rem;
+    }
+
+    p {
+      font-size: 0.95rem;
+    }
+  }
+
+  .login-container {
+    max-width: 100%;
+    padding: 16px;
+  }
 }

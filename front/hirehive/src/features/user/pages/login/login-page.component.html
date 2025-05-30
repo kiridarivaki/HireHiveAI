@@ -1,46 +1,59 @@
-<div class="login-container">
-  <h2>Login</h2>
-  <form [formGroup]="loginForm" (ngSubmit)="onLogin()">
-    <div class="form-field">
-      <app-input
-        type="email"
-        placeholder="Email"
-        inputId="email"
-        label="Email Address"
-        formControlName="email"
-      ></app-input>
-      <mat-error *ngIf="loginForm.controls.email.invalid && (loginForm.controls.email.dirty || loginForm.controls.email.touched)">
-        {{ loginForm.controls.email.errors | validationError }}
-      </mat-error>
+<div class="login-page" >
+  <div class="welcome-section" [@slideInLeft]>
+    <h1>Welcome Back</h1>
+    <div class="cta-register">
+      <span>New here?</span>
+      <a routerLink="/register" class="register-link" >Register</a>
     </div>
+  </div>
 
-    <div class="form-field">
-      <app-password-input
-        type="password"
-        placeholder="Password"
-        inputId="password"
-        label="Password"
-        [withToggle]="true"
-        formControlName="password"
-      ></app-password-input>
-      <mat-error *ngIf="loginForm.controls.password.invalid && (loginForm.controls.password.dirty || loginForm.controls.password.touched)">
-        <ul class="mat-error-list">
-          <li *ngIf="loginForm.controls.password.errors?.['required']">Password is required.</li>
-          <li *ngIf="loginForm.controls.password.errors?.['minlength']">At least 8 characters.</li>
-          <li *ngIf="loginForm.controls.password.errors?.['uppercase']">Must contain an uppercase letter.</li>
-          <li *ngIf="loginForm.controls.password.errors?.['lowercase']">Must contain a lowercase letter.</li>
-          <li *ngIf="loginForm.controls.password.errors?.['digit']">Must contain a number.</li>
-        </ul>
-      </mat-error>
+  <div class="login-side">
+    <div class="login-container" [@fadeInOnly]>
+      <h2>Login</h2>
+      <form [formGroup]="loginForm" [@formStagger] (ngSubmit)="onLogin()">
+        <div class="form-field">
+          <app-input
+            type="email"
+            placeholder="Email"
+            inputId="email"
+            label="Email Address"
+            formControlName="email"
+          ></app-input>
+          <mat-error *ngIf="loginForm.controls.email.invalid && (loginForm.controls.email.dirty || loginForm.controls.email.touched)">
+            {{ loginForm.controls.email.errors | validationError }}
+          </mat-error>
+        </div>
+
+        <div class="form-field">
+          <app-password-input
+            type="password"
+            placeholder="Password"
+            inputId="password"
+            label="Password"
+            [withToggle]="true"
+            formControlName="password"
+          ></app-password-input>
+          <mat-error *ngIf="loginForm.controls.password.invalid && (loginForm.controls.password.dirty || loginForm.controls.password.touched)">
+            <ul class="mat-error-list">
+              <li *ngIf="loginForm.controls.password.errors?.['required']">Password is required.</li>
+              <li *ngIf="loginForm.controls.password.errors?.['minlength']">At least 8 characters.</li>
+              <li *ngIf="loginForm.controls.password.errors?.['uppercase']">Must contain <br>an uppercase letter.</li>
+              <li *ngIf="loginForm.controls.password.errors?.['lowercase']">Must contain <br>a lowercase letter.</li>
+              <li *ngIf="loginForm.controls.password.errors?.['digit']">Must contain a number.</li>
+            </ul>
+          </mat-error>
+        </div>
+
+        <div class="button-container">
+          <app-button
+            class="login-button"
+            variant="raised"
+            type="submit"
+            text="Login"
+            [disabled]="!loginForm.valid"
+          ></app-button>
+        </div>
+      </form>
     </div>
-    <div class="button-container">
-      <app-button
-        class="login-button"
-        variant="raised"
-        type="submit"
-        text="Login"
-        [disabled]="!loginForm.valid">
-      </app-button>
-    </div>
-  </form>
+  </div>
 </div>

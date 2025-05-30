@@ -3,90 +3,121 @@
 }
 
 :host .warn{
-  --button-color: red
+  --button-background: red;
+  --button-color: white;
 }
 
 :host .save-changes{
-  --button-color: white
+  --button-background: var(--app-dark-blue);
+  --button-color: white;
+}
+
+:host .save-changes:hover{
+  cursor: pointer;
+}
+
+.profile-wrapper {
+  display: flex;
+  justify-content: center;
+  padding: 2rem;
+  box-sizing: border-box;
 }
 
 .profile-container {
   display: flex;
-  justify-content: center;
+  flex-direction: row;
+  align-items: stretch; 
+  gap: 2rem;
+  width: 100%;
+  max-width: 1200px;
   flex-wrap: wrap;
-  gap: 20px;
-  padding: 20px;
-  max-width: 1000px;
-  width: 100%;
-  margin: 0 auto;
-}
 
-.admin-layout {
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-
-  .form-field {
-    width: 100%;
-    max-width: 500px;
-    margin-bottom: 15px;
-  }
-
-  section {
-    width: 100%;
+  @media (max-width: 992px) {
+    flex-direction: column;
+    align-items: stretch;
   }
 }
 
 .profile-details {
-  width: 100%;
-}
+  flex: 2;
+  background-color: white;
+  padding: 2rem;
+  border-radius: 8px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
 
-@media (min-width: 768px) {
-  .profile-details {
-    width: 55%;
+  h2 {
+    margin-bottom: 1.5rem;
+    color: var(--app-dark-blue);
   }
 
-  .resume-upload {
-    width: 40%;
+  form {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.5rem;
+
+    .form-field {
+      flex: 1 1 calc(50% - 1rem);
+      min-width: 250px;
+    }
+  }
+
+  &.admin-layout form {
+    flex-direction: column;
+
+    .form-field {
+      flex: 1 1 100%;
+    }
   }
 }
 
-section {
+.btn-group {
+  flex: 1 1 100%;
   display: flex;
-  flex-direction: column;
-  gap: 16px;
-  padding: 20px;
+  gap: 1rem;
+  justify-content: flex-start;
+  margin-top: 1rem;
+}
+
+.resume-upload {
+  flex: 1;
   background-color: white;
   border-radius: 8px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  box-sizing: border-box;
-  width: 100%;
-}
+  padding: 2rem;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+  min-width: 280px;
 
-mat-error {
-  display: block;
-  min-height: 1.5em;
-  margin-top: -10px;
-  margin-bottom: 10px;
-  font-size: 14px;
-  color: #f44336;
-}
-
-@media (min-width: 768px) {
-  .profile-details {
+  @media (max-width: 992px) {
     width: 100%;
+  }
+}
+
+app-input, app-select, app-chip-list {
+  --input-label-color: var(--app-dark-blue);
+  --input-border-color: var(--app-dark-blue);
+  --icon-color: var(--app-yellow);
+}
+
+.mat-error {
+  font-size: 0.75rem;
+  color: #f44336;
+  margin-top: -4px;
+  padding-left: 0.5rem;
+}
+
+@media (max-width: 768px) {
+  .profile-container {
+    flex-direction: column;
+  }
+
+  .profile-details form {
+    flex-direction: column;
+
+    .form-field {
+      flex: 1 1 100%;
+    }
   }
 
   .resume-upload {
-    width: 40%;
+    margin-top: 2rem;
   }
-}
-
-.form-field {
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  margin-bottom: 15px;
 }

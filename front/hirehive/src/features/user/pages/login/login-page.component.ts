@@ -11,13 +11,39 @@ import { AuthService } from '@shared/services/auth.service';
 import { ErrorService } from '@shared/services/error.service';
 import { EmailResendService } from '@shared/services/email-resend.service';
 import { NotificationService } from '@shared/services/notification.service';
+import { trigger, transition, style, animate, query, stagger } from '@angular/animations';
 
 
 @Component({
   selector: 'app-login-page',
   standalone: false,
   templateUrl: './login-page.component.html',
-  styleUrl: './login-page.component.scss'
+  styleUrl: './login-page.component.scss',
+    animations: [
+    trigger('fadeInOnly', [
+  transition(':enter', [
+    style({ opacity: 0 }),
+    animate('1500ms  ease-out', style({ opacity: 1 }))
+  ])
+])
+,
+trigger('formStagger', [
+  transition(':enter', [
+    query('.form-field', [
+      style({ opacity: 0 }),
+      stagger(150, [
+        animate('1000ms  ease-out', style({ opacity: 1 }))
+      ])
+    ])
+  ])
+]),
+trigger('slideInLeft', [
+  transition(':enter', [
+    style({ transform: 'translateX(-50px)', opacity: 0 }),
+    animate('1500ms  ease-out', style({ transform: 'translateX(0)', opacity: 1 }))
+  ])
+])
+  ]
 })
 export class LoginPageComponent {
     constructor(
