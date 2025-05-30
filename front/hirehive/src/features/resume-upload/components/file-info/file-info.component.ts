@@ -5,7 +5,7 @@ import { GetResumeInfoPayload } from 'src/app/client/models/resume-client.model'
 @Component({
   selector: 'app-file-info',
   templateUrl: './file-info.component.html',
-  styleUrls: ['./file-info.component.css'],
+  styleUrl: './file-info.component.scss',
   imports: [CommonModule]
 })
 export class FileInfoComponent {

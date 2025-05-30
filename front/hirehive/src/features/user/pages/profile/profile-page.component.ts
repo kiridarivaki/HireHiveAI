@@ -9,6 +9,8 @@ import { AuthService } from "@shared/services/auth.service";
 import { finalize, Observable } from "rxjs";
 import { LoaderService } from "@shared/services/loader.service";
 import { NotificationService } from "@shared/services/notification.service";
+import { ConfirmDialogComponent } from "@shared/components/dialog/confirm-dialog/confirm-dialog.component";
+import { DialogService } from "@shared/services/dialog.service";
 
 @Component({
     selector: 'app-profile-page',
@@ -35,7 +37,8 @@ export class ProfilePageComponent implements OnInit{
     private userService: UserClientService,
     private loaderService: LoaderService,
     private notificationService: NotificationService,
-    private authService: AuthService
+    private authService: AuthService,
+    private dialogService: DialogService
   ){}
 
   profileForm = new FormGroup ({
@@ -92,18 +95,25 @@ export class ProfilePageComponent implements OnInit{
   }
 
   onDelete() {
-    this.loaderService.show();
-    if (this.userId){
-      this.userService.delete(this.userId)
-      .pipe(finalize(() => this.loaderService.hide()))
-      .subscribe({
-        next: ()=>{
-          this.userData = null;
-          this.notificationService.showNotification('Profile deleted successfully!');
-          this.authService.logout();
-        }
-      });
-    }
-
+    this.dialogService.open(ConfirmDialogComponent, {
+      title: 'Confirm Logout',
+    })
+    .afterClosed().subscribe(confirmed => {
+      if (!confirmed) {
+        return;
+      }
+      this.loaderService.show();
+      if (this.userId){
+        this.userService.delete(this.userId)
+        .pipe(finalize(() => this.loaderService.hide()))
+        .subscribe({
+          next: ()=>{
+            this.userData = null;
+            this.notificationService.showNotification('Profile deleted successfully!');
+            this.authService.logout();
+          }
+        });
+      }
+    });
   }
 }

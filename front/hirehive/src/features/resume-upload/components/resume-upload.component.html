@@ -11,7 +11,7 @@
   ></app-drag-drop>
 
   <div class="btn-group" *ngIf="selectedFile || fileMetadata">
-    <app-button variant="flat" text="Upload" (click)="onSubmit()" [disabled]="uploadDisabled"></app-button>
-    <app-button variant="flat" text="Remove" (click)="onFileRemoved()"></app-button>
+    <app-button variant="raised" text="Upload" (click)="onSubmit()" [disabled]="uploadDisabled"></app-button>
+    <app-button variant="raised" text="Remove" (click)="onFileRemoved()"></app-button>
   </div>
 </form>
