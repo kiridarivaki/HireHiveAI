@@ -4,10 +4,20 @@
     {
         SoftwareEngineer,
         FullStackDeveloper,
-        DataScientist,
-        UXDesigner,
+        FrontEndDeveloper,
+        BackEndDeveloper,
         DevOpsEngineer,
         QAEngineer,
-        BusinessAnalyst
+        DataScientist,
+        DataEngineer,
+        MachineLearningEngineer,
+        UXDesigner,
+        UIEngineer,
+        CloudArchitect,
+        CyberSecuritySpecialist,
+        BusinessAnalyst,
+        MobileDeveloper,
+        DatabaseAdministrator
     }
+
 }

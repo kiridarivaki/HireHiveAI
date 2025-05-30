@@ -58,11 +58,12 @@ namespace HireHive.Infrastructure.Data
         public static async Task SeedAdmin(UserManager<User> userManager, HireHiveDbContext context)
         {
             // seed admin
-            string adminEmail = "t8210030@aueb.gr";
+            string adminEmail = "admin@hirehive.gr";
 
             if (await userManager.FindByEmailAsync(adminEmail) == null)
             {
                 var admin = new User(adminEmail, "Kyriaki", "Darivaki", EmploymentStatus.Intern, null);
+                admin.EmailConfirmed = true;
 
                 var result = await userManager.CreateAsync(admin, "Password1!@#");
                 if (!result.Succeeded)
@@ -77,7 +78,8 @@ namespace HireHive.Infrastructure.Data
 
             if (await userManager.FindByEmailAsync(userEmail) == null)
             {
-                var user = new User(userEmail, "John", "Doe", EmploymentStatus.Student, [JobType.DataScientist]);
+                var user = new User(userEmail, "John", "Doe", EmploymentStatus.Student, [JobType.DataScientist, JobType.FullStackDeveloper]);
+                user.EmailConfirmed = true;
 
                 var result = await userManager.CreateAsync(user, "Hello1!@#");
                 if (!result.Succeeded)
