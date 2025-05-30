@@ -7,10 +7,10 @@ namespace HireHive.Infrastructure.Startup
     {
         public static void ConfigureKeyVault(this IConfigurationBuilder builder, IConfiguration configuration)
         {
-            var keyVaultURL = configuration.GetValue<string>("AzureKeyVault:KeyVaultURL");
-            var keyVaultClientId = configuration.GetValue<string>("AzureKeyVault:ClientId");
-            var keyVaultClientSecret = configuration.GetValue<string>("AzureKeyVault:ClientSecret");
-            var keyVaultDirectoryID = configuration.GetValue<string>("AzureKeyVault:DirectoryID");
+            var keyVaultURL = configuration.GetSection("AzureKeyVault:KeyVaultURL").Value;
+            var keyVaultClientId = configuration.GetSection("AzureKeyVault:ClientId").Value;
+            var keyVaultClientSecret = configuration.GetSection("AzureKeyVault:ClientSecret").Value;
+            var keyVaultDirectoryID = configuration.GetSection("AzureKeyVault:DirectoryID").Value;
 
             var credential = new ClientSecretCredential(keyVaultDirectoryID!.ToString(), keyVaultClientId!.ToString(), keyVaultClientSecret!.ToString());
             builder.AddAzureKeyVault(
