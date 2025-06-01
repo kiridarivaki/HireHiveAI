@@ -25,7 +25,11 @@
             ],
             "assets": [
               "src/assets",
-              "src/staticwebapp.config.json"
+              {
+                "glob": "staticwebapp.config.json",
+                "input": "src",
+                "output": "/"
+              }
             ],
             "scripts": []
           },
