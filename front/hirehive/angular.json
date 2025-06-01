@@ -24,12 +24,7 @@
               "src/styles.scss"
             ],
             "assets": [
-              "src/assets",
-              {
-                "glob": "staticwebapp.config.json",
-                "input": "src",
-                "output": "/"
-              }
+              "src/assets"
             ],
             "scripts": []
           },
