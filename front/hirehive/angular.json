@@ -24,7 +24,8 @@
               "src/styles.scss"
             ],
             "assets": [
-              "src/assets"
+              "src/assets",
+              "src/staticwebapp.config.json"
             ],
             "scripts": []
           },
