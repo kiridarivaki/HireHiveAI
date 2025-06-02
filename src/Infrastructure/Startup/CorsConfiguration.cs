@@ -11,7 +11,7 @@ namespace HireHive.Infrastructure.Startup
             {
                 options.AddPolicy("AllowSpecificOrigins", policy =>
                 {
-                    policy.WithOrigins("http://localhost:4200")
+                    policy.WithOrigins("https://wonderful-flower-0782c0b03.6.azurestaticapps.net/")
                          .AllowAnyHeader()
                      .AllowAnyMethod();
                 });
