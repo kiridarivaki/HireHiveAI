@@ -11,8 +11,7 @@ const routes: Routes = [
     loadChildren: () => import('../features/admin/admin.module').then(m => m.AdminModule)
   },
   { path: 'user', loadChildren: () => import('../features/user/user.module').then(m => m.UserModule) },
-  { path: '', loadChildren: () => import('../features/core/core.module').then(m => m.CoreModule) },
-  { path: '**', redirectTo: '', pathMatch: 'full' }
+  { path: '', loadChildren: () => import('../features/core/core.module').then(m => m.CoreModule) }
 ];
 
 @NgModule({
