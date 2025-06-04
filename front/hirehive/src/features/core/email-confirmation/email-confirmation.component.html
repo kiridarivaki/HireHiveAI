@@ -6,13 +6,13 @@
 <div class="confirmation-container info" *ngIf="confirmationStatus === 'alreadyConfirmed'">
   <mat-icon color="gray">info</mat-icon>
   <p class="message">Your email was already confirmed.</p>
-  <app-button routerLink="/login" text="Login"></app-button>
+  <app-button routerLink="/user/login" text="Login"></app-button>
 </div>
 
 <div class="confirmation-container success" *ngIf="confirmationStatus === 'success'">
   <mat-icon color="primary" class="icon">check_circle</mat-icon>
   <p class="message">Your email has been confirmed!</p>
-  <app-button routerLink="/login" text="Login"></app-button>
+  <app-button routerLink="/user/login" text="Login"></app-button>
 </div>
 
 <div class="confirmation-container error" *ngIf="confirmationStatus === 'error'">

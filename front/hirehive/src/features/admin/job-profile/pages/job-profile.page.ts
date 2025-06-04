@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatSliderModule } from '@angular/material/slider';
-import { ReactiveFormsModule, FormGroup, FormControl } from '@angular/forms';
+import { ReactiveFormsModule, FormGroup, FormControl, Validators } from '@angular/forms';
 import { AppSelectComponent } from '@shared/components/select/select.component';
 import { AppButtonComponent } from '@shared/components/button/button.component';
 import { CriteriaSliderComponent } from '../components/criteria-slider/criteria-slider.component';
@@ -10,18 +10,19 @@ import { AssessmentCriteria } from '@shared/constants/assessment-criteria';
 import { AssessmentDataPayload } from 'src/app/client/models/admin-client.model';
 import { Router } from '@angular/router';
 import { JobStateService } from '@shared/services/job-state.service';
+import { MatFormFieldModule } from '@angular/material/form-field';
 
 @Component({
   selector: 'app-job-profile',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, MatSliderModule, AppSelectComponent, AppButtonComponent, CriteriaSliderComponent],
+  imports: [CommonModule, ReactiveFormsModule, MatSliderModule, AppSelectComponent, AppButtonComponent, CriteriaSliderComponent, MatFormFieldModule],
   templateUrl: './job-profile.page.html',
   styleUrl: './job-profile.page.scss'
 })
 export class JobProfileComponent {
   jobForm = new FormGroup({
-    jobDescription: new FormControl(''),
-    jobType: new FormControl(''), 
+    jobDescription: new FormControl('', Validators.required),
+    jobType: new FormControl('', Validators.required), 
     education: new FormControl(50),
     skills: new FormControl(50),
     experience: new FormControl(50),
