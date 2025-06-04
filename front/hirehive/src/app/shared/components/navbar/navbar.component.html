@@ -4,12 +4,12 @@
   <span class="spacer"></span>
 
   <button class="nav-button" (click)="goHome()">Home</button>
-
+    <div class="nav-divider"></div>
   <ng-container *ngIf="!isLoggedIn">
-    <button class="nav-button" routerLink="/register">Register</button>
+    <button class="nav-button" routerLink="/user/register">Register</button>
     <div class="nav-divider"></div>
 
-    <button class="nav-button" routerLink="/login">Login</button>
+    <button class="nav-button" routerLink="/user/login">Login</button>
   </ng-container>
     <div class="nav-divider"></div>
 

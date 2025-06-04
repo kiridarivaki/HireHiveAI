@@ -3,15 +3,17 @@ import { RouterModule, Routes } from '@angular/router';
 import { AuthGuard } from '@shared/guards/auth.guard';
 import { RoleGuard } from '@shared/guards/role.guard';
 import { CoreRoutingModule } from 'src/features/core/core-routing.module';
+import { NotFoundComponent } from 'src/features/core/not-found/not-found.component';
 
 const routes: Routes = [
   { 
     path: 'admin',
-    canActivate: [AuthGuard, RoleGuard],
+    canActivate: [],
     loadChildren: () => import('../features/admin/admin.module').then(m => m.AdminModule)
   },
   { path: 'user', loadChildren: () => import('../features/user/user.module').then(m => m.UserModule) },
-  { path: '', loadChildren: () => import('../features/core/core.module').then(m => m.CoreModule) }
+  { path: '', loadChildren: () => import('../features/core/core.module').then(m => m.CoreModule) },
+  { path: '**', component: NotFoundComponent }
 ];
 
 @NgModule({
