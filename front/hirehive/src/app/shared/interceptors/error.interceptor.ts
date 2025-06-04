@@ -25,7 +25,7 @@ export class ErrorInterceptor implements HttpInterceptor{
             break;
           case 401:
             message = 'Unauthorized. Please log in again.';
-            this.router.navigate(['/login']);
+            this.router.navigate(['/user/login']);
             break;
           case 403:
             message = 'Forbidden. You don’t have permission.';
@@ -49,9 +49,9 @@ export class ErrorInterceptor implements HttpInterceptor{
 
   private shouldNotIntercept(url: string): boolean {
     return (
-      url.includes('/login') ||
-      url.includes('/refreshToken') ||
-      url.includes('/register')
+      url.includes('/user/login') ||
+      url.includes('/user/refreshToken') ||
+      url.includes('/user/register')
     );
   }
 } 
