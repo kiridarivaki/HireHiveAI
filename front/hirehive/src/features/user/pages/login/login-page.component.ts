@@ -21,35 +21,33 @@ import { trigger, transition, style, animate, query, stagger } from '@angular/an
   styleUrl: './login-page.component.scss',
     animations: [
     trigger('fadeInOnly', [
-  transition(':enter', [
-    style({ opacity: 0 }),
-    animate('1500ms  ease-out', style({ opacity: 1 }))
-  ])
-])
-,
-trigger('formStagger', [
-  transition(':enter', [
-    query('.form-field', [
+    transition(':enter', [
       style({ opacity: 0 }),
-      stagger(150, [
-        animate('1000ms  ease-out', style({ opacity: 1 }))
+      animate('1500ms  ease-out', style({ opacity: 1 }))
+    ])
+  ]),
+  trigger('formStagger', [
+    transition(':enter', [
+      query('.form-field', [
+        style({ opacity: 0 }),
+        stagger(150, [
+          animate('1000ms  ease-out', style({ opacity: 1 }))
+        ])
       ])
     ])
+  ]),
+  trigger('slideInLeft', [
+    transition(':enter', [
+      style({ transform: 'translateX(-50px)', opacity: 0 }),
+      animate('1500ms  ease-out', style({ transform: 'translateX(0)', opacity: 1 }))
+    ])
   ])
-]),
-trigger('slideInLeft', [
-  transition(':enter', [
-    style({ transform: 'translateX(-50px)', opacity: 0 }),
-    animate('1500ms  ease-out', style({ transform: 'translateX(0)', opacity: 1 }))
-  ])
-])
   ]
 })
 export class LoginPageComponent {
     constructor(
       private authService: AuthService,
       private storageService: StorageService,
-      private emailResendService: EmailResendService,
       private notificationService: NotificationService,
       private errorService: ErrorService,
       private router: Router

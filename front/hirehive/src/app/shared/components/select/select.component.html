@@ -4,6 +4,7 @@
     [value]="value"
     (selectionChange)="onValueChange($event.value)"
     [disabled]="disabled">
+    <mat-option value="" disabled>Select a {{ label.toLowerCase() }}</mat-option>
     <mat-option *ngFor="let option of options" [value]="option.value">
       {{ option.label }}
     </mat-option>
