@@ -61,6 +61,12 @@
   margin-top: 15px;
 }
 
+.user-info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
 .user-email {
   color: var(--app-dark-blue);
   font-size: 16px;
@@ -87,22 +93,41 @@
   --button-background: var(--app-dark-blue);
 }
 
-@media (max-width: 768px) {
+@media (max-width: 600px) {
   :host {
     max-width: 100%;
+    padding: 0 12px;
   }
-  
+
   .user-card {
-    padding: 25px;
+    padding: 20px;
+    margin: 12px 0;
   }
-  
-  .card-content-top, .card-content-bottom {
+
+  .card-content-top,
+  .card-content-bottom {
     flex-direction: column;
     align-items: flex-start;
-    gap: 8px;
+    gap: 6px;
   }
-  
+
+  .match-percentage {
+    font-size: 1.5rem;
+  }
+
+  .user-name {
+    font-size: 22px;
+  }
+
+  .user-email {
+    font-size: 14px;
+  }
+
   .action-buttons {
-    margin-top: 8px;
+    width: 100%;
+    justify-content: flex-start;
+    gap: 10px;
+    margin-top: 10px;
   }
 }
+

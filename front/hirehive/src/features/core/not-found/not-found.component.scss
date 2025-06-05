@@ -6,6 +6,7 @@
 .not-found-container h1 {
   font-size: 96px;
   margin-bottom: 20px;
+  font-weight: 500;
 }
 
 .not-found-container h2 {
@@ -17,4 +18,18 @@
 .not-found-container p {
   font-size: 18px;
   margin: 20px 0;
+}
+
+@media (max-width: 768px) {
+  .not-found-container h1 {
+    font-size: 60px;
+  }
+
+  .not-found-container h2 {
+    font-size: 28px;
+  }
+
+  .not-found-container p {
+    font-size: 12px;
+  }
 }

@@ -1,5 +1,5 @@
 <div class="login-page" >
-  <div class="welcome-section" [@slideInLeft]>
+  <div class="welcome-section" [@fadeInOnly]>
     <h1>Welcome Back</h1>
     <div class="cta-register">
       <span>New here?</span>
@@ -8,7 +8,7 @@
   </div>
 
   <div class="login-side">
-    <div class="login-container" [@fadeInOnly]>
+    <div class="login-container" >
       <h2>Login</h2>
       <form [formGroup]="loginForm" [@formStagger] (ngSubmit)="onLogin()">
         <div class="form-field">

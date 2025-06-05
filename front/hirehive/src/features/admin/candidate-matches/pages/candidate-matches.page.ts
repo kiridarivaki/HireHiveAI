@@ -15,6 +15,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { AppSelectComponent } from '@shared/components/select/select.component';
 import { Router } from '@angular/router';
 import { trigger, state, style, transition, animate } from '@angular/animations';
+import { EmploymentStatus } from '@shared/constants/employment-options';
 
 @Component({
   selector: 'app-candidates-match',
@@ -53,13 +54,36 @@ export class CandidateMatchesComponent implements OnInit {
     this.loading$ = this.loaderService.loading$;
     this.usersList = [];
     this.stateService.setCursor(0);
-    this.fetchNextBatch();
+    this.usersList = this.getMockCandidates();
   }
 
   private updateUsersList(newUsers: AssessResponse[]) {
     this.usersList = [...this.usersList, ...newUsers];
     this.sortUsers();
   }
+
+private getMockCandidates(): AssessResponse[] {
+  return [
+    {
+      matchPercentage: '85',
+      userId: 'user1',
+      email: 'jane.doe@example.com',
+      firstName: 'Jane',
+      lastName: 'Doe',
+      employmentStatus: EmploymentStatus.freelancer
+    },
+    {
+      matchPercentage: '78',
+      userId: 'user2',
+      email: 'john.smith@example.com',
+      firstName: 'John',
+      lastName: 'Smith',
+      employmentStatus: EmploymentStatus.intern
+    }
+  ];
+}
+
+
 
   sortUsers() {
     if (this.sortField === 'None') return;
