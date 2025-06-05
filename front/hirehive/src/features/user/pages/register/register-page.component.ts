@@ -1,3 +1,4 @@
+import { trigger, transition, query, style, stagger, animate } from '@angular/animations';
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -14,6 +15,13 @@ import { RegisterPayload } from 'src/app/client/models/auth-client.model';
   standalone: false,
   templateUrl: './register-page.component.html',
   styleUrl: './register-page.component.scss',
+  animations:  [ 
+    trigger('fadeInOnly', [
+    transition(':enter', [
+      style({ opacity: 0 }),
+      animate('1500ms  ease-out', style({ opacity: 1 }))
+    ])
+  ])]
 })
 export class RegisterPageComponent implements OnInit {
   constructor(

@@ -16,7 +16,7 @@
   align-items: center;
   gap: 16px;
   width: 400px;
-  margin: 0 auto;
+  margin: 50px auto;
   padding: 20px;
   background-color: white;
   border-radius: 8px;
@@ -58,4 +58,23 @@ mat-error {
   justify-content: center;
   margin-top: 5px; 
   margin-bottom: 7px;
+}
+
+@media (max-width: 600px) {
+  .register-container {
+    width: 100%;
+    max-width: 100%;
+    padding: 25px;
+    box-sizing: border-box;
+    margin: 30px 0 30px;
+  }
+
+  .form-element {
+    margin-bottom: 12px;
+    width: 80%;
+  }
+
+  .register-button {
+    margin-top: 10px;
+  }
 }

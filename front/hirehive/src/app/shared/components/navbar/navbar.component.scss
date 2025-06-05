@@ -2,7 +2,7 @@
   display: flex;
   align-items: center;
   height: 70px;
-  background-color: #02152e;
+  background-color: var(--app-dark-blue);
   padding: 0 2rem;
   box-shadow: 0 2px 8px rgba(0,0,0,0.3);
 }
@@ -32,7 +32,7 @@
   position: relative;
 
   &:hover {
-    color: #f5c12f; 
+    color: var(--app-yellow); 
     transform: translateY(-4px);
   }
 }
@@ -41,40 +41,60 @@
   margin-left: 1rem;
   font-weight: 500;
   font-size: 0.95rem;
-  color: #6e91cd;
+  color: var(--app-blue);
   white-space: nowrap;
   flex-shrink: 0; 
   transition: opacity 0.3s ease, visibility 0.3s ease;
 }
 
-@media (max-width: 920px) {
+@media (max-width: 600px) {
   .navbar {
-    flex-wrap: wrap;
-    height: auto;
-    padding: 1rem;
+    display: flex;
+    flex-wrap: nowrap;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    overflow-x: auto;
+    gap: 0.2rem;
   }
 
   .nav-button {
-    margin: 0.5rem;
-    width: 100%;
-    text-align: center;
-    position: relative;
+    font-size: 1rem;
+    padding: 0.4rem 0.4rem;
+    white-space: nowrap;
+    flex-shrink: 0;
+    margin: 0 0.25rem;
+    width: auto;
   }
 
-  .nav-divider {
-    opacity: 0.8;
-    width: 15%;
-    height: 1px;
-    background-color: var(--app-blue);
-    margin: 0 auto 0.5rem auto;
+  .desktop-nav {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    align-items: center;
+    overflow-x: auto;
+    gap: 0.5rem;
+  }
+
+  .logo {
+    height: 50px;
+    margin-right: 1rem;
+    flex-shrink: 0;
   }
 
   .welcome-msg {
-    opacity: 0;
-    visibility: hidden;
-    margin-left: 0;
-    width: 0;
-    overflow: hidden;
-    pointer-events: none;
+    display: block;
+    font-size: 0.75rem;
+    color: var(--app-blue);
+    white-space: nowrap;
+    margin-top: 0.25rem;
+  }
+
+  .nav-divider {
+    display: none;
+  }
+
+  .spacer {
+    display: none;
   }
 }

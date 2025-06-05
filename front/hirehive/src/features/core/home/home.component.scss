@@ -61,6 +61,7 @@
     font-weight: 600;
     color: var(--app-dark-blue);
     margin-bottom: 2.5rem;
+    animation: fadeInBackground 2.5s ease-in-out forwards;
   }
 
   .steps {
@@ -106,7 +107,7 @@
 
       p {
         font-size: 1rem;
-        color: #2a3f66; 
+        color: var(--app-dark-blue); 
         line-height: 1.5;
         margin-top: 0;
         margin-left: 0;
@@ -121,5 +122,59 @@
   }
   to {
     opacity: 1;
+  }
+}
+
+@media (max-width: 768px) {
+  .hero {
+    height: auto;
+    padding: 4rem 1rem;
+
+    .hero-content {
+      h1 {
+        font-size: 1.5rem;
+      }
+
+      p {
+        font-size: 0.8rem;
+      }
+
+      .cta-button {
+        width: 100%;
+        padding: 0rem;
+      }
+    }
+  }
+
+  .how-it-works {
+    padding: 3rem 1rem;
+
+    h2{
+      font-size: 1.5rem;
+    }
+
+    .steps {
+      flex-direction: column;
+      align-items: stretch;
+
+      .step {
+        padding: 1.5rem 1rem 1.5rem 3rem;
+        max-width: 100%;
+        box-sizing: border-box;
+
+        .number {
+          left: 1rem;
+          font-size: 2rem;
+        }
+
+        h3 {
+          font-size: 1.25rem;
+        }
+
+        p {
+          font-size: 0.95rem;
+        }
+      }
+    }
   }
 }

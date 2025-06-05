@@ -9,7 +9,6 @@ import { StoredAuth, UserRole } from '@shared/models/auth.model';
 import { User } from '@shared/models/user.model';
 import { AuthService } from '@shared/services/auth.service';
 import { ErrorService } from '@shared/services/error.service';
-import { EmailResendService } from '@shared/services/email-resend.service';
 import { NotificationService } from '@shared/services/notification.service';
 import { trigger, transition, style, animate, query, stagger } from '@angular/animations';
 
@@ -19,7 +18,7 @@ import { trigger, transition, style, animate, query, stagger } from '@angular/an
   standalone: false,
   templateUrl: './login-page.component.html',
   styleUrl: './login-page.component.scss',
-    animations: [
+  animations: [
     trigger('fadeInOnly', [
     transition(':enter', [
       style({ opacity: 0 }),
@@ -31,7 +30,7 @@ import { trigger, transition, style, animate, query, stagger } from '@angular/an
       query('.form-field', [
         style({ opacity: 0 }),
         stagger(150, [
-          animate('1000ms  ease-out', style({ opacity: 1 }))
+          animate('0.5s 500ms  ease-out', style({ opacity: 1 }))
         ])
       ])
     ])

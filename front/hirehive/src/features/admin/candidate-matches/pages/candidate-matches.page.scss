@@ -8,9 +8,10 @@
   gap: 20px;
 }
 
-.page-title {
-  font-weight: 200;
+.page-title{
+  font-weight: 300;
   padding-bottom: 20px;
+  margin-right: 10px;
   color: var(--app-dark-blue);
 }
 
@@ -81,3 +82,49 @@
     padding: 15px;
   }
 }
+
+@media (max-width: 600px) {
+  .candidate-results {
+    padding: 0 16px;
+  }
+
+  .header-container {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+    margin: 0;
+  }
+
+  .page-title {
+    font-weight: 400;
+    font-size: 1.5rem;
+    padding: 40px 10px 10px;
+  }
+
+  .sort-bar {
+    display: flex;
+    flex-direction: column;
+    width: 60%;
+    padding-left: 16px;
+  }
+
+  app-select.full-width {
+    width: 100%;
+  }
+
+  .sortToggle {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .candidate-list-container {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .load-more-button{
+    padding: 10px;
+  }
+}
+
