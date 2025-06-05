@@ -8,7 +8,7 @@ import { NotFoundComponent } from 'src/features/core/not-found/not-found.compone
 const routes: Routes = [
   { 
     path: 'admin',
-    canActivate: [],
+    canActivate: [AuthGuard, RoleGuard],
     loadChildren: () => import('../features/admin/admin.module').then(m => m.AdminModule)
   },
   { path: 'user', loadChildren: () => import('../features/user/user.module').then(m => m.UserModule) },

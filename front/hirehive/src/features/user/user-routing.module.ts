@@ -10,7 +10,7 @@ const routes: Routes = [{
     path: '',
     component: MainLayoutComponent,
     children: [
-      { path: ':userId', component: ProfilePageComponent },
+      { path: ':userId', component: ProfilePageComponent, canActivate: [AuthGuard] },
       { path: 'login', component: LoginPageComponent },
       { path: 'register', component: RegisterPageComponent }
     ]}
