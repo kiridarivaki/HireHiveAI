@@ -1,4 +1,5 @@
-<app-navbar class="navbar"></app-navbar>
+<app-compact-nav *ngIf="compactMenu" class="navbar"></app-compact-nav>
+<app-desktop-nav *ngIf="!compactMenu" class="navbar"></app-desktop-nav>
 
 <main [class.main-content]="true" [class.with-spacing]="!isHomePage" [class.centered]="!isHomePage">
   <router-outlet></router-outlet>

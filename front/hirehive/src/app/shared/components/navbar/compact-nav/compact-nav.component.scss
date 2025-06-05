@@ -1,0 +1,39 @@
+.navbar {
+  display: flex;
+  align-items: center;
+  height: 70px;
+  background-color: var(--app-dark-blue);
+  padding: 0 1rem 0 2rem;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+}
+
+.logo {
+  height: 50px;
+  margin-right: 2rem;
+  cursor: pointer;
+}
+
+.spacer {
+  flex: 1 1 auto;
+}
+
+.menu-button {
+  background: transparent;
+  color: var(--app-yellow);
+  border: none;
+  box-shadow: none;
+}
+
+.nav-button {
+  color: var(--app-dark-blue);
+  font-weight: 50;
+  cursor: pointer;
+  transition: color 0.3s ease, transform 0.25s ease, border-color 0.3s ease;
+  user-select: none;
+  position: relative;
+
+  &:hover {
+    color: var(--app-yellow); 
+    transform: translateY(-4px);
+  }
+}

@@ -38,7 +38,7 @@
   min-width: 500px;
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
+  gap: 5px;
 }
 
 .right-panel {
@@ -113,6 +113,11 @@
 
 .criteria-slider {
   margin-bottom: 1.5rem;
+}
+
+mat-error{
+  font-size: 0.75rem;
+  color: #f44336;
 }
 
 @media (max-width: 1024px) {
