@@ -122,7 +122,7 @@ export class LoginPageComponent {
           });
         } else {
           this.notificationService.showNotification('Successful login. Welcome!')
-          this.router.navigate([`/user/${userId}`]);
+          this.router.navigate([`/user/profile/${userId}`]);
         }
       }
     });
