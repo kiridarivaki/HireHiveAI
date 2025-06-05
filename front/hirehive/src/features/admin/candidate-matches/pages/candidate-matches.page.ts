@@ -54,36 +54,13 @@ export class CandidateMatchesComponent implements OnInit {
     this.loading$ = this.loaderService.loading$;
     this.usersList = [];
     this.stateService.setCursor(0);
-    this.usersList = this.getMockCandidates();
+    this.fetchNextBatch();
   }
 
   private updateUsersList(newUsers: AssessResponse[]) {
     this.usersList = [...this.usersList, ...newUsers];
     this.sortUsers();
   }
-
-private getMockCandidates(): AssessResponse[] {
-  return [
-    {
-      matchPercentage: '85',
-      userId: 'user1',
-      email: 'jane.doe@example.com',
-      firstName: 'Jane',
-      lastName: 'Doe',
-      employmentStatus: EmploymentStatus.freelancer
-    },
-    {
-      matchPercentage: '78',
-      userId: 'user2',
-      email: 'john.smith@example.com',
-      firstName: 'John',
-      lastName: 'Smith',
-      employmentStatus: EmploymentStatus.intern
-    }
-  ];
-}
-
-
 
   sortUsers() {
     if (this.sortField === 'None') return;

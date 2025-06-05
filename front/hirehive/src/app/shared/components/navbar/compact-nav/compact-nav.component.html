@@ -1,0 +1,20 @@
+<mat-toolbar class="navbar">
+  <img src="assets/logo.png" alt="Logo" class="logo" (click)="goHome()" />
+  <span class="spacer"></span>
+  <button matIconButton [matMenuTriggerFor]="menu" class="menu-button">
+    <mat-icon>menu</mat-icon>
+  </button>
+  <mat-menu #menu="matMenu" xPosition="before">
+  <button mat-menu-item class="nav-button" (click)="goHome()">Home</button>
+  <ng-container *ngIf="!isLoggedIn">
+    <button mat-menu-item class="nav-button" routerLink="/user/register">Register</button>
+    <button mat-menu-item class="nav-button" routerLink="/user/login">Login</button>
+  </ng-container>
+
+  <ng-container >
+    <button mat-menu-item class="nav-button" [routerLink]="['/user/profile', currentUser?.id]">Profile</button>
+    <button mat-menu-item class="nav-button"  routerLink="/admin/job-profile">Find Matches</button>
+    <button mat-menu-item class="nav-button" (click)="onLogout()">Logout</button>
+  </ng-container>
+  </mat-menu>
+</mat-toolbar>

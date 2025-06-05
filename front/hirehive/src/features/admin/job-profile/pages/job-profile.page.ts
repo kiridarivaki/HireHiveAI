@@ -44,24 +44,27 @@ export class JobProfileComponent {
   ){}
 
   onSubmit() {
-    if (this.jobForm.valid) {
-      const jobForm = this.jobForm.value;
-
-      const criteriaWeights = this.criteria.map(c => {
-        const value = this.jobForm.get(c.key)?.value;
-        return typeof value === 'number' ? value : 0;
-      });
-
-      const jobTypeValue = Number(jobForm.jobType) as unknown as JobType;
-
-      const assessmentData: AssessmentDataPayload = {
-        criteriaWeights,
-        jobDescription: jobForm.jobDescription!,
-        jobType: jobTypeValue, 
-        cursor: 0
-      };
-      this.stateService.setAssessmentData(assessmentData);
-      this.router.navigate(['/admin/results']);
+    if (this.jobForm.invalid) {
+      this.jobForm.markAllAsTouched();
+      console.log(this.jobForm.value)
+      return;
     }
+
+    const jobForm = this.jobForm.value;
+    const criteriaWeights = this.criteria.map(c => {
+      const value = this.jobForm.get(c.key)?.value;
+      return typeof value === 'number' ? value : 0;
+    });
+
+    const jobTypeValue = Number(jobForm.jobType) as unknown as JobType;
+
+    const assessmentData: AssessmentDataPayload = {
+      criteriaWeights,
+      jobDescription: jobForm.jobDescription!,
+      jobType: jobTypeValue, 
+      cursor: 0
+    };
+    this.stateService.setAssessmentData(assessmentData);
+    this.router.navigate(['/admin/results']);
   }
 }

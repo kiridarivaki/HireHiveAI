@@ -4,6 +4,9 @@
       Job Description
     </h2>
     <textarea formControlName="jobDescription" rows="6" class="textarea-input"></textarea>
+    <mat-error *ngIf="jobForm.get('jobDescription')?.invalid && jobForm.get('jobDescription')?.touched">
+      Job description is required
+    </mat-error>
       <app-select
         selectIcon="work"
         [options]="jobTypes"
@@ -11,6 +14,10 @@
         formControlName="jobType"
         class="select-input"
       ></app-select>
+
+    <mat-error *ngIf="jobForm.get('jobType')?.invalid && jobForm.get('jobType')?.touched">
+      Job Type is required
+    </mat-error>
   </div>
   <div class="right-panel">
     <h3>Assessment Criteria</h3>
@@ -25,8 +32,7 @@
         variant="flat"
         class="submit-button"
         type="submit"
-        text="Assess"
-        [disabled]="!jobForm.valid">
+        text="Assess">
       </app-button>
   </div>
 </form>
