@@ -11,9 +11,9 @@
     <button mat-menu-item class="nav-button" routerLink="/user/login">Login</button>
   </ng-container>
 
-  <ng-container >
+  <ng-container *ngIf="isLoggedIn">
     <button mat-menu-item class="nav-button" [routerLink]="['/user/profile', currentUser?.id]">Profile</button>
-    <button mat-menu-item class="nav-button"  routerLink="/admin/job-profile">Find Matches</button>
+    <button mat-menu-item class="nav-button"  routerLink="/admin/job-profile" *ngIf="isAdmin$">Find Matches</button>
     <button mat-menu-item class="nav-button" (click)="onLogout()">Logout</button>
   </ng-container>
   </mat-menu>
