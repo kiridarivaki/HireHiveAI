@@ -23,7 +23,6 @@ interface MenuOption {
 export class AppDesktopNavComponent implements OnInit {
   UserRole = UserRole;
   currentUser: User | null = null;
-  menuOptions: MenuOption[] = [];
   isLoggedIn = false;
 
   constructor(
