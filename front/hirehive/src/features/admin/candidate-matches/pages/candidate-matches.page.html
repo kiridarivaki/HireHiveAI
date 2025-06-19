@@ -1,6 +1,5 @@
-<div [hidden]="loading$ | async">
 <div class="candidate-results">
-  <div class="header-container">
+  <div class="header-container" [class.hidden]="loading$ | async">
     <h1 class="page-title">Candidate Matches</h1>
     <div class="sort-bar">
       <app-select
@@ -51,4 +50,3 @@
   </div>
 </div>
 </div>  
-</div>
