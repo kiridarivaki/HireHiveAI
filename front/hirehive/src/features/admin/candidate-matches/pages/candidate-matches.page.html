@@ -1,7 +1,7 @@
 <div class="candidate-results" [ngClass]="{ 'no-results-state': (loading$ | async) === false && usersList.length === 0 }">
   <div class="header-container">
     <h1 class="page-title" [class.hidden]="(loading$ | async)">Candidate Matches</h1>
-    <div class="sort-bar" [class.hidden]=" (loading$ | async) && usersList.length === 0">
+    <div class="sort-bar" [class.hidden]=" (loading$ | async) || usersList.length === 0">
       <app-select
         [options]="sortOptions"
         [(ngModel)]="sortField"
