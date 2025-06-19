@@ -42,7 +42,6 @@ export class EmailConfirmationComponent implements OnInit, OnDestroy {
         confirmationToken: token,
         email: userEmail
       };
-      console.log('check', userEmail, token)
       this.authService.confirmEmail(emailConfirmationData).subscribe({
         next: () => {
           this.confirmationStatus = 'success';

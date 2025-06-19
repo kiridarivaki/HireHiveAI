@@ -16,7 +16,7 @@
   <ng-container *ngIf="isLoggedIn">
     <button class="nav-button" [routerLink]="['/user/profile', currentUser?.id]">Profile</button>
     <div class="nav-divider"></div>
-    <button class="nav-button"  routerLink="/admin/job-profile" *ngIf="isAdmin$">Find Matches</button>
+    <button class="nav-button"  routerLink="/admin/job-profile" *ngIf="isAdmin$ | async">Find Matches</button>
     <div class="nav-divider"></div>
     <button class="nav-button" (click)="onLogout()">Logout</button>
     <span class="welcome-msg">Welcome {{ currentUser?.firstName }}!</span>
