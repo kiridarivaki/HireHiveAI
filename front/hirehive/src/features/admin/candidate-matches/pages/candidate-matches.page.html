@@ -1,4 +1,4 @@
-<ng-container *ngIf="!(loading$ | async)">
+<div [hidden]="loading$ | async">
 <div class="candidate-results">
   <div class="header-container">
     <h1 class="page-title">Candidate Matches</h1>
@@ -51,4 +51,4 @@
   </div>
 </div>
 </div>  
-</ng-container>
+</div>
