@@ -13,6 +13,9 @@
   visibility: hidden;
   transition: opacity 0.3s ease;
 }
+.candidate-results.no-results-state {
+  margin-top: -200px;
+}
 
 .page-title{
   font-weight: 300;
