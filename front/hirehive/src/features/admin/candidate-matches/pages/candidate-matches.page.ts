@@ -51,10 +51,11 @@ export class CandidateMatchesComponent implements OnInit {
       return;
     }
 
-    this.loading$ = this.loaderService.loading$;
+    // this.loading$ = this.loaderService.loading$;
     this.usersList = [];
     this.stateService.setCursor(0);
     this.fetchNextBatch();
+    console.log('users',this.usersList)
   }
 
   private updateUsersList(newUsers: AssessResponse[]) {
@@ -97,7 +98,7 @@ export class CandidateMatchesComponent implements OnInit {
 
     if (!assessmentData) return;
 
-    this.loaderService.show();
+    // this.loaderService.show();
 
     const requestPayload = {
       ...assessmentData,
@@ -116,5 +117,9 @@ export class CandidateMatchesComponent implements OnInit {
         this.updateUsersList(users);
       }
     });
+  }
+
+  goToJobProfile(){
+    this.router.navigate(['/admin/job-profile'])
   }
 }
