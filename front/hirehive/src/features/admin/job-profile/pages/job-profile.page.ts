@@ -46,7 +46,6 @@ export class JobProfileComponent {
   onSubmit() {
     if (this.jobForm.invalid) {
       this.jobForm.markAllAsTouched();
-      console.log(this.jobForm.value)
       return;
     }
 
