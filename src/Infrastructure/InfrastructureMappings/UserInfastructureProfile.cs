@@ -8,7 +8,7 @@ public class UserInfastructureProfile : Profile
     public UserInfastructureProfile()
     {
         CreateMap<User, UserDto>();
-        CreateMap<User, UsersDto>();
+        CreateMap<User, AssessedUsersDto>();
         CreateMap<UpdateDto, User>();
     }
 }
