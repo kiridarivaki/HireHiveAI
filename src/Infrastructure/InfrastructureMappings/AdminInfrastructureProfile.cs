@@ -7,7 +7,7 @@ namespace HireHive.Infrastructure.InfrastructureMappings
     {
         public AdminInfrastructureProfile()
         {
-            CreateMap<UsersDto, AssessmentResultDto>();
+            CreateMap<AssessedUsersDto, AssessmentResultDto>();
             CreateMap<AssessmentResultDto, SortResultDto>();
         }
     }

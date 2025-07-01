@@ -2,7 +2,7 @@
 
 namespace HireHive.Application.DTOs.User
 {
-    public class UsersDto
+    public class AssessedUsersDto
     {
         public string Email { get; set; } = null!;
         public string FirstName { get; set; } = null!;

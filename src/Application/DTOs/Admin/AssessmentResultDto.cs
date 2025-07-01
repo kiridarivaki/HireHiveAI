@@ -10,5 +10,6 @@ namespace HireHive.Application.DTOs.Admin
         public string LastName { get; set; } = null!;
         public EmploymentStatus EmploymentStatus { get; set; }
         public int MatchPercentage { get; set; }
+        public string Explanation { get; set; } = null!;
     }
 }

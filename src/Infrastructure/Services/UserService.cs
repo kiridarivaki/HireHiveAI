@@ -28,10 +28,10 @@ namespace HireHive.Infrastructure.Services
             var users = await _userRepository.GetAll();
             return _mapper.Map<List<UserDto>>(users);
         }
-        public async Task<List<UsersDto>> GetByIds(List<Guid> userIds)
+        public async Task<List<AssessedUsersDto>> GetByIds(List<Guid> userIds)
         {
             var users = await _userRepository.GetByIds(userIds);
-            return _mapper.Map<List<UsersDto>>(users);
+            return _mapper.Map<List<AssessedUsersDto>>(users);
         }
 
         public async Task<UserDto> GetById(Guid id)

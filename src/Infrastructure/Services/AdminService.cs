@@ -12,21 +12,21 @@ namespace HireHive.Infrastructure.Services
         private readonly ILogger<AdminService> _logger;
         private readonly IUserRepository _userRepository;
         private readonly IResumeRepository _resumeRepository;
-        private readonly IAiService _aiService;
+        private readonly IAssessmentService _assessmentService;
         public AdminService(
             IMapper mapper,
             ILogger<AdminService> logger,
             IUserRepository userRepository,
             IResumeRepository resumeRepository,
-            IAiService aiService)
+            IAssessmentService assessmentService)
         {
             _mapper = mapper;
             _logger = logger;
             _userRepository = userRepository;
             _resumeRepository = resumeRepository;
-            _aiService = aiService;
+            _assessmentService = assessmentService;
         }
-        public async Task<List<AssessmentResultDto>> AssessBatch(AssessmentParamsDto assessmentDto)
+        public async Task<List<AssessmentResultDto>>? AssessBatch(AssessmentParamsDto assessmentDto)
         {
             try
             {
@@ -37,31 +37,25 @@ namespace HireHive.Infrastructure.Services
                     return new List<AssessmentResultDto>();
                 }
 
-                var matchPercentages = _aiService.AssessUsers(usersToAssess, assessmentDto);
+                var assessmentResults = await _assessmentService.AssessUsers(usersToAssess, assessmentDto);
 
-                var users = await _userRepository.GetByIds(matchPercentages.Keys.ToList());
+                var userIds = assessmentResults!.Select(result => result.UserId).ToList();
 
-                var assessmentResult = users.Select(u => new AssessmentResultDto
-                {
-                    UserId = u.Id,
-                    Email = u.Email!,
-                    FirstName = u.FirstName,
-                    LastName = u.LastName,
-                    EmploymentStatus = u.EmploymentStatus,
-                    MatchPercentage = matchPercentages[u.Id]
-                }).ToList();
+                var userData = await _userRepository.GetByIds(userIds);
+
+                _mapper.Map(userData, assessmentResults);
 
                 _logger.LogInformation("Resume batch assessed successfully.");
 
-                return assessmentResult;
+                return assessmentResults!;
             }
             catch (BaseException e)
             {
                 _logger.LogWarning("Assessment of resume batch failed. With exception: {message}", e.Message);
                 throw;
             }
-
         }
+
         public List<UserResumeDto> GetResumeBatch(AssessmentParamsDto assessmentDto)
         {
             try
@@ -70,7 +64,7 @@ namespace HireHive.Infrastructure.Services
                 int usersToAssess = _userRepository.CountFiltered(assessmentDto.JobType);
 
                 var resumeBatch = new List<UserResumeDto>();
-                var totalTokens = _aiService.CountTokens(assessmentDto.JobDescription);
+                var totalTokens = _assessmentService.CountTokens(assessmentDto.JobDescription);
                 int assessmentStart = usersAssessed;
 
                 while (assessmentStart < usersToAssess)
@@ -82,9 +76,9 @@ namespace HireHive.Infrastructure.Services
                     if (userWithResume == null)
                         break;
 
-                    var resumeTokens = _aiService.CountTokens(userWithResume.Text);
+                    var resumeTokens = _assessmentService.CountTokens(userWithResume.Text);
 
-                    if (_aiService.isTokenLimitReached(totalTokens + resumeTokens))
+                    if (_assessmentService.isTokenLimitReached(totalTokens + resumeTokens))
                         break;
 
                     resumeBatch.Add(new UserResumeDto
