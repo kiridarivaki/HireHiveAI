@@ -31,6 +31,14 @@ export interface LoginResponse{
     expiresIn: number
 }
 
+export interface RegisterResponse{
+    userId: string,
+    tokenType: string,
+    accessToken: string,
+    refreshToken: string,
+    expiresIn: number
+}
+
 export interface RefreshTokenResponse{
     accessToken: string,
     refreshToken: string,

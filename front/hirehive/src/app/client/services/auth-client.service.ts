@@ -1,7 +1,7 @@
 import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { UrlService } from "../../shared/services/url.service";
-import { EmailConfirmationPayload, EmailConfirmationResendPayload, GetInfoResponse, LoginPayload, LoginResponse, RefreshTokenPayload, RefreshTokenResponse, RegisterPayload } from "../models/auth-client.model";
+import { EmailConfirmationPayload, EmailConfirmationResendPayload, GetInfoResponse, LoginPayload, LoginResponse, RefreshTokenPayload, RefreshTokenResponse, RegisterPayload, RegisterResponse } from "../models/auth-client.model";
 import { Observable } from "rxjs";
 
 @Injectable({
@@ -10,9 +10,9 @@ import { Observable } from "rxjs";
 export class AuthClientService{
     constructor(private http: HttpClient, private urlService: UrlService){ }
 
-    register(registerData: RegisterPayload): Observable<any>{
+    register(registerData: RegisterPayload): Observable<RegisterResponse>{
         const registerUrl = this.urlService.urlFor('auth', 'register', undefined);
-        return this.http.post<void>(registerUrl, registerData)
+        return this.http.post<RegisterResponse>(registerUrl, registerData)
     }
 
     login(loginData: LoginPayload): Observable<LoginResponse>{
