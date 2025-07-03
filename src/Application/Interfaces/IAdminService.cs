@@ -6,6 +6,6 @@ namespace HireHive.Application.Interfaces
     {
         Task<List<AssessmentResultDto>>? AssessBatch(AssessmentParamsDto assessmentDto);
         List<UserResumeDto> GetResumeBatch(AssessmentParamsDto assessmentDto);
-        List<SortResultDto> SortResults(SortDataDto sortDataModel);
+        List<SortResultDto> SortResults(SortParamsDto sortDataModel);
     }
 }

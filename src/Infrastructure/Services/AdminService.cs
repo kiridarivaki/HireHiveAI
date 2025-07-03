@@ -43,11 +43,14 @@ namespace HireHive.Infrastructure.Services
 
                 var userData = await _userRepository.GetByIds(userIds);
 
-                _mapper.Map(userData, assessmentResults);
+                for (int i = 0; i < userData.Count; i++)
+                {
+                    _mapper.Map(userData[i], assessmentResults[i]);
+                }
 
                 _logger.LogInformation("Resume batch assessed successfully.");
 
-                return assessmentResults!;
+                return assessmentResults;
             }
             catch (BaseException e)
             {
@@ -101,7 +104,7 @@ namespace HireHive.Infrastructure.Services
             }
         }
 
-        public List<SortResultDto> SortResults(SortDataDto sortDataModel)
+        public List<SortResultDto> SortResults(SortParamsDto sortDataModel)
         {
             try
             {

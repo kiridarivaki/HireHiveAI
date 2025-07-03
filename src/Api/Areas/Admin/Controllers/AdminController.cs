@@ -46,11 +46,11 @@ namespace HireHive.Api.Areas.Admin.Controllers
 
         [HttpPost]
         [Route("sort")]
-        public IActionResult Sort([FromBody] SortDataBm sortDataModel)
+        public IActionResult Sort([FromBody] SortParamsBm sortDataModel)
         {
             try
             {
-                var result = _adminService.SortResults(_mapper.Map<SortDataDto>(sortDataModel));
+                var result = _adminService.SortResults(_mapper.Map<SortParamsDto>(sortDataModel));
                 _logger.LogInformation("Sorting done.");
 
                 return Ok(_mapper.Map<List<SortResultVm>>(result));

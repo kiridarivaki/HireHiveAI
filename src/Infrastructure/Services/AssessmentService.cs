@@ -95,8 +95,7 @@ namespace HireHive.Infrastructure.Services
 
             var requestOptions = new ChatCompletionsOptions(chatHistory)
             {
-                Model = "openai/gpt-4.1",
-                ResponseFormat = new ChatCompletionsResponseFormatJsonObject(),
+                Model = "openai/gpt-4.1"
             };
 
             try

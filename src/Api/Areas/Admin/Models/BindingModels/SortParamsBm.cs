@@ -2,7 +2,7 @@
 
 namespace HireHive.Api.Areas.Admin.Models.BindingModels
 {
-    public class SortDataBm
+    public class SortParamsBm
     {
         public List<AssessmentResultDto>? AssessmentData { get; set; }
         public string? SortOrder { get; set; }
