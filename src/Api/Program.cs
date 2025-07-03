@@ -1,4 +1,5 @@
 using HireHive.Infrastructure.Startup;
+using System.Text.Json;
 
 var builder = WebApplication.CreateBuilder(args);
 var services = builder.Services;
@@ -17,7 +18,10 @@ services.ConfigureCors();
 
 builder.Services.AddEndpointsApiExplorer();
 
-builder.Services.AddControllers();
+builder.Services.AddControllers().AddJsonOptions(options =>
+{
+    options.JsonSerializerOptions.PropertyNamingPolicy = JsonNamingPolicy.CamelCase;
+});
 
 var app = builder.Build();
 
