@@ -10,7 +10,7 @@ namespace HireHive.Api.PresentationMappings
         {
             CreateMap<AssessmentParamsBm, AssessmentParamsDto>().ReverseMap();
             CreateMap<AssessmentResultDto, AssessmentResultVm>().ReverseMap();
-            CreateMap<SortDataBm, SortDataDto>().ReverseMap();
+            CreateMap<SortParamsBm, SortParamsDto>().ReverseMap();
             CreateMap<SortResultDto, SortResultVm>().ReverseMap();
         }
     }
