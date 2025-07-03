@@ -4,11 +4,16 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { EmploymentStatus } from '@shared/constants/employment-options';
 import { JobType } from '@shared/constants/job-types';
+import { UserRole } from '@shared/models/auth.model';
+import { User } from '@shared/models/user.model';
 import { AuthService } from '@shared/services/auth.service';
 import { ErrorService } from '@shared/services/error.service';
+import { NotificationService } from '@shared/services/notification.service';
+import { StorageService } from '@shared/services/storage.service';
 import { fieldsMatchValidator } from '@shared/validators/fields-match.validator';
 import { passwordValidator } from '@shared/validators/password.validator';
-import { RegisterPayload } from 'src/app/client/models/auth-client.model';
+import { switchMap, tap } from 'rxjs';
+import { RegisterPayload, RegisterResponse } from 'src/app/client/models/auth-client.model';
 
 @Component({
   selector: 'app-register-page',
@@ -27,6 +32,8 @@ export class RegisterPageComponent implements OnInit {
   constructor(
     private authService: AuthService,
     private errorService: ErrorService,
+    private storageService: StorageService,
+    private notificationService: NotificationService,
     private router: Router
   ) {}
 
@@ -63,13 +70,13 @@ export class RegisterPageComponent implements OnInit {
     return this.registerForm.get('confirmPassword');
   }
 
-  onRegister(){
+  onRegister() {
     if (this.registerForm.valid) {
-    const registerForm = this.registerForm.value;
+      const registerForm = this.registerForm.value;
 
       const employmentStatusValue = Number(registerForm.employmentStatus) as unknown as EmploymentStatus;
       const jobTypesValue = (registerForm.jobTypes || []).map((x: string) => Number(x)) as unknown as JobType[];
-      
+
       const registerData: RegisterPayload = {
         email: registerForm.email!,
         firstName: registerForm.firstName!,
@@ -80,17 +87,52 @@ export class RegisterPageComponent implements OnInit {
         confirmPassword: registerForm.confirmPassword!
       };
 
-      this.authService.register(registerData).subscribe({
-        next: () => {
-          this.router.navigate(['/check-email'], { queryParams: { email: registerData.email } });
-        },
-        error: (err) => {
-          if (err.status === 409){
-            this.errorService.showError('A user with this email exists.');
-            this.registerForm.reset({ jobTypes: [] });
+      let registeredUserId: string;
+
+      this.authService.register(registerData)
+        .pipe(
+          tap((res: RegisterResponse) => {
+            registeredUserId = res.userId;
+            this.storageService.storeAuth({
+              accessToken: res.accessToken,
+              refreshToken: res.refreshToken,
+              expiresIn: res.expiresIn
+            });
+          }),
+          switchMap(() => this.authService.getUserInfo(registeredUserId))
+        )
+        .subscribe({
+          next: (userInfo) => {
+            const roles: UserRole[] = userInfo.roles
+              .filter((role): role is UserRole =>
+                Object.values(UserRole).includes(role as UserRole)
+              );
+
+            const user: User = {
+              id: registeredUserId,
+              roles: roles,
+              email: userInfo.email,
+              firstName: userInfo.firstName,
+              lastName: userInfo.lastName,
+              emailConfirmed: userInfo.emailConfirmed
+            };
+
+            this.storageService.setUser(user);
+            this.authService.setUser(user);
+            this.notificationService.showNotification('Registration successful. Welcome!');
+            this.router.navigate([`/user/profile/${user.id}`]);
+          },
+          error: (err) => {
+            this.storageService.removeAuth();
+            this.storageService.removeUser();
+            if (err.status === 409) {
+              this.errorService.showError('A user with this email exists.');
+              this.registerForm.reset({ jobTypes: [] });
+            } else {
+              this.errorService.showError('Registration failed. Please try again.');
+            }
           }
-        }
-      });
-    };
+        });
+    }
   }
 }

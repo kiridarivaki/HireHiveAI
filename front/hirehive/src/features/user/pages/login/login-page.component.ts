@@ -83,10 +83,7 @@ export class LoginPageComponent {
             error: (err)=>{
               this.storageService.removeAuth()
               this.storageService.removeUser()
-              if (err.status === 401 && err.error?.message === 'Email addresss is not confirmed.'){
-                this.errorService.showError('Email confirmation is required.');
-                this.router.navigate(['/check-email'], { queryParams: { email: loginData.email } });
-              }else{
+              if (err.status === 401){
                 this.errorService.showError('Invalid credentials.');
                 this.loginForm.reset();
               }
@@ -116,14 +113,8 @@ export class LoginPageComponent {
 
         this.storageService.setUser(user)
         this.authService.setUser(user)
-        if (!user.emailConfirmed) {
-          this.router.navigate(['/check-email'], {
-            queryParams: { email: user.email }
-          });
-        } else {
-          this.notificationService.showNotification('Successful login. Welcome!')
-          this.router.navigate([`/user/profile/${userId}`]);
-        }
+        this.notificationService.showNotification('Successful login. Welcome!')
+        this.router.navigate([`/user/profile/${userId}`]);
       }
     });
   }
