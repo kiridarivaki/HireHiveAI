@@ -1,4 +1,4 @@
-<label>{{ label }} <mat-icon *ngIf="icon" class="slider-icon" matIconPrefix>{{icon}}</mat-icon></label>
+<label>{{ label }} <mat-icon *ngIf="icon" class="slider-icon" matIconPrefix>{{ icon }}</mat-icon></label>
 <mat-slider
   [disabled]="disabled"
   (blur)="onBlur()"
@@ -11,7 +11,7 @@
 >
   <input
     matSliderThumb
-    [(ngModel)] = "selectedValue"
+    [(ngModel)]="selectedValue"
   />
 </mat-slider>
 <span>{{ selectedValue }}</span>

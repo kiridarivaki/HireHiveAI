@@ -8,8 +8,8 @@ import { MatIconModule } from '@angular/material/icon';
   selector: 'app-criteria-slider',
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule, MatSliderModule, FormsModule, MatIconModule],
-  templateUrl:'./criteria-slider.component.html',
-  styleUrl: './criteria-slider.component.scss',
+  templateUrl: './criteria-slider.component.html',
+  styleUrls: ['./criteria-slider.component.scss'],
   providers: [{
     provide: NG_VALUE_ACCESSOR,
     useExisting: forwardRef(() => CriteriaSliderComponent),

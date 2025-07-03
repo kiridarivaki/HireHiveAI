@@ -2,9 +2,10 @@ import { EmploymentStatus } from "@shared/constants/employment-options";
 import { JobType } from "@shared/constants/job-types";
 
 export interface AssessmentDataPayload {
+    criteriaNames: Array<string>,
+    criteriaWeights: Array<number>,
     jobDescription: string,
     jobType: JobType,
-    criteriaWeights: Array<number>,
     cursor?: number
 }
 
