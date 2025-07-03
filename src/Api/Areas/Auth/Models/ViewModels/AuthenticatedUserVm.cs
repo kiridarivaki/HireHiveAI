@@ -1,4 +1,4 @@
-﻿namespace HireHive.Api.Areas.Account.Models.ViewModels
+﻿namespace HireHive.Api.Areas.Auth.Models.ViewModels
 {
     public class AuthenticatedUserVm
     {

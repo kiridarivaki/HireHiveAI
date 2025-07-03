@@ -1,12 +1,12 @@
-﻿using HireHive.Application.DTOs.Account;
+﻿using HireHive.Application.DTOs.Auth;
 using HireHive.Domain.Entities;
 using Microsoft.AspNetCore.Authentication.BearerToken;
 
 namespace HireHive.Infrastructure.InfrastructureMappings
 {
-    public class AccountInfrastructureProfile : Profile
+    public class AuthInfrastructureProfile : Profile
     {
-        public AccountInfrastructureProfile()
+        public AuthInfrastructureProfile()
         {
             CreateMap<RegisterDto, User>();
             CreateMap<AccessTokenResponse, LoginDto>().ReverseMap();

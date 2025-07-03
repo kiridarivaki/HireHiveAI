@@ -1,7 +1,7 @@
 ﻿using Domain.Enums;
 using HireHive.Domain.Enums;
 
-namespace HireHive.Api.Areas.Account.Models.ViewModels
+namespace HireHive.Api.Areas.Auth.Models.ViewModels
 {
     public class UserInfoVm
     {

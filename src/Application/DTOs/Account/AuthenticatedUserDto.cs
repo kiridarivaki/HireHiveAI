@@ -1,4 +1,4 @@
-﻿namespace HireHive.Application.DTOs.Account
+﻿namespace HireHive.Application.DTOs.Auth
 {
     public class AuthenticatedUserDto
     {

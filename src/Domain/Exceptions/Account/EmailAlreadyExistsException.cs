@@ -1,4 +1,4 @@
-﻿namespace HireHive.Domain.Exceptions.Account
+﻿namespace HireHive.Domain.Exceptions.Auth
 {
     public class EmailAlreadyExistsException : BaseException;
 }

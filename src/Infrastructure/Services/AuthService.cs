@@ -1,8 +1,8 @@
-﻿using HireHive.Application.DTOs.Account;
+﻿using HireHive.Application.DTOs.Auth;
 using HireHive.Application.Interfaces;
 using HireHive.Domain.Entities;
 using HireHive.Domain.Exceptions;
-using HireHive.Domain.Exceptions.Account;
+using HireHive.Domain.Exceptions.Auth;
 using HireHive.Domain.Exceptions.User;
 using HireHive.Domain.Interfaces;
 using Microsoft.AspNetCore.Identity;
@@ -39,7 +39,7 @@ namespace HireHive.Infrastructure.Services
             _mapper = mapper;
             _logger = logger;
         }
-        public async Task Register(RegisterDto registerDto)
+        public async Task<AuthenticatedUserDto> Register(RegisterDto registerDto)
         {
             using (TransactionScope scope = new TransactionScope(TransactionScopeOption.Required,
                                              new TransactionOptions { IsolationLevel = IsolationLevel.ReadCommitted },
@@ -56,6 +56,15 @@ namespace HireHive.Infrastructure.Services
                     await _userRepository.Add(newUser, registerDto.Password);
 
                     scope.Complete();
+
+                    var loginDto = new LoginDto
+                    {
+                        Email = registerDto.Email,
+                        Password = registerDto.Password
+                    };
+
+                    var authUser = await Login(loginDto);
+                    return authUser;
                 }
                 catch (BaseException)
                 {

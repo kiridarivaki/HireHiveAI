@@ -1,15 +1,15 @@
 ﻿using FluentValidation;
-using HireHive.Api.Areas.Account.Models.BindingModels;
-using HireHive.Api.Areas.Account.Models.ViewModels;
+using HireHive.Api.Areas.Auth.Models.BindingModels;
+using HireHive.Api.Areas.Auth.Models.ViewModels;
 using HireHive.Api.Areas.Common.Controllers;
-using HireHive.Application.DTOs.Account;
+using HireHive.Application.DTOs.Auth;
 using HireHive.Application.Interfaces;
-using HireHive.Domain.Exceptions.Account;
+using HireHive.Domain.Exceptions.Auth;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 
-namespace HireHive.Api.Areas.Account.Controllers;
+namespace HireHive.Api.Areas.Auth.Controllers;
 
 public class AuthController : ApiController
 {
@@ -45,11 +45,11 @@ public class AuthController : ApiController
                 return BadRequest(new { errors });
             }
 
-            await _authService.Register(_mapper.Map<RegisterDto>(registerModel));
+            var authenticatedUser = await _authService.Register(_mapper.Map<RegisterDto>(registerModel));
 
             _logger.LogInformation("User with email {email} registered.", registerModel.Email);
 
-            return Ok();
+            return Ok(_mapper.Map<AuthenticatedUserVm>(authenticatedUser));
         }
         catch (EmailAlreadyExistsException e)
         {
