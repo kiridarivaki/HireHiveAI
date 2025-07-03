@@ -1,6 +1,6 @@
 ﻿using FluentValidation;
-using HireHive.Api.Areas.Account.Models.BindingModels;
-using HireHive.Api.Areas.Account.Validators.Shared;
+using HireHive.Api.Areas.Auth.Models.BindingModels;
+using HireHive.Api.Areas.Auth.Validators.Shared;
 
 public class RegisterValidator : AbstractValidator<RegisterBm>
 {

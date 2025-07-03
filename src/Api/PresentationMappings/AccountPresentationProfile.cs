@@ -1,12 +1,12 @@
-﻿using HireHive.Api.Areas.Account.Models.BindingModels;
-using HireHive.Api.Areas.Account.Models.ViewModels;
-using HireHive.Application.DTOs.Account;
+﻿using HireHive.Api.Areas.Auth.Models.BindingModels;
+using HireHive.Api.Areas.Auth.Models.ViewModels;
+using HireHive.Application.DTOs.Auth;
 
 namespace HireHive.Api.PresentationMappings
 {
-    public class AccountPresentationProfile : Profile
+    public class AuthPresentationProfile : Profile
     {
-        public AccountPresentationProfile()
+        public AuthPresentationProfile()
         {
             CreateMap<RegisterBm, RegisterDto>().ReverseMap();
             CreateMap<LoginBm, LoginDto>().ReverseMap();

@@ -1,4 +1,4 @@
-﻿namespace HireHive.Api.Areas.Account.Models.BindingModels
+﻿namespace HireHive.Api.Areas.Auth.Models.BindingModels
 {
     public class RefreshBm
     {
