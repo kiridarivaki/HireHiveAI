@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatSliderModule } from '@angular/material/slider';
-import { ReactiveFormsModule, FormGroup, FormControl, Validators } from '@angular/forms';
+import { ReactiveFormsModule, FormGroup, FormControl, Validators, FormArray, FormsModule } from '@angular/forms';
 import { AppSelectComponent } from '@shared/components/select/select.component';
 import { AppButtonComponent } from '@shared/components/button/button.component';
 import { CriteriaSliderComponent } from '../components/criteria-slider/criteria-slider.component';
@@ -11,37 +11,68 @@ import { AssessmentDataPayload } from 'src/app/client/models/admin-client.model'
 import { Router } from '@angular/router';
 import { JobStateService } from '@shared/services/job-state.service';
 import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
+import { MatInputModule } from '@angular/material/input';
+import { MatButtonModule } from '@angular/material/button';
 
 @Component({
   selector: 'app-job-profile',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, MatSliderModule, AppSelectComponent, AppButtonComponent, CriteriaSliderComponent, MatFormFieldModule],
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    FormsModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatButtonModule,
+    MatIconModule,
+    AppSelectComponent,
+    AppButtonComponent,
+    CriteriaSliderComponent
+  ],
   templateUrl: './job-profile.page.html',
-  styleUrl: './job-profile.page.scss'
+  styleUrls: ['./job-profile.page.scss']
 })
 export class JobProfileComponent {
   jobForm = new FormGroup({
     jobDescription: new FormControl('', Validators.required),
-    jobType: new FormControl('', Validators.required), 
-    education: new FormControl(50),
-    skills: new FormControl(50),
-    experience: new FormControl(50),
+    jobType: new FormControl('', Validators.required),
+    criteria: new FormArray<FormGroup>([])
   });
 
-  jobTypes = Object.entries(JobType).map(([key, label], index) => ({
-    value: index.toString(),  
-    label: label as string
-  }));
+  newCriterionLabel = '';
 
-  criteria = Object.entries(AssessmentCriteria).map(([key, label], index) => ({
-    key,
-    label
+  jobTypes = Object.entries(JobType).map(([key, label], index) => ({
+    value: index.toString(),
+    label: label as string
   }));
 
   constructor(
     private stateService: JobStateService,
     private router: Router
-  ){}
+  ) {}
+
+  get criteriaArray() {
+    return this.jobForm.get('criteria') as FormArray<FormGroup>;
+  }
+
+  createCriterion(label: string, weight = 50): FormGroup {
+    return new FormGroup({
+      label: new FormControl(label, Validators.required),
+      value: new FormControl(weight, Validators.required)
+    });
+  }
+
+  addCriterion() {
+    const label = this.newCriterionLabel.trim();
+    if (!label) return;
+    this.criteriaArray.push(this.createCriterion(label));
+    this.newCriterionLabel = '';
+  }
+
+  removeCriterion(index: number) {
+    this.criteriaArray.removeAt(index);
+  }
 
   onSubmit() {
     if (this.jobForm.invalid) {
@@ -50,19 +81,28 @@ export class JobProfileComponent {
     }
 
     const jobForm = this.jobForm.value;
-    const criteriaWeights = this.criteria.map(c => {
-      const value = this.jobForm.get(c.key)?.value;
+
+    // Extract criteria names and weights separately
+    const criteriaNames = this.criteriaArray.controls.map(c => {
+      const label = c.get('label')?.value;
+      return typeof label === 'string' ? label : '';
+    });
+
+    const criteriaWeights = this.criteriaArray.controls.map(c => {
+      const value = c.get('value')?.value;
       return typeof value === 'number' ? value : 0;
     });
 
     const jobTypeValue = Number(jobForm.jobType) as unknown as JobType;
 
     const assessmentData: AssessmentDataPayload = {
+      criteriaNames,
       criteriaWeights,
       jobDescription: jobForm.jobDescription!,
-      jobType: jobTypeValue, 
+      jobType: jobTypeValue,
       cursor: 0
     };
+    console.log(assessmentData)
     this.stateService.setAssessmentData(assessmentData);
     this.router.navigate(['/admin/results']);
   }

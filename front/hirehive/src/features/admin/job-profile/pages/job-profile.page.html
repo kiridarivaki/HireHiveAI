@@ -1,38 +1,67 @@
 <form [formGroup]="jobForm" (ngSubmit)="onSubmit()" class="job-profile-form">
   <div class="left-panel">
-    <h2 class="field-label">
-      Job Description
-    </h2>
+    <h2 class="field-label">Job Description</h2>
     <textarea formControlName="jobDescription" rows="6" class="textarea-input"></textarea>
     <mat-error *ngIf="jobForm.get('jobDescription')?.invalid && jobForm.get('jobDescription')?.touched">
       Job description is required
     </mat-error>
-      <app-select
-        selectIcon="work"
-        [options]="jobTypes"
-        label="Job Type"
-        formControlName="jobType"
-        class="select-input"
-      ></app-select>
-
+    <app-select
+      selectIcon="work"
+      [options]="jobTypes"
+      label="Job Type"
+      formControlName="jobType"
+      class="select-input"
+    ></app-select>
     <mat-error *ngIf="jobForm.get('jobType')?.invalid && jobForm.get('jobType')?.touched">
       Job Type is required
     </mat-error>
   </div>
-  <div class="right-panel">
+
+  <div class="right-panel" [class.two-column-layout-active]="criteriaArray.controls.length >= 2">
     <h3>Assessment Criteria</h3>
-    <ng-container *ngFor="let c of criteria">
-      <app-criteria-slider
-        [label]="c.label"
-        [formControlName]="c.key"
-        class="criteria-slider"
-      ></app-criteria-slider>
-    </ng-container>
-      <app-button
-        variant="flat"
-        class="submit-button"
-        type="submit"
-        text="Assess">
-      </app-button>
+    <p class="criteria-intro-text">Add a custom assessment criterion.<br>Use the slider to define the importance.</p>
+    <div class="add-criterion-group">
+      <mat-form-field appearance="outline" class="add-criterion-field">
+        <mat-label>New criterion</mat-label>
+        <input
+          matInput
+          [(ngModel)]="newCriterionLabel"
+          [ngModelOptions]="{ standalone: true }"
+          name="newCriterion"
+          placeholder="e.g. Experience"
+        />
+        <mat-icon matPrefix class="criterion-icon">assignment</mat-icon>
+      </mat-form-field>
+      <app-button variant="raised" (click)="addCriterion()" text="Add" class="add-button"></app-button>
+    </div>
+
+    <div *ngIf="criteriaArray.controls.length === 0" class="no-criteria-wrapper">
+      <div class="no-criteria-message">
+        <p>No custom criteria added yet.</p>
+      </div>
+    </div>
+
+    <div formArrayName="criteria" class="criteria-list">
+      <ng-container *ngFor="let group of criteriaArray.controls; index as i" [formGroupName]="i">
+        <div class="criterion-item">
+          <app-criteria-slider
+            [label]="group.get('label')!.value"
+            formControlName="value"
+            class="criteria-slider"
+          ></app-criteria-slider>
+          <button
+            mat-icon-button
+            type="button"
+            aria-label="Remove criterion"
+            (click)="removeCriterion(i)"
+            class="remove-criterion-button"
+          >
+            <mat-icon class="remove-button">delete</mat-icon>
+          </button>
+        </div>
+      </ng-container>
+    </div>
+
+    <app-button variant="flat" class="submit-button" type="submit" text="Assess"></app-button>
   </div>
 </form>
