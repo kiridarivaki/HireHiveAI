@@ -1,7 +1,7 @@
 import { JobType } from "@shared/constants/job-types";
 
 export interface AssessmentDataPayload {
-    criteriaNames: Array<string>,
+    criteria: Array<string>,
     criteriaWeights: Array<number>,
     jobDescription: string,
     jobType: JobType,
