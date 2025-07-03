@@ -103,8 +103,6 @@ namespace HireHive.Infrastructure.Services
                 Response<ChatCompletions> response = await _client.CompleteAsync(requestOptions);
                 var jsonResponse = response.Value.Content;
 
-                _logger.LogError(jsonResponse);
-
                 var assessmentResults =
                     JsonSerializer.Deserialize<List<AssessmentResultDto>>(jsonResponse,
                         new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
