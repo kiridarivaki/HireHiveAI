@@ -55,8 +55,6 @@ namespace HireHive.Infrastructure.Services
 
                     await _userRepository.Add(newUser, registerDto.Password);
 
-                    scope.Complete();
-
                     var loginDto = new LoginDto
                     {
                         Email = registerDto.Email,
@@ -64,6 +62,8 @@ namespace HireHive.Infrastructure.Services
                     };
 
                     var authUser = await Login(loginDto);
+                    scope.Complete();
+
                     return authUser;
                 }
                 catch (BaseException)
@@ -142,7 +142,7 @@ namespace HireHive.Infrastructure.Services
                     ExpiresIn = (int)TimeSpan.FromMinutes(60).TotalSeconds,
                     UserId = user.Id
                 };
-                _logger.LogInformation("Expires in", authUser.ExpiresIn);
+
                 _logger.LogInformation("Login succeeded for user {email}.", loginDto.Email);
 
                 return authUser;
