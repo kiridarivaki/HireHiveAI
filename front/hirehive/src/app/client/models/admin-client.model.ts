@@ -1,4 +1,3 @@
-import { EmploymentStatus } from "@shared/constants/employment-options";
 import { JobType } from "@shared/constants/job-types";
 
 export interface AssessmentDataPayload {
@@ -15,7 +14,7 @@ export interface AssessResponse {
     email: string,
     firstName: string,
     lastName: string,
-    employmentStatus: EmploymentStatus
+    explanation: string
 }
 
 export interface SortDataPayload {
@@ -30,5 +29,5 @@ export interface SortResponse {
     email: string,
     firstName: string,
     lastName: string,
-    employmentStatus: EmploymentStatus
+    explanation: string
 }
