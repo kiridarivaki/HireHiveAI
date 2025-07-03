@@ -55,8 +55,6 @@ namespace HireHive.Infrastructure.Services
 
                     await _userRepository.Add(newUser, registerDto.Password);
 
-                    await SendEmailConfirmation(newUser.Email!);
-
                     scope.Complete();
                 }
                 catch (BaseException)
@@ -115,10 +113,6 @@ namespace HireHive.Infrastructure.Services
             {
                 var user = await _userManager.FindByEmailAsync(loginDto.Email)
                     ?? throw new UserNotFoundException();
-
-                var emailConfirmed = await _userManager.IsEmailConfirmedAsync(user);
-                if (!emailConfirmed)
-                    throw new UnauthorizedAccessException("Email addresss is not confirmed.");
 
                 var isPasswordValid = await _userManager.CheckPasswordAsync(user, loginDto.Password);
                 if (!isPasswordValid)
