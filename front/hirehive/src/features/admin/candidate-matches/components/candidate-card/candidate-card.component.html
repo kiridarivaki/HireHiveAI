@@ -4,15 +4,19 @@
       <h3 class="user-name">{{ assessedUserInfo.firstName }} {{ assessedUserInfo.lastName }}</h3>
       <p class="match-percentage">{{ assessedUserInfo.matchPercentage }}% <span>match</span></p>
     </div>
+
     <div class="card-content-bottom">
       <div class="user-info">
         <p class="user-email">Email: {{ assessedUserInfo.email }}</p>
-        <p class="user-email">Employment status: {{ assessedUserInfo.employmentStatus }}</p>
       </div>
       <div class="action-buttons">
         <app-resume-preview [userId]="assessedUserInfo.userId"></app-resume-preview>
         <app-button variant="raised" text="Download" class="download-button" icon="download" (click)="onDownload()"></app-button>
       </div>
     </div>
+
+    <p class="user-assessment">
+      <span class="assessment-label">AI Assessment Summary:<br></span> {{ assessedUserInfo.explanation }}
+    </p>
   </div>
 </mat-card>
