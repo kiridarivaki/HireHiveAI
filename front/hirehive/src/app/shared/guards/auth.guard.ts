@@ -12,12 +12,6 @@ export class AuthGuard implements CanActivate {
       return false;
     }
 
-    const user = this.authService.getCurrentUser();
-    if (user && !user.emailConfirmed) {
-      this.router.navigate(['/confirm-email']);
-      return false;
-    }
-
     return true;
   }
 }
