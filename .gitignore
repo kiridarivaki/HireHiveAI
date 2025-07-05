@@ -56,5 +56,6 @@ artifacts/
 
 ## Ignore the publish directory
 publish/
+front/
 
 /src/logs
