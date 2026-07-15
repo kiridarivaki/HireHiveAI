@@ -34,5 +34,4 @@ The application follows a modular architecture:
 
 ## Live Application & Demo
 
-* **Deployed Application:** [https://wonderful-flower-0782c0b03.6.azurestaticapps.net/](https://wonderful-flower-0782c0b03.6.azurestaticapps.net/)
 * **Demo Video:** [https://drive.google.com/file/d/1RkgUHDOcjqK_3wYff1oKdVZznZa07DQC/view](https://drive.google.com/file/d/1RkgUHDOcjqK_3wYff1oKdVZznZa07DQC/view)
