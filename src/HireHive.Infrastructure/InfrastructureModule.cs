@@ -33,6 +33,8 @@ class InfrastructureModule : IModule
         services.AddScoped<ITokenService, TokenService>();
         services.AddScoped<IResumeService, ResumeService>();
         services.AddScoped<IAdminService, AdminService>();
+        services.AddScoped<IJobService, JobService>();
+        services.AddScoped<IJobAssessmentService, JobAssessmentService>();
 
         var blobConnectionString = configuration["AzureBlobStorageConnection"];
         var blobSasToken = configuration["BlobSaSToken"];
