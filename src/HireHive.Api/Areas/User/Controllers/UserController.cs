@@ -11,25 +11,16 @@ using Microsoft.AspNetCore.Mvc;
 namespace HireHive.Api.Areas.User.Controllers;
 
 [Authorize]
-public class UserController : ApiController
+public class UserController(
+    IUserService userService,
+    IValidator<UpdateBm> updateValidator,
+    IMapper mapper,
+    ILogger<UserController> logger) : ApiController(mapper, logger)
 {
-    private readonly IUserService _userService;
-    private readonly IMapper _mapper;
-    private readonly ILogger<UserController> _logger;
-    private readonly IValidator<UpdateBm> _updateValidator;
-
-    public UserController(
-        IUserService userService,
-        IValidator<UpdateBm> updateValidator,
-        IMapper mapper,
-        ILogger<UserController> logger)
-        : base(mapper, logger)
-    {
-        _userService = userService;
-        _updateValidator = updateValidator;
-        _mapper = mapper;
-        _logger = logger;
-    }
+    private readonly IUserService _userService = userService;
+    private readonly IMapper _mapper = mapper;
+    private readonly ILogger<UserController> _logger = logger;
+    private readonly IValidator<UpdateBm> _updateValidator = updateValidator;
 
     [HttpGet]
     [Route("")]

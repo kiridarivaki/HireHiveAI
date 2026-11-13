@@ -1,8 +1,7 @@
-﻿namespace HireHive.Application.Interfaces
+﻿namespace HireHive.Application.Interfaces;
+
+public interface IEmailService
 {
-    public interface IEmailService
-    {
-        Task SendEmail(string toEmail, string subject, string plainTextMessage, string? htmlMessage = null);
-        Task SendConfirmationEmail(string toEmail, string token);
-    }
+    Task SendEmail(string toEmail, string subject, string plainTextMessage, string? htmlMessage = null);
+    Task SendConfirmationEmail(string toEmail, string token);
 }

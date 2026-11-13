@@ -1,8 +1,7 @@
-﻿namespace HireHive.Infrastructure.Results
+﻿namespace HireHive.Infrastructure.Results;
+
+public class ErrorResult
 {
-    public class ErrorResult
-    {
-        public int ErrorCode { get; set; }
-        public string ErrorMessage { get; set; } = null!;
-    }
+    public int ErrorCode { get; set; }
+    public string ErrorMessage { get; set; } = null!;
 }

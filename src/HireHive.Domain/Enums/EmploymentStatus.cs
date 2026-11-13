@@ -1,14 +1,13 @@
-﻿namespace Domain.Enums
+﻿namespace Domain.Enums;
+
+public enum EmploymentStatus
 {
-    public enum EmploymentStatus
-    {
-        FullTime,
-        PartTime,
-        Unemployed,
-        Freelancer,
-        SelfEmployed,
-        Student,
-        Retired,
-        Intern
-    }
+    FullTime,
+    PartTime,
+    Unemployed,
+    Freelancer,
+    SelfEmployed,
+    Student,
+    Retired,
+    Intern
 }

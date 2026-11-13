@@ -4,34 +4,33 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace HireHive.Infrastructure.Startup
+namespace HireHive.Infrastructure.Startup;
+
+public static class IdentityConfiguration
 {
-    public static class IdentityConfiguration
+    public static void ConfigureIdentity(this IServiceCollection services, IConfiguration configuration)
     {
-        public static void ConfigureIdentity(this IServiceCollection services, IConfiguration configuration)
+        services.AddIdentity<User, IdentityRole<Guid>>(options =>
         {
-            services.AddIdentity<User, IdentityRole<Guid>>(options =>
-            {
-                options.SignIn.RequireConfirmedEmail = true;
-            })
-            .AddEntityFrameworkStores<HireHiveDbContext>()
-            .AddDefaultTokenProviders();
+            options.SignIn.RequireConfirmedEmail = true;
+        })
+        .AddEntityFrameworkStores<HireHiveDbContext>()
+        .AddDefaultTokenProviders();
 
-            services.AddOptions<IdentityOptions>().Configure(x =>
-            {
-                // Password with at least 8 characters, one uppercase, one number and one non alphanumeric
-                x.Password.RequireDigit = true;
-                x.Password.RequireLowercase = true;
-                x.Password.RequireUppercase = true;
-                x.Password.RequireNonAlphanumeric = true;
-                x.Password.RequiredLength = 8;
-                x.SignIn.RequireConfirmedAccount = true;
-            });
+        services.AddOptions<IdentityOptions>().Configure(x =>
+        {
+            // Password with at least 8 characters, one uppercase, one number and one non alphanumeric
+            x.Password.RequireDigit = true;
+            x.Password.RequireLowercase = true;
+            x.Password.RequireUppercase = true;
+            x.Password.RequireNonAlphanumeric = true;
+            x.Password.RequiredLength = 8;
+            x.SignIn.RequireConfirmedAccount = true;
+        });
 
-            services.Configure<DataProtectionTokenProviderOptions>(options =>
-            {
-                options.TokenLifespan = TimeSpan.FromMinutes(10);
-            });
-        }
+        services.Configure<DataProtectionTokenProviderOptions>(options =>
+        {
+            options.TokenLifespan = TimeSpan.FromMinutes(10);
+        });
     }
 }

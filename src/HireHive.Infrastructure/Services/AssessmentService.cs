@@ -7,53 +7,49 @@ using Microsoft.Extensions.Logging;
 using SharpToken;
 using System.Text.Json;
 
-namespace HireHive.Infrastructure.Services
+namespace HireHive.Infrastructure.Services;
+
+public class AssessmentService(ChatCompletionsClient client, ILogger<AssessmentService> logger) : IAssessmentService
 {
-    public class AssessmentService : IAssessmentService
+    const int MAX_TOKENS = 8000;
+    private static readonly GptEncoding _encoding = GptEncoding.GetEncodingForModel("gpt-4");
+    private readonly ChatCompletionsClient _client = client;
+    private readonly ILogger<AssessmentService> _logger = logger;
+
+    public int CountTokens(string? text)
     {
-        const int MAX_TOKENS = 8000;
-        private static readonly GptEncoding _encoding = GptEncoding.GetEncodingForModel("gpt-4");
-        private readonly ChatCompletionsClient _client;
-        private readonly ILogger<AssessmentService> _logger;
-        public AssessmentService(ChatCompletionsClient client, ILogger<AssessmentService> logger)
-        {
-            _client = client;
-            _logger = logger;
-        }
-        public int CountTokens(string? text)
-        {
-            int count = 0;
-            if (text != null)
-                count = _encoding.CountTokens(text);
+        int count = 0;
+        if (text != null)
+            count = _encoding.CountTokens(text);
 
-            return count;
-        }
-        public bool isTokenLimitReached(int tokenCount)
-        {
-            return tokenCount > MAX_TOKENS;
-        }
+        return count;
+    }
+    public bool isTokenLimitReached(int tokenCount)
+    {
+        return tokenCount > MAX_TOKENS;
+    }
 
-        private string BuildAssessmentPrompt(AssessmentParamsDto assessmentDto)
-        {
-            var criteriaWithWeights = new List<string>();
-            string criteria;
+    private string BuildAssessmentPrompt(AssessmentParamsDto assessmentDto)
+    {
+        var criteriaWithWeights = new List<string>();
+        string criteria;
 
-            if (assessmentDto.Criteria != null && assessmentDto.CriteriaWeights != null &&
-                assessmentDto.Criteria.Count == assessmentDto.CriteriaWeights.Count)
+        if (assessmentDto.Criteria != null && assessmentDto.CriteriaWeights != null &&
+            assessmentDto.Criteria.Count == assessmentDto.CriteriaWeights.Count)
+        {
+            foreach (var item in assessmentDto.Criteria.Zip(assessmentDto.CriteriaWeights, (c, w) => new { Criteria = c, Weight = w }))
             {
-                foreach (var item in assessmentDto.Criteria.Zip(assessmentDto.CriteriaWeights, (c, w) => new { Criteria = c, Weight = w }))
-                {
-                    criteriaWithWeights.Add($"- {item.Criteria}: {item.Weight}");
-                }
-
-                criteria = string.Join("\n", criteriaWithWeights);
-            }
-            else
-            {
-                criteria = "No criteria was defined.";
+                criteriaWithWeights.Add($"- {item.Criteria}: {item.Weight}");
             }
 
-            string prompt = @$"
+            criteria = string.Join("\n", criteriaWithWeights);
+        }
+        else
+        {
+            criteria = "No criteria was defined.";
+        }
+
+        string prompt = @$"
                 You are an HR resume assessment specialist. Your task is to evaluate provided resumes against a job description.
                 Assess each resume's match to the job description, considering:
                 {criteria}
@@ -69,61 +65,60 @@ namespace HireHive.Infrastructure.Services
                 The response MUST start with `[` and end with `]`, and contain ONLY the JSON array (no other text or formatting).
                 ";
 
-            return prompt;
+        return prompt;
+    }
+
+    public async Task<List<AssessmentResultDto>> AssessUsers(List<UserResumeDto> usersToAssess, AssessmentParamsDto assessmentDto)
+    {
+        var prompt = BuildAssessmentPrompt(assessmentDto);
+
+        var contentItems = new List<ChatMessageContentItem>();
+
+
+        foreach (var resume in usersToAssess)
+        {
+            var resumeText = $"UserId: {resume.UserId}\nResume: {resume.ResumeText}";
+            contentItems.Add(new ChatMessageTextContentItem(resumeText));
         }
 
-        public async Task<List<AssessmentResultDto>> AssessUsers(List<UserResumeDto> usersToAssess, AssessmentParamsDto assessmentDto)
+        var userMessage = new ChatRequestUserMessage(contentItems);
+
+        var chatHistory = new List<ChatRequestMessage> {
+            new ChatRequestSystemMessage(prompt),
+            new ChatRequestUserMessage(assessmentDto.JobDescription),
+            userMessage
+        };
+
+        var requestOptions = new ChatCompletionsOptions(chatHistory)
         {
-            var prompt = BuildAssessmentPrompt(assessmentDto);
+            Model = "openai/gpt-4.1"
+        };
 
-            var contentItems = new List<ChatMessageContentItem>();
+        try
+        {
+            Response<ChatCompletions> response = await _client.CompleteAsync(requestOptions);
+            var jsonResponse = response.Value.Content;
 
+            var assessmentResults =
+                JsonSerializer.Deserialize<List<AssessmentResultDto>>(jsonResponse,
+                    new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
 
-            foreach (var resume in usersToAssess)
-            {
-                var resumeText = $"UserId: {resume.UserId}\nResume: {resume.ResumeText}";
-                contentItems.Add(new ChatMessageTextContentItem(resumeText));
-            }
-
-            var userMessage = new ChatRequestUserMessage(contentItems);
-
-            var chatHistory = new List<ChatRequestMessage> {
-                new ChatRequestSystemMessage(prompt),
-                new ChatRequestUserMessage(assessmentDto.JobDescription),
-                userMessage
-            };
-
-            var requestOptions = new ChatCompletionsOptions(chatHistory)
-            {
-                Model = "openai/gpt-4.1"
-            };
-
-            try
-            {
-                Response<ChatCompletions> response = await _client.CompleteAsync(requestOptions);
-                var jsonResponse = response.Value.Content;
-
-                var assessmentResults =
-                    JsonSerializer.Deserialize<List<AssessmentResultDto>>(jsonResponse,
-                        new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
-
-                return assessmentResults!;
-            }
-            catch (JsonException e)
-            {
-                _logger.LogWarning("JSON Deserialization Error. With exception: {message}", e.Message);
-                throw;
-            }
-            catch (RequestFailedException e)
-            {
-                _logger.LogWarning("Azure AI Service request failed. With exception: {message}", e.Message);
-                throw;
-            }
-            catch (BaseException e)
-            {
-                _logger.LogWarning("AI Assessment failed. With exception: {message}", e.Message);
-                throw;
-            }
+            return assessmentResults!;
+        }
+        catch (JsonException e)
+        {
+            _logger.LogWarning("JSON Deserialization Error. With exception: {message}", e.Message);
+            throw;
+        }
+        catch (RequestFailedException e)
+        {
+            _logger.LogWarning("Azure AI Service request failed. With exception: {message}", e.Message);
+            throw;
+        }
+        catch (BaseException e)
+        {
+            _logger.LogWarning("AI Assessment failed. With exception: {message}", e.Message);
+            throw;
         }
     }
 }

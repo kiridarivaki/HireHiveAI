@@ -1,15 +1,14 @@
 ﻿using HireHive.Domain.Entities;
 using HireHive.Domain.Enums;
 
-namespace HireHive.Domain.Interfaces
+namespace HireHive.Domain.Interfaces;
+
+public interface IResumeRepository
 {
-    public interface IResumeRepository
-    {
-        Task<Resume?> GetByIdAsync(Guid resumeId);
-        Task<Resume?> GetByUserIdAsync(Guid userId);
-        Task AddAsync(Resume resume);
-        Task UpdateAsync(Resume resume);
-        Task DeleteAsync(Resume resume);
-        Task<List<Resume>> GetResumesToAssessAsync(JobType jobType, int skip, int take);
-    }
+    Task<Resume?> GetByIdAsync(Guid resumeId);
+    Task<Resume?> GetByUserIdAsync(Guid userId);
+    Task AddAsync(Resume resume);
+    Task UpdateAsync(Resume resume);
+    Task DeleteAsync(Resume resume);
+    Task<List<Resume>> GetResumesToAssessAsync(JobType jobType, int skip, int take);
 }

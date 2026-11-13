@@ -6,60 +6,51 @@ using HireHive.Application.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-namespace HireHive.Api.Areas.Admin.Controllers
+namespace HireHive.Api.Areas.Admin.Controllers;
+
+[Authorize(Roles = "Admin")]
+public class AdminController(IMapper mapper,
+    ILogger<AdminController> logger,
+    IUserService userService,
+    IAdminService adminService) : ApiController(mapper, logger)
 {
-    [Authorize(Roles = "Admin")]
-    public class AdminController : ApiController
+    private readonly IAdminService _adminService = adminService;
+    private readonly ILogger<AdminController> _logger = logger;
+    private readonly IMapper _mapper = mapper;
+
+    [HttpPost]
+    [Route("assess")]
+    public async Task<IActionResult> Assess([FromBody] AssessmentParamsBm assessmentModel)
     {
-        private readonly IAdminService _adminService;
-        private readonly ILogger<AdminController> _logger;
-        private readonly IMapper _mapper;
-
-        public AdminController(IMapper mapper,
-            ILogger<AdminController> logger,
-            IUserService userService,
-            IAdminService adminService)
-            : base(mapper, logger)
+        try
         {
-            _adminService = adminService;
-            _logger = logger;
-            _mapper = mapper;
+            var assessmentResult = await _adminService.AssessBatch(_mapper.Map<AssessmentParamsDto>(assessmentModel));
+            _logger.LogInformation("Resume assessment done.");
+
+            return Ok(_mapper.Map<List<AssessmentResultVm>>(assessmentResult));
         }
-
-        [HttpPost]
-        [Route("assess")]
-        public async Task<IActionResult> Assess([FromBody] AssessmentParamsBm assessmentModel)
+        catch (Exception e)
         {
-            try
-            {
-                var assessmentResult = await _adminService.AssessBatch(_mapper.Map<AssessmentParamsDto>(assessmentModel));
-                _logger.LogInformation("Resume assessment done.");
-
-                return Ok(_mapper.Map<List<AssessmentResultVm>>(assessmentResult));
-            }
-            catch (Exception e)
-            {
-                _logger.LogError("Resume assessment failed. With exception: {message}", e.Message);
-                throw;
-            }
+            _logger.LogError("Resume assessment failed. With exception: {message}", e.Message);
+            throw;
         }
+    }
 
-        [HttpPost]
-        [Route("sort")]
-        public IActionResult Sort([FromBody] SortParamsBm sortDataModel)
+    [HttpPost]
+    [Route("sort")]
+    public IActionResult Sort([FromBody] SortParamsBm sortDataModel)
+    {
+        try
         {
-            try
-            {
-                var result = _adminService.SortResults(_mapper.Map<SortParamsDto>(sortDataModel));
-                _logger.LogInformation("Sorting done.");
+            var result = _adminService.SortResults(_mapper.Map<SortParamsDto>(sortDataModel));
+            _logger.LogInformation("Sorting done.");
 
-                return Ok(_mapper.Map<List<SortResultVm>>(result));
-            }
-            catch (Exception e)
-            {
-                _logger.LogError("Sorting failed. With exception: {message}", e.Message);
-                throw;
-            }
+            return Ok(_mapper.Map<List<SortResultVm>>(result));
+        }
+        catch (Exception e)
+        {
+            _logger.LogError("Sorting failed. With exception: {message}", e.Message);
+            throw;
         }
     }
 }

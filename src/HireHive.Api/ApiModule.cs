@@ -2,14 +2,13 @@
 using HireHive.DependencyInjection;
 using System.Reflection;
 
-namespace HireHive.Api
+namespace HireHive.Api;
+
+public class ApiModule : IModule
 {
-    public class ApiModule : IModule
+    public void ConfigureDependencyInjection(IServiceCollection services, IConfiguration configuration)
     {
-        public void ConfigureDependencyInjection(IServiceCollection services, IConfiguration configuration)
-        {
-            services.AddAutoMapper(_ => { }, Assembly.GetExecutingAssembly());
-            services.AddValidatorsFromAssembly(typeof(Program).Assembly, includeInternalTypes: true);
-        }
+        services.AddAutoMapper(_ => { }, Assembly.GetExecutingAssembly());
+        services.AddValidatorsFromAssembly(typeof(Program).Assembly, includeInternalTypes: true);
     }
 }

@@ -1,53 +1,36 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 
-namespace HireHive.Api.Areas.Common.Controllers
+namespace HireHive.Api.Areas.Common.Controllers;
+
+//#if DEBUG
+//    [AllowAnonymous]
+//#endif
+[ApiController]
+[Route("api/[controller]")]
+[Produces("application/json")]
+public class ApiController : ControllerBase
 {
-    //#if DEBUG
-    //    [AllowAnonymous]
-    //#endif
-    [ApiController]
-    [Route("api/[controller]")]
-    [Produces("application/json")]
-    public class ApiController : ControllerBase
+    #region DI
+
+    protected readonly IMapper Mapper;
+    protected readonly ILogger<ApiController> Logger;
+
+    protected ApiController(
+        IMapper mapper,
+        ILogger<ApiController> logger)
     {
-        #region DI
+        Mapper = mapper;
+        Logger = logger;
+    }
 
-        protected readonly IMapper Mapper;
-        protected readonly ILogger<ApiController> Logger;
-
-        protected ApiController(
-            IMapper mapper,
-            ILogger<ApiController> logger)
-        {
-            Mapper = mapper;
-            Logger = logger;
-        }
-
-        #endregion
+    #endregion
 
 
 
-        protected string? UserId
-        {
-            get
-            {
-                if (User.Identity is { IsAuthenticated: true })
-                {
-                    return ((ClaimsIdentity)User.Identity).Claims
-                        .Where(c => c.Type == ClaimTypes.NameIdentifier)
-                        .Select(c => c.Value)
-                        .FirstOrDefault();
-                }
-
-                return null;
-            }
-        }
-
-
-
-        //Returns the ID of the current authenticated user.
-        protected string? GetUserId()
+    protected string? UserId
+    {
+        get
         {
             if (User.Identity is { IsAuthenticated: true })
             {
@@ -57,47 +40,63 @@ namespace HireHive.Api.Areas.Common.Controllers
                     .FirstOrDefault();
             }
 
-#if DEBUG
-            return "-";
-#else
-            throw new Exception("Can't find user's username claim.");
-#endif
+            return null;
         }
+    }
 
-        //Returns the email of the current authenticated user.
-        protected string? GetUserEmail()
+
+
+    //Returns the ID of the current authenticated user.
+    protected string? GetUserId()
+    {
+        if (User.Identity is { IsAuthenticated: true })
         {
-            if (User.Identity is { IsAuthenticated: true })
-            {
-                return ((ClaimsIdentity)User.Identity).Claims
-                    .Where(c => c.Type == ClaimTypes.Email)
-                    .Select(c => c.Value)
-                    .FirstOrDefault();
-            }
-
-#if DEBUG
-            return "-";
-#else
-            throw new Exception("Can't find user's email claim.");
-#endif
+            return ((ClaimsIdentity)User.Identity).Claims
+                .Where(c => c.Type == ClaimTypes.NameIdentifier)
+                .Select(c => c.Value)
+                .FirstOrDefault();
         }
 
-        //Returns the role of the current authenticated user.
-        protected string GetUserRole()
+#if DEBUG
+        return "-";
+#else
+        throw new Exception("Can't find user's username claim.");
+#endif
+    }
+
+    //Returns the email of the current authenticated user.
+    protected string? GetUserEmail()
+    {
+        if (User.Identity is { IsAuthenticated: true })
         {
-            if (User.Identity is { IsAuthenticated: true })
-            {
-                return ((ClaimsIdentity)User.Identity).Claims
-                    .Where(c => c.Type == ClaimTypes.Role)
-                    .Select(c => c.Value)
-                    .First();
-            }
+            return ((ClaimsIdentity)User.Identity).Claims
+                .Where(c => c.Type == ClaimTypes.Email)
+                .Select(c => c.Value)
+                .FirstOrDefault();
+        }
 
 #if DEBUG
-            return "-";
+        return "-";
 #else
-            throw new Exception("Can't find user's role claim.");
+        throw new Exception("Can't find user's email claim.");
 #endif
+    }
+
+    //Returns the role of the current authenticated user.
+    protected string GetUserRole()
+    {
+        if (User.Identity is { IsAuthenticated: true })
+        {
+            return ((ClaimsIdentity)User.Identity).Claims
+                .Where(c => c.Type == ClaimTypes.Role)
+                .Select(c => c.Value)
+                .First();
         }
+
+#if DEBUG
+        return "-";
+#else
+        throw new Exception("Can't find user's role claim.");
+#endif
     }
 }

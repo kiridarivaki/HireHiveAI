@@ -1,9 +1,8 @@
-﻿namespace HireHive.Api.Areas.Resume.Models.ViewModels
+﻿namespace HireHive.Api.Areas.Resume.Models.ViewModels;
+
+class UploadResumeVm
 {
-    class UploadResumeVm
-    {
-        public string? FileName { get; set; }
-        public long FileSize { get; set; }
-        public DateTime UpdatedAt { get; set; }
-    }
+    public string? FileName { get; set; }
+    public long FileSize { get; set; }
+    public DateTime UpdatedAt { get; set; }
 }

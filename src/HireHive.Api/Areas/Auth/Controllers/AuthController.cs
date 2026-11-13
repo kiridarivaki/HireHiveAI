@@ -11,24 +11,16 @@ using System.Security.Claims;
 
 namespace HireHive.Api.Areas.Auth.Controllers;
 
-public class AuthController : ApiController
+public class AuthController(
+    IAuthService authService,
+    IValidator<RegisterBm> registerValidator,
+    IMapper mapper,
+    ILogger<ApiController> logger) : ApiController(mapper, logger)
 {
-    private readonly IAuthService _authService;
-    private readonly IValidator<RegisterBm> _registerValidator;
-    private readonly IMapper _mapper;
-    private readonly ILogger<ApiController> _logger;
-    public AuthController(
-        IAuthService authService,
-        IValidator<RegisterBm> registerValidator,
-        IMapper mapper,
-        ILogger<ApiController> logger)
-        : base(mapper, logger)
-    {
-        _authService = authService;
-        _registerValidator = registerValidator;
-        _mapper = mapper;
-        _logger = logger;
-    }
+    private readonly IAuthService _authService = authService;
+    private readonly IValidator<RegisterBm> _registerValidator = registerValidator;
+    private readonly IMapper _mapper = mapper;
+    private readonly ILogger<ApiController> _logger = logger;
 
     [AllowAnonymous]
     [HttpPost]

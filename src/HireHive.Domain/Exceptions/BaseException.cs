@@ -1,17 +1,16 @@
-﻿namespace HireHive.Domain.Exceptions
+﻿namespace HireHive.Domain.Exceptions;
+
+public abstract class BaseException : Exception
 {
-    public abstract class BaseException : Exception
+    public ExceptionType Type { get; }
+
+    protected BaseException(string? message = "") : base(message)
     {
-        public ExceptionType Type { get; }
+        Type = ExceptionType.Default;
+    }
 
-        protected BaseException(string? message = "") : base(message)
-        {
-            Type = ExceptionType.Default;
-        }
-
-        protected BaseException(ExceptionType type, string? message = "") : base(message)
-        {
-            Type = type;
-        }
+    protected BaseException(ExceptionType type, string? message = "") : base(message)
+    {
+        Type = type;
     }
 }

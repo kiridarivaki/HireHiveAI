@@ -2,16 +2,15 @@
 using HireHive.Api.Areas.Admin.Models.ViewModels;
 using HireHive.Application.DTOs.Admin;
 
-namespace HireHive.Api.PresentationMappings
+namespace HireHive.Api.PresentationMappings;
+
+public class AdminPresentationMapping : Profile
 {
-    public class AdminPresentationMapping : Profile
+    public AdminPresentationMapping()
     {
-        public AdminPresentationMapping()
-        {
-            CreateMap<AssessmentParamsBm, AssessmentParamsDto>().ReverseMap();
-            CreateMap<AssessmentResultDto, AssessmentResultVm>().ReverseMap();
-            CreateMap<SortParamsBm, SortParamsDto>().ReverseMap();
-            CreateMap<SortResultDto, SortResultVm>().ReverseMap();
-        }
+        CreateMap<AssessmentParamsBm, AssessmentParamsDto>().ReverseMap();
+        CreateMap<AssessmentResultDto, AssessmentResultVm>().ReverseMap();
+        CreateMap<SortParamsBm, SortParamsDto>().ReverseMap();
+        CreateMap<SortResultDto, SortResultVm>().ReverseMap();
     }
 }

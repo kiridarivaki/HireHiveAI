@@ -9,137 +9,127 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using System.Transactions;
 
-namespace HireHive.Infrastructure.Services
+namespace HireHive.Infrastructure.Services;
+
+public class ResumeService(
+    IBlobService azureBlobService,
+    IResumeRepository resumeRepository,
+    IResumeProcessingJob resumeJobService,
+    IBackgroundJobClient backgroundJobClient,
+    IMapper mapper,
+    ILogger<ResumeService> logger) : IResumeService
 {
-    public class ResumeService : IResumeService
+    private readonly IBlobService _azureBlobService = azureBlobService;
+    private readonly IResumeRepository _resumeRepository = resumeRepository;
+    private readonly IResumeProcessingJob _resumeJobService = resumeJobService;
+    private readonly IBackgroundJobClient _backgroundJobClient = backgroundJobClient;
+    private readonly IMapper _mapper = mapper;
+    private readonly ILogger<ResumeService> _logger = logger;
+
+    public async Task<ResumeDto> GetByUserId(Guid userId)
     {
-        private readonly IBlobService _azureBlobService;
-        private readonly IResumeRepository _resumeRepository;
-        private readonly IResumeProcessingJob _resumeJobService;
-        private readonly IBackgroundJobClient _backgroundJobClient;
-        private readonly IMapper _mapper;
-        private readonly ILogger<ResumeService> _logger;
-        public ResumeService(
-            IBlobService azureBlobService,
-            IResumeRepository resumeRepository,
-            IResumeProcessingJob resumeJobService,
-            IBackgroundJobClient backgroundJobClient,
-            IMapper mapper,
-            ILogger<ResumeService> logger)
+        try
         {
-            _azureBlobService = azureBlobService;
-            _resumeRepository = resumeRepository;
-            _resumeJobService = resumeJobService;
-            _backgroundJobClient = backgroundJobClient;
-            _mapper = mapper;
-            _logger = logger;
-        }
+            var resume = await _resumeRepository.GetByUserIdAsync(userId);
+            _logger.LogInformation("Resume of user {resumeId} fetched.", userId);
 
-        public async Task<ResumeDto> GetByUserId(Guid userId)
+            return _mapper.Map<ResumeDto>(resume);
+        }
+        catch (BaseException e)
+        {
+            _logger.LogWarning("Resume {resumeId} not found. With exception {message}", userId, e.Message);
+            throw;
+        }
+    }
+
+    public async Task<UploadResumeDto> Upload(Guid userId, UploadResumeDto uploadDto)
+    {
+        using (TransactionScope scope = new TransactionScope(TransactionScopeOption.Required,
+                                         new TransactionOptions { IsolationLevel = IsolationLevel.ReadCommitted },
+                                         TransactionScopeAsyncFlowOption.Enabled))
         {
             try
             {
-                var resume = await _resumeRepository.GetByUserIdAsync(userId);
-                _logger.LogInformation("Resume of user {resumeId} fetched.", userId);
-
-                return _mapper.Map<ResumeDto>(resume);
-            }
-            catch (BaseException e)
-            {
-                _logger.LogWarning("Resume {resumeId} not found. With exception {message}", userId, e.Message);
-                throw;
-            }
-        }
-
-        public async Task<UploadResumeDto> Upload(Guid userId, UploadResumeDto uploadDto)
-        {
-            using (TransactionScope scope = new TransactionScope(TransactionScopeOption.Required,
-                                             new TransactionOptions { IsolationLevel = IsolationLevel.ReadCommitted },
-                                             TransactionScopeAsyncFlowOption.Enabled))
-            {
-                try
-                {
-                    var file = uploadDto.File;
-                    var blobName = await _azureBlobService.Upload(file);
-
-                    var resume = new Resume(file.FileName, blobName, file.ContentType, file.Length, userId, null);
-
-                    await _resumeRepository.AddAsync(resume);
-
-                    var fileBytes = GetFileBytes(uploadDto.File);
-
-                    var fileProcessingJob = _backgroundJobClient.Enqueue(() => _resumeJobService.ProcessResumeText(userId, fileBytes));
-
-                    scope.Complete();
-
-                    _logger.LogInformation("Resume with id {resumeId} uploaded.", resume.Id);
-                    return _mapper.Map<UploadResumeDto>(resume);
-
-                }
-                catch (BaseException e)
-                {
-                    _logger.LogWarning("Failed to upload resume for customer {userId}. With exception: {message}", userId, e.Message);
-                    throw;
-                }
-            }
-        }
-
-        public async Task Update(Guid userId, UpdateResumeDto updateDto)
-        {
-            try
-            {
-                var resume = await _resumeRepository.GetByUserIdAsync(userId)
-                    ?? throw new ResumeNotFoundException();
-
-                await _azureBlobService.Delete(resume.BlobName!);
-
-                var file = updateDto.File;
+                var file = uploadDto.File;
                 var blobName = await _azureBlobService.Upload(file);
 
-                resume.Update(file.FileName, blobName, file.ContentType, file.Length, null);
+                var resume = new Resume(file.FileName, blobName, file.ContentType, file.Length, userId, null);
 
-                await _resumeRepository.UpdateAsync(resume);
+                await _resumeRepository.AddAsync(resume);
 
-                var fileBytes = GetFileBytes(updateDto.File);
+                var fileBytes = GetFileBytes(uploadDto.File);
 
                 var fileProcessingJob = _backgroundJobClient.Enqueue(() => _resumeJobService.ProcessResumeText(userId, fileBytes));
 
-                _logger.LogInformation("Resume with id {resumeId} updated.", resume.Id);
+                scope.Complete();
+
+                _logger.LogInformation("Resume with id {resumeId} uploaded.", resume.Id);
+                return _mapper.Map<UploadResumeDto>(resume);
+
             }
             catch (BaseException e)
             {
-                _logger.LogWarning("Failed to update resume for user {userId}. With exception: {message}", userId, e.Message);
+                _logger.LogWarning("Failed to upload resume for customer {userId}. With exception: {message}", userId, e.Message);
                 throw;
             }
         }
+    }
 
-        public async Task Delete(Guid userId)
+    public async Task Update(Guid userId, UpdateResumeDto updateDto)
+    {
+        try
         {
-            try
-            {
-                var resume = await _resumeRepository.GetByUserIdAsync(userId)
-                    ?? throw new ResumeNotFoundException();
+            var resume = await _resumeRepository.GetByUserIdAsync(userId)
+                ?? throw new ResumeNotFoundException();
 
-                await _azureBlobService.Delete(resume.BlobName!);
+            await _azureBlobService.Delete(resume.BlobName!);
 
-                await _resumeRepository.DeleteAsync(resume);
-                _logger.LogInformation("Resume of user {userId} deleted.", userId);
-            }
-            catch (BaseException e)
-            {
-                _logger.LogWarning("Failed to delete resume of user {userId}. With exception: {message}", userId, e.Message);
-                throw;
-            }
+            var file = updateDto.File;
+            var blobName = await _azureBlobService.Upload(file);
+
+            resume.Update(file.FileName, blobName, file.ContentType, file.Length, null);
+
+            await _resumeRepository.UpdateAsync(resume);
+
+            var fileBytes = GetFileBytes(updateDto.File);
+
+            var fileProcessingJob = _backgroundJobClient.Enqueue(() => _resumeJobService.ProcessResumeText(userId, fileBytes));
+
+            _logger.LogInformation("Resume with id {resumeId} updated.", resume.Id);
         }
-
-        public byte[] GetFileBytes(IFormFile file)
+        catch (BaseException e)
         {
-            using var ms = new MemoryStream();
-
-            file.CopyTo(ms);
-            var fileBytes = ms.ToArray();
-
-            return fileBytes;
+            _logger.LogWarning("Failed to update resume for user {userId}. With exception: {message}", userId, e.Message);
+            throw;
         }
+    }
+
+    public async Task Delete(Guid userId)
+    {
+        try
+        {
+            var resume = await _resumeRepository.GetByUserIdAsync(userId)
+                ?? throw new ResumeNotFoundException();
+
+            await _azureBlobService.Delete(resume.BlobName!);
+
+            await _resumeRepository.DeleteAsync(resume);
+            _logger.LogInformation("Resume of user {userId} deleted.", userId);
+        }
+        catch (BaseException e)
+        {
+            _logger.LogWarning("Failed to delete resume of user {userId}. With exception: {message}", userId, e.Message);
+            throw;
+        }
+    }
+
+    public byte[] GetFileBytes(IFormFile file)
+    {
+        using var ms = new MemoryStream();
+
+        file.CopyTo(ms);
+        var fileBytes = ms.ToArray();
+
+        return fileBytes;
     }
 }

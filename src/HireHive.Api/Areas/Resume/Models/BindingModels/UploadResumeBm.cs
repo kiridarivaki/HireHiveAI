@@ -1,7 +1,6 @@
-﻿namespace HireHive.Api.Areas.Resume.Models.BindingModels
+﻿namespace HireHive.Api.Areas.Resume.Models.BindingModels;
+
+public class UploadResumeBm
 {
-    public class UploadResumeBm
-    {
-        public IFormFile File { get; set; } = null!;
-    }
+    public IFormFile File { get; set; } = null!;
 }

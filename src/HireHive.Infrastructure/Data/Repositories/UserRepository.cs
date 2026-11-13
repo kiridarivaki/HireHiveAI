@@ -8,18 +8,12 @@ using Microsoft.EntityFrameworkCore;
 
 namespace HireHive.Infrastructure.Data.Repositories;
 
-public class UserRepository : IUserRepository
+public class UserRepository(
+    UserManager<User> userManager,
+    HireHiveDbContext context) : IUserRepository
 {
-    private readonly UserManager<User> _userManager;
-    private readonly HireHiveDbContext _context;
-
-    public UserRepository(
-        UserManager<User> userManager,
-        HireHiveDbContext context)
-    {
-        _userManager = userManager;
-        _context = context;
-    }
+    private readonly UserManager<User> _userManager = userManager;
+    private readonly HireHiveDbContext _context = context;
 
     public async Task<User> Add(User user, string password)
     {

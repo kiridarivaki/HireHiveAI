@@ -1,8 +1,7 @@
-﻿namespace HireHive.Api.Areas.Auth.Models.BindingModels
+﻿namespace HireHive.Api.Areas.Auth.Models.BindingModels;
+
+public class RefreshBm
 {
-    public class RefreshBm
-    {
-        public string? AccessToken { get; set; } = null!;
-        public string? RefreshToken { get; set; } = null!;
-    }
+    public string? AccessToken { get; set; } = null!;
+    public string? RefreshToken { get; set; } = null!;
 }

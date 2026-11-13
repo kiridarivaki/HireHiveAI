@@ -16,11 +16,10 @@ public static class ModuleLoader
             .ToList();
 
         //Find all classes that implement IModule.
-        return assemblyNames
+        return [.. assemblyNames
             .Select(Assembly.Load!)
             .SelectMany(a => a.GetTypes())
             .Where(t => typeof(IModule).IsAssignableFrom(t) && t.IsClass)
-            .Select(t => (IModule)Activator.CreateInstance(t)!)
-            .ToList();
+            .Select(t => (IModule)Activator.CreateInstance(t)!)];
     }
 }

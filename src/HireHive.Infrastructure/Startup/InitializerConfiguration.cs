@@ -4,21 +4,19 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace HireHive.Infrastructure.Startup
+namespace HireHive.Infrastructure.Startup;
+
+public static class InitializerConfiguration
 {
-    public static class InitializerConfiguration
+    public static async Task Seed(this IServiceProvider services, IConfiguration configuration)
     {
-        public static async Task Seed(this IServiceProvider services, IConfiguration configuration)
-        {
-            var scopeFactory = (IServiceScopeFactory)services.GetService(typeof(IServiceScopeFactory))!;
+        var scopeFactory = (IServiceScopeFactory)services.GetService(typeof(IServiceScopeFactory))!;
 
-            using var scope = scopeFactory.CreateScope();
-            var provider = scope.ServiceProvider;
+        using var scope = scopeFactory.CreateScope();
+        var provider = scope.ServiceProvider;
 
-            var userManager = provider.GetRequiredService<UserManager<User>>();
-            var context = provider.GetRequiredService<HireHiveDbContext>();
-            await Initializer.Seed(context, userManager, configuration);
-        }
+        var userManager = provider.GetRequiredService<UserManager<User>>();
+        var context = provider.GetRequiredService<HireHiveDbContext>();
+        await Initializer.Seed(context, userManager, configuration);
     }
-
 }

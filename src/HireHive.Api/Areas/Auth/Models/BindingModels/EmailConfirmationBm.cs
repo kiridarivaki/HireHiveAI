@@ -1,7 +1,6 @@
-﻿namespace HireHive.Api.Areas.Auth.Models.BindingModels
+﻿namespace HireHive.Api.Areas.Auth.Models.BindingModels;
+
+public class EmailConfirmationBm
 {
-    public class EmailConfirmationBm
-    {
-        public string Email { get; set; } = null!;
-    }
+    public string Email { get; set; } = null!;
 }

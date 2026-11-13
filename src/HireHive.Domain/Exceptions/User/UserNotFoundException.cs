@@ -1,4 +1,3 @@
-﻿namespace HireHive.Domain.Exceptions.User
-{
-    public class UserNotFoundException : BaseException;
-}
+﻿namespace HireHive.Domain.Exceptions.User;
+
+public class UserNotFoundException : BaseException;

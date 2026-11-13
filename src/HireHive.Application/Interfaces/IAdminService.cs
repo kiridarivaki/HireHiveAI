@@ -1,11 +1,10 @@
 ﻿using HireHive.Application.DTOs.Admin;
 
-namespace HireHive.Application.Interfaces
+namespace HireHive.Application.Interfaces;
+
+public interface IAdminService
 {
-    public interface IAdminService
-    {
-        Task<List<AssessmentResultDto>>? AssessBatch(AssessmentParamsDto assessmentDto);
-        Task<List<UserResumeDto>> GetResumeBatch(AssessmentParamsDto assessmentDto);
-        List<SortResultDto> SortResults(SortParamsDto sortDataModel);
-    }
+    Task<List<AssessmentResultDto>>? AssessBatch(AssessmentParamsDto assessmentDto);
+    Task<List<UserResumeDto>> GetResumeBatch(AssessmentParamsDto assessmentDto);
+    List<SortResultDto> SortResults(SortParamsDto sortDataModel);
 }

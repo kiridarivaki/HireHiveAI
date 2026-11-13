@@ -1,7 +1,6 @@
-﻿namespace HireHive.Application.Interfaces
+﻿namespace HireHive.Application.Interfaces;
+
+public interface IResumeProcessingJob
 {
-    public interface IResumeProcessingJob
-    {
-        Task ProcessResumeText(Guid userId, byte[] fileBytes);
-    }
+    Task ProcessResumeText(Guid userId, byte[] fileBytes);
 }
