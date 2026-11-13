@@ -17,10 +17,76 @@ namespace HireHive.Infrastructure.Migrations.SupabaseMigrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "9.0.4")
+                .HasAnnotation("ProductVersion", "10.0.15")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
+
+            modelBuilder.Entity("HireHive.Domain.Entities.Job", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("ExtraData")
+                        .HasColumnType("text");
+
+                    b.Property<int>("JobType")
+                        .HasColumnType("integer");
+
+                    b.Property<Guid>("OwnerId")
+                        .HasColumnType("uuid");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("OwnerId", "Status");
+
+                    b.ToTable("Job");
+                });
+
+            modelBuilder.Entity("HireHive.Domain.Entities.JobAssessment", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Explanation")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("ExtraData")
+                        .HasColumnType("text");
+
+                    b.Property<Guid>("JobId")
+                        .HasColumnType("uuid");
+
+                    b.Property<int>("MatchPercentage")
+                        .HasColumnType("integer");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.HasIndex("JobId", "UserId")
+                        .IsUnique();
+
+                    b.ToTable("JobAssessment");
+                });
 
             modelBuilder.Entity("HireHive.Domain.Entities.Resume", b =>
                 {
@@ -272,6 +338,106 @@ namespace HireHive.Infrastructure.Migrations.SupabaseMigrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
+            modelBuilder.Entity("HireHive.Domain.Entities.Job", b =>
+                {
+                    b.HasOne("HireHive.Domain.Entities.User", "Owner")
+                        .WithMany()
+                        .HasForeignKey("OwnerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.OwnsOne("HireHive.Domain.Entities.ValueObjects.Audit", "Audit", b1 =>
+                        {
+                            b1.Property<Guid>("JobId")
+                                .HasColumnType("uuid");
+
+                            b1.Property<DateTime>("CreatedAt")
+                                .HasColumnType("timestamp with time zone");
+
+                            b1.Property<DateTime>("UpdatedAt")
+                                .HasColumnType("timestamp with time zone");
+
+                            b1.HasKey("JobId");
+
+                            b1.ToTable("Job");
+
+                            b1.WithOwner()
+                                .HasForeignKey("JobId");
+                        });
+
+                    b.OwnsMany("HireHive.Domain.Entities.JobCriterion", "Criteria", b1 =>
+                        {
+                            b1.Property<Guid>("JobId");
+
+                            b1.Property<int>("__synthesizedOrdinal")
+                                .ValueGeneratedOnAdd();
+
+                            b1.Property<string>("Name")
+                                .IsRequired();
+
+                            b1.Property<int>("Weight");
+
+                            b1.HasKey("JobId", "__synthesizedOrdinal");
+
+                            b1.ToTable("Job");
+
+                            b1
+                                .ToJson("Criteria")
+                                .HasColumnType("jsonb");
+
+                            b1.WithOwner()
+                                .HasForeignKey("JobId");
+                        });
+
+                    b.Navigation("Audit")
+                        .IsRequired();
+
+                    b.Navigation("Criteria");
+
+                    b.Navigation("Owner");
+                });
+
+            modelBuilder.Entity("HireHive.Domain.Entities.JobAssessment", b =>
+                {
+                    b.HasOne("HireHive.Domain.Entities.Job", "Job")
+                        .WithMany("Assessments")
+                        .HasForeignKey("JobId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("HireHive.Domain.Entities.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.OwnsOne("HireHive.Domain.Entities.ValueObjects.Audit", "Audit", b1 =>
+                        {
+                            b1.Property<Guid>("JobAssessmentId")
+                                .HasColumnType("uuid");
+
+                            b1.Property<DateTime>("CreatedAt")
+                                .HasColumnType("timestamp with time zone");
+
+                            b1.Property<DateTime>("UpdatedAt")
+                                .HasColumnType("timestamp with time zone");
+
+                            b1.HasKey("JobAssessmentId");
+
+                            b1.ToTable("JobAssessment");
+
+                            b1.WithOwner()
+                                .HasForeignKey("JobAssessmentId");
+                        });
+
+                    b.Navigation("Audit")
+                        .IsRequired();
+
+                    b.Navigation("Job");
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("HireHive.Domain.Entities.Resume", b =>
                 {
                     b.HasOne("HireHive.Domain.Entities.User", "User")
@@ -354,6 +520,11 @@ namespace HireHive.Infrastructure.Migrations.SupabaseMigrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("HireHive.Domain.Entities.Job", b =>
+                {
+                    b.Navigation("Assessments");
                 });
 
             modelBuilder.Entity("HireHive.Domain.Entities.User", b =>

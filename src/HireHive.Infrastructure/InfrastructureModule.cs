@@ -76,5 +76,7 @@ class InfrastructureModule : IModule
 
         services.AddScoped<IUserRepository, UserRepository>();
         services.AddScoped<IResumeRepository, ResumeRepository>();
+        services.AddScoped<IJobRepository, JobRepository>();
+        services.AddScoped<IJobAssessmentRepository, JobAssessmentRepository>();
     }
 }
