@@ -129,4 +129,13 @@
   <data name="UserNotFoundException" xml:space="preserve">
     <value>The user was not found.</value>
   </data>
+  <data name="JobNotFoundException" xml:space="preserve">
+    <value>The job was not found.</value>
+  </data>
+  <data name="ApplicantNotFoundException" xml:space="preserve">
+    <value>The candidate is not an applicant for this job.</value>
+  </data>
+  <data name="ResumeNotProcessedException" xml:space="preserve">
+    <value>The resume is still being processed. Try again later.</value>
+  </data>
 </root>
