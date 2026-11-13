@@ -13,7 +13,7 @@ obj/
 
 ## ASP.NET files
 # Ignore the web server directory
-src/Api/appsettings.json
+src/HireHive.Api/appsettings.json
 
 ## Ignore all logs
 *.log
