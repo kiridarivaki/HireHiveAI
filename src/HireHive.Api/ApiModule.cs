@@ -8,7 +8,7 @@ namespace HireHive.Api
     {
         public void ConfigureDependencyInjection(IServiceCollection services, IConfiguration configuration)
         {
-            services.AddAutoMapper(Assembly.GetExecutingAssembly());
+            services.AddAutoMapper(_ => { }, Assembly.GetExecutingAssembly());
             services.AddValidatorsFromAssembly(typeof(Program).Assembly, includeInternalTypes: true);
         }
     }

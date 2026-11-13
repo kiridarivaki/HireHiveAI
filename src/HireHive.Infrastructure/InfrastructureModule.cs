@@ -26,7 +26,7 @@ namespace HireHive.Infrastructure
             services.AddDbContext<HireHiveDbContext>(options =>
                 options.UseNpgsql(connectionString));
 
-            services.AddAutoMapper(Assembly.GetExecutingAssembly());
+            services.AddAutoMapper(_ => { }, Assembly.GetExecutingAssembly());
 
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IAuthService, AuthService>();

@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.OpenApi.Any;
-using Microsoft.OpenApi.Models;
+using Microsoft.OpenApi;
 using Swashbuckle.AspNetCore.SwaggerGen;
+using System.Text.Json.Nodes;
 
 namespace HireHive.Infrastructure.Startup
 {
@@ -21,20 +21,10 @@ namespace HireHive.Infrastructure.Startup
                     Scheme = "Bearer"
                 });
 
-                options.AddSecurityRequirement(new OpenApiSecurityRequirement
-            {
+                options.AddSecurityRequirement(document => new OpenApiSecurityRequirement
                 {
-                    new OpenApiSecurityScheme
-                    {
-                        Reference = new OpenApiReference
-                        {
-                            Id = "Bearer",
-                            Type = ReferenceType.SecurityScheme
-                        }
-                    },
-                    new List<string>()
-                }
-            });
+                    [new OpenApiSecuritySchemeReference("Bearer", document)] = new List<string>()
+                });
 
                 options.SchemaFilter<EnumValueSchemaFilter>();
             });
@@ -50,25 +40,22 @@ namespace HireHive.Infrastructure.Startup
 
     public class EnumValueSchemaFilter : ISchemaFilter
     {
-        public void Apply(OpenApiSchema schema, SchemaFilterContext context)
+        public void Apply(IOpenApiSchema schema, SchemaFilterContext context)
         {
-            if (context.Type.IsEnum)
+            if (context.Type.IsEnum && schema is OpenApiSchema openApiSchema)
             {
-                schema.Enum.Clear();
                 var enumValues = Enum.GetValues(context.Type);
-                foreach (var enumValue in enumValues)
-                {
-                    var name = Enum.GetName(context.Type, enumValue);
-                    var value = Convert.ToInt32(enumValue);
-                    schema.Enum.Add(new OpenApiInteger(value));
-                }
-                schema.Type = "integer";
-                schema.Format = "int32";
+                openApiSchema.Enum = enumValues
+                    .Cast<object>()
+                    .Select(v => (JsonNode)JsonValue.Create(Convert.ToInt32(v)))
+                    .ToList();
+                openApiSchema.Type = JsonSchemaType.Integer;
+                openApiSchema.Format = "int32";
                 // Add enum value descriptions to the schema description
                 var enumDescriptions = enumValues
                     .Cast<object>()
                     .Select(v => $"{Convert.ToInt32(v)} = {Enum.GetName(context.Type, v)}");
-                schema.Description = $"Enum values: {string.Join(", ", enumDescriptions)}";
+                openApiSchema.Description = $"Enum values: {string.Join(", ", enumDescriptions)}";
             }
         }
     }
