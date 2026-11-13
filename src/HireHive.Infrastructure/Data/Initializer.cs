@@ -14,8 +14,8 @@ namespace HireHive.Infrastructure.Data
         public static async Task Seed(HireHiveDbContext context, UserManager<User> userManager, IConfiguration configuration)
         {
             var connectionString = configuration["HireHivePostgresConnectionString"];
-            var dataSource = NpgsqlDataSource.Create(connectionString!);
-            var postgresConnection = await dataSource.OpenConnectionAsync();
+            await using var dataSource = NpgsqlDataSource.Create(connectionString!);
+            await using var postgresConnection = await dataSource.OpenConnectionAsync();
 
             await using var transaction = await postgresConnection.BeginTransactionAsync();
 

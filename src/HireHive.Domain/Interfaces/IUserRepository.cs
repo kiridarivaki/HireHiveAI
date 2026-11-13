@@ -11,6 +11,6 @@ namespace HireHive.Domain.Interfaces
         Task<User> Add(User user, string password);
         Task Update(User user);
         Task Delete(User user);
-        int CountFiltered(JobType jobType);
+        Task<int> CountFiltered(JobType jobType);
     }
 }

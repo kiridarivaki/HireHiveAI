@@ -12,6 +12,7 @@ namespace HireHive.Infrastructure.Services
     public class AssessmentService : IAssessmentService
     {
         const int MAX_TOKENS = 8000;
+        private static readonly GptEncoding _encoding = GptEncoding.GetEncodingForModel("gpt-4");
         private readonly ChatCompletionsClient _client;
         private readonly ILogger<AssessmentService> _logger;
         public AssessmentService(ChatCompletionsClient client, ILogger<AssessmentService> logger)
@@ -21,10 +22,9 @@ namespace HireHive.Infrastructure.Services
         }
         public int CountTokens(string? text)
         {
-            var encoding = GptEncoding.GetEncodingForModel("gpt-4");
             int count = 0;
             if (text != null)
-                count = encoding.CountTokens(text);
+                count = _encoding.CountTokens(text);
 
             return count;
         }

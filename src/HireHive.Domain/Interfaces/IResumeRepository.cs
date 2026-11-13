@@ -10,6 +10,6 @@ namespace HireHive.Domain.Interfaces
         Task AddAsync(Resume resume);
         Task UpdateAsync(Resume resume);
         Task DeleteAsync(Resume resume);
-        List<Resume> GetResumesToAssess(JobType jobType, int skip, int take);
+        Task<List<Resume>> GetResumesToAssessAsync(JobType jobType, int skip, int take);
     }
 }

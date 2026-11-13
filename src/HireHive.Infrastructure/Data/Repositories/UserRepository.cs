@@ -78,10 +78,10 @@ public class UserRepository : IUserRepository
             throw new Exception("Failed to update user.");
     }
 
-    public int CountFiltered(JobType jobType)
+    public async Task<int> CountFiltered(JobType jobType)
     {
-        return _context.Users
+        return await _context.Users
             .Where(u => u.JobTypes.Contains(jobType))
-            .Count();
+            .CountAsync();
     }
 }

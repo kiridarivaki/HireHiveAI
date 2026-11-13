@@ -43,9 +43,9 @@ namespace HireHive.Infrastructure.Data.Repositories
             await _context.SaveChangesAsync();
         }
 
-        public List<Resume> GetResumesToAssess(JobType jobType, int skip, int take)
+        public async Task<List<Resume>> GetResumesToAssessAsync(JobType jobType, int skip, int take)
         {
-            return _context.Resume
+            return await _context.Resume
                 .Join(_context.Users,
                       resume => resume.UserId,
                       user => user.Id,
@@ -59,7 +59,7 @@ namespace HireHive.Infrastructure.Data.Repositories
                 })
                 .Skip(skip)
                 .Take(take)
-                .ToList();
+                .ToListAsync();
         }
 
     }

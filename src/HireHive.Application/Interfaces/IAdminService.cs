@@ -5,7 +5,7 @@ namespace HireHive.Application.Interfaces
     public interface IAdminService
     {
         Task<List<AssessmentResultDto>>? AssessBatch(AssessmentParamsDto assessmentDto);
-        List<UserResumeDto> GetResumeBatch(AssessmentParamsDto assessmentDto);
+        Task<List<UserResumeDto>> GetResumeBatch(AssessmentParamsDto assessmentDto);
         List<SortResultDto> SortResults(SortParamsDto sortDataModel);
     }
 }

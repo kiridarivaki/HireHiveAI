@@ -30,7 +30,7 @@ namespace HireHive.Infrastructure.Services
         {
             try
             {
-                var usersToAssess = GetResumeBatch(assessmentDto);
+                var usersToAssess = await GetResumeBatch(assessmentDto);
 
                 if (usersToAssess == null || !usersToAssess.Any())
                 {
@@ -59,12 +59,12 @@ namespace HireHive.Infrastructure.Services
             }
         }
 
-        public List<UserResumeDto> GetResumeBatch(AssessmentParamsDto assessmentDto)
+        public async Task<List<UserResumeDto>> GetResumeBatch(AssessmentParamsDto assessmentDto)
         {
             try
             {
                 int usersAssessed = assessmentDto.Cursor ?? 0;
-                int usersToAssess = _userRepository.CountFiltered(assessmentDto.JobType);
+                int usersToAssess = await _userRepository.CountFiltered(assessmentDto.JobType);
 
                 var resumeBatch = new List<UserResumeDto>();
                 var totalTokens = _assessmentService.CountTokens(assessmentDto.JobDescription);
@@ -72,8 +72,8 @@ namespace HireHive.Infrastructure.Services
 
                 while (assessmentStart < usersToAssess)
                 {
-                    var userWithResume = _resumeRepository
-                        .GetResumesToAssess(assessmentDto.JobType, assessmentStart, 1)
+                    var userWithResume = (await _resumeRepository
+                        .GetResumesToAssessAsync(assessmentDto.JobType, assessmentStart, 1))
                         .FirstOrDefault();
 
                     if (userWithResume == null)

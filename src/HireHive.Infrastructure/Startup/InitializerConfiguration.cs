@@ -8,7 +8,7 @@ namespace HireHive.Infrastructure.Startup
 {
     public static class InitializerConfiguration
     {
-        public static async void Seed(this IServiceProvider services, IConfiguration configuration)
+        public static async Task Seed(this IServiceProvider services, IConfiguration configuration)
         {
             var scopeFactory = (IServiceScopeFactory)services.GetService(typeof(IServiceScopeFactory))!;
 

@@ -33,7 +33,7 @@ if (app.Environment.IsDevelopment())
     app.UseDeveloperExceptionPage();
 }
 
-app.Services.Seed(configuration);
+await app.Services.Seed(configuration);
 app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();

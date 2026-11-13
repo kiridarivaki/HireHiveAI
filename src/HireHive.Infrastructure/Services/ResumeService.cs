@@ -122,7 +122,7 @@ namespace HireHive.Infrastructure.Services
 
                 await _azureBlobService.Delete(resume.BlobName!);
 
-                _resumeRepository.DeleteAsync(resume);
+                await _resumeRepository.DeleteAsync(resume);
                 _logger.LogInformation("Resume of user {userId} deleted.", userId);
             }
             catch (BaseException e)
